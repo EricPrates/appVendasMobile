@@ -18,7 +18,7 @@ export default function Login({navigation}) {
     const handleLogin = () =>{
         if (login(campos.usuario, campos.senha)){
              console.log("Login efetuado com sucesso");
-            navigation.replace("Main")
+            navigation.replace("Home")
            
             
         }

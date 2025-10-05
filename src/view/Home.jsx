@@ -9,25 +9,16 @@ import { useState } from "react";
 import { BottomNavigation } from 'react-native-paper';
 import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
+import Cabecalho from "../components/Cabecalho";
 
 export default function Home({ navigation }) {
     const { nome, signOut } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
-
+    const [tabAtiva, setTabAtiva] = useState('home');
     
     return (
         <SafeAreaView style={styles.root}>
-             <Appbar.Header dark={true} mode="center-aligned" style={{backgroundColor: '#000000ff'}} >
-                <Appbar.BackAction color="#fff" style={{opacity: 0.5, marginRight: 16}} />
-                    <Searchbar
-                        placeholder="Pesquisar"
-                        onChangeText={setSearchQuery}
-                        value={searchQuery}
-                        style={{width: '70%', backgroundColor: '#fff', height: 50, borderRadius: 20}}
-                    />
-                
-                <Appbar.Action icon="dots-vertical" onPress={() => {}} color="#fff" />
-            </Appbar.Header>
+             <Cabecalho navigation={navigation}/>
         
         <ScrollView  >
            
@@ -44,7 +35,7 @@ export default function Home({ navigation }) {
             </View>
             
         </ScrollView>
-
+       <BarraBaixa tabAtiva={tabAtiva} style={styles.bottomNav}/>
 </SafeAreaView>
     );
 }

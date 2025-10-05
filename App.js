@@ -8,7 +8,7 @@ import Login from './src/view/Login';
 import { AuthProvider } from './src/components/Provider';
 import Home from './src/view/Home';
 import BarraBaixa from './src/components/BarraBaixa';
-
+import carrinhos from './src/view/carrinhos';
 const Stack = createNativeStackNavigator();
 export default function App() {
 
@@ -20,7 +20,8 @@ export default function App() {
           <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Splash" component={SplashRoute} />
             <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Main" component={BarraBaixa} />
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="carrinhos" component={carrinhos} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>
