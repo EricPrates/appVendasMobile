@@ -14,14 +14,11 @@ export default function Home({ navigation }) {
     const { nome, signOut } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
 
-    const handleLogout = () => {
-        signOut();
-        navigation.replace("Login");
-    }
+    
     return (
         <SafeAreaView style={styles.root}>
              <Appbar.Header dark={true} mode="center-aligned" style={{backgroundColor: '#000000ff'}} >
-                <Appbar.BackAction onPress={handleLogout} color="#fff" style={{opacity: 0.5, marginRight: 16}} />
+                <Appbar.BackAction color="#fff" style={{opacity: 0.5, marginRight: 16}} />
                     <Searchbar
                         placeholder="Pesquisar"
                         onChangeText={setSearchQuery}
@@ -47,9 +44,7 @@ export default function Home({ navigation }) {
             </View>
             
         </ScrollView>
-        <View style={styles.bottomNav}>
-            <BarraBaixa routeName="home" />
-        </View>
+
 </SafeAreaView>
     );
 }

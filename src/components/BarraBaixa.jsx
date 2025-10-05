@@ -4,6 +4,8 @@ import { useAuth } from "./Provider";
 import Home from "../view/Home";
 import Login from "../view/Login";
 import { useNavigation } from "@react-navigation/native";
+
+
 export default function BarraBaixa() {
     const [index, setIndex] = useState(0);
     const { nome } = useAuth();
@@ -16,13 +18,15 @@ export default function BarraBaixa() {
     
 
     const renderScene = BottomNavigation.SceneMap({
-    home: () => {const navigation = useNavigation(); return<Login navigation={navigation}/>},
-    favoritos: () => <Text>Favoritos</Text>,
-    carrinho: () => <Text>Carrinho</Text>,
-    notificacoes: () => <Text>Notificações</Text>, 
+        home: Home,
+        favoritos: () => <Text>Favoritos de {nome}</Text>,
+        carrinho: () => <Text>Carrinho de {nome}</Text>,
+        notificacoes: () => <Text>Notificações de {nome}</Text>,
     });
+    
     return (
         <BottomNavigation
+            
             style={{ backgroundColor: '#000000ff' }}
             navigationState={{ index, routes }}
             onIndexChange={setIndex}
