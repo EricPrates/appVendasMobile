@@ -6,23 +6,14 @@ import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
-export default function Home({ navigation }) {
+export default function Favoritos({ navigation }) {
 
-   
-    
-    const [tabAtiva, setTabAtiva] = useState('home');
+    const [tabAtiva, setTabAtiva] = useState('favoritos');
     
     return (
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 <CompCard source = 'foto1'/>
-                <CompCard source = 'foto2'/>
-                <CompCard source = 'foto3'/>
-                <CompCard source = 'foto4'/>
-                <CompCard source = 'foto5'/>
-                <CompCard source = 'foto6'/>
-                <CompCard source = 'foto7'/>
-                <CompCard source = 'foto8'/>
             </View>
         </ViewBase>
         

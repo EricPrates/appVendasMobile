@@ -1,21 +1,21 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet,Text } from "react-native";
 import BarraBaixa from "../components/BarraBaixa";
 import Cabecalho from "../components/Cabecalho";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { useAuth } from "../components/Provider";
 import { useState } from "react";
+import { Icon } from "react-native-paper";
+import ViewBase from "./ViewBase";
 
-export default function Carrinhos({  }) {
-    const { nome, signOut } = useAuth();
+export default function Carrinhos({ navigation }) {
+    
     const [tabAtiva, setTabAtiva] = useState('carrinho');
+    const { nome, signOut } = useAuth();
     return (
-        <SafeAreaView style={styles.root}>
-            <Cabecalho/>
-            <ScrollView  >
-            </ScrollView>
-            <BarraBaixa tabAtiva={tabAtiva} style={styles.bottomNav}/>
-        </SafeAreaView>
+        <ViewBase tabAtiva = {tabAtiva}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16, textAlign: 'center',borderWidth: 1, borderRadius: 8 }}><Icon  source="cart" size={30} /> Carrinho de {nome}</Text>
+        </ViewBase>
     );
 }
 const styles = StyleSheet.create({

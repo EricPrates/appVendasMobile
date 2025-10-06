@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { Icon, MD3Colors, Text } from "react-native-paper";
-import { useAuth } from "./Provider";
-import Home from "../view/Home";
-import Login from "../view/Login";
 import { useNavigation } from "@react-navigation/native";
 import { View, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
-import carrinhos from "../view/carrinhos";
+
 
 
 export default function BarraBaixa({tabAtiva}) {
@@ -20,7 +17,7 @@ export default function BarraBaixa({tabAtiva}) {
                           size={26} />
                   <Text style={{color: '#fff'}}>Home</Text>
               </TouchableOpacity>
-              <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('Home')}>
+              <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('favoritos')}>
                   <Icon source={tabAtiva === 'favoritos' ? 'heart' : 'heart-outline'}
                           color={tabAtiva === 'favoritos' ? MD3Colors.error50 : MD3Colors.neutral70}
                           size={26} />
@@ -32,7 +29,7 @@ export default function BarraBaixa({tabAtiva}) {
                           size={26} />
                   <Text style={{color: '#fff'}}>Carrinho</Text>
               </TouchableOpacity>
-              <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('Home')}>
+              <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('notificacoes')}>
                   <Icon source={tabAtiva === 'notificacoes' ? 'bell' : 'bell-outline'}
                           color={tabAtiva === 'notificacoes' ? MD3Colors.error50 : MD3Colors.neutral70}
                           size={26} />

@@ -7,8 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/view/Login';
 import { AuthProvider } from './src/components/Provider';
 import Home from './src/view/Home';
-import BarraBaixa from './src/components/BarraBaixa';
+import Notificacoes from './src/view/notificacoes';
 import carrinhos from './src/view/carrinhos';
+import Favoritos from './src/view/Favoritos';
 const Stack = createNativeStackNavigator();
 export default function App() {
 
@@ -22,6 +23,8 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="carrinhos" component={carrinhos} />
+            <Stack.Screen name="favoritos" component={Favoritos} />
+            <Stack.Screen name="notificacoes" component={Notificacoes} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>
