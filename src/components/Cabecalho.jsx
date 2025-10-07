@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
-import { Appbar, Searchbar } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useRef, useEffect } from 'react';
+import { Appbar,  Searchbar, Modal, Portal,  PaperProvider, MD3Colors } from 'react-native-paper';
 
-export default function Cabecalho({ navigation }) {
+import { View, StyleSheet, Text } from 'react-native';
+import { useAuth } from './Provider';
+import { useNavigation } from '@react-navigation/native';
+export default function Cabecalho({tabAtiva}) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [menuVisible, setMenuVisible] = useState(false);
+    const { nome, signOut } = useAuth();
+    const navigation = useNavigation();
+
+  const openMenu = () => {
+        setMenuVisible(false);
+        setTimeout(() => {
+    
+            setMenuVisible(true);
+        }, 10);
+    
+    };
+    const cloneMenu = () => {
+        setMenuVisible(false);
+    }
+   
 
     return (
+      
         <Appbar.Header dark={true} mode="center-aligned" style={{backgroundColor: '#000000ff'}} >
                 <Appbar.BackAction color="#fff" style={{opacity: 0.5, marginRight: 16}} />
                     <Searchbar
@@ -15,8 +33,14 @@ export default function Cabecalho({ navigation }) {
                         value={searchQuery}
                         style={{width: '70%', backgroundColor: '#fff', height: 50, borderRadius: 20}}
                     />
-                    <Appbar.Action icon="dots-vertical" onPress={() => {}} color="#fff" />
+                     <Appbar.Action icon={tabAtiva === "notificacoes" ? "bell" : "bell-outline"} color = {tabAtiva === "notificacoes" ? MD3Colors.error50 : MD3Colors.neutral70} onPress={() => navigation.navigate('notificacoes')}/>
+
         </Appbar.Header>
-                            
+        
+             
+      
+
+        
     );
+
 }

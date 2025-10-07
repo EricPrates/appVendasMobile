@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { useAuth } from "../components/Provider";
 import { useState } from "react";
-import { Icon } from "react-native-paper";
+import { Icon, PaperProvider } from "react-native-paper";
 import ViewBase from "./ViewBase";
 
 export default function Carrinhos({ navigation }) {
@@ -13,9 +13,11 @@ export default function Carrinhos({ navigation }) {
     const [tabAtiva, setTabAtiva] = useState('carrinho');
     const { nome, signOut } = useAuth();
     return (
+      
         <ViewBase tabAtiva = {tabAtiva}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16, textAlign: 'center',borderWidth: 1, borderRadius: 8 }}><Icon  source="cart" size={30} /> Carrinho de {nome}</Text>
         </ViewBase>
+        
     );
 }
 const styles = StyleSheet.create({

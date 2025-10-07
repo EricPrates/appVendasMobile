@@ -7,14 +7,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/view/Login';
 import { AuthProvider } from './src/components/Provider';
 import Home from './src/view/Home';
-import Notificacoes from './src/view/notificacoes';
+import Notificacoes from './src/view/Notificacoes.jsx';
 import carrinhos from './src/view/carrinhos';
 import Favoritos from './src/view/Favoritos';
+
+import MenuComponent from './src/components/Menu.jsx';
+
 const Stack = createNativeStackNavigator();
 export default function App() {
+  
 
   return (
-    
+  
     <SafeAreaView style={styles.container}>
       <AuthProvider>
       <NavigationContainer>
@@ -25,6 +29,7 @@ export default function App() {
             <Stack.Screen name="carrinhos" component={carrinhos} />
             <Stack.Screen name="favoritos" component={Favoritos} />
             <Stack.Screen name="notificacoes" component={Notificacoes} />
+            <Stack.Screen name="menu" component={MenuComponent} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

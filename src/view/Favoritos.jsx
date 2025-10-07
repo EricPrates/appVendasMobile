@@ -6,16 +6,19 @@ import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
+import { PaperProvider } from "react-native-paper";
 export default function Favoritos({ navigation }) {
 
     const [tabAtiva, setTabAtiva] = useState('favoritos');
     
     return (
+        <PaperProvider>
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 <CompCard source = 'foto1'/>
             </View>
         </ViewBase>
+        </PaperProvider>
         
     );
 }

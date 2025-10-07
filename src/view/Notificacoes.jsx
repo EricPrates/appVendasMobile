@@ -6,16 +6,20 @@ import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
+import { PaperProvider } from "react-native-paper";
+
 export default function Notificacoes({ navigation }) {
 
     const [tabAtiva, setTabAtiva] = useState('notificacoes');
     
     return (
+   
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 <CompCard source = 'foto1'/>
             </View>
         </ViewBase>
+        
         
     );
 }

@@ -12,7 +12,7 @@ export default function ViewBase({ navigation, children, showSearch= true, tabAt
     return (
         <SafeAreaView style={styles.root}>
 
-            <Cabecalho />
+            <Cabecalho tabAtiva={tabAtiva} />
 
         <ScrollView  >
            <View>{children}</View>

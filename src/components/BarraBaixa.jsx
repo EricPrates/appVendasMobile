@@ -3,11 +3,12 @@ import { Icon, MD3Colors, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { View, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
+import MenuComponent from "./Menu";
 
 
 
 export default function BarraBaixa({tabAtiva}) {
-   const navigation = useNavigation();
+    const navigation = useNavigation();
 
    return (
     <View style={style.container}>
@@ -29,12 +30,14 @@ export default function BarraBaixa({tabAtiva}) {
                           size={26} />
                   <Text style={{color: '#fff'}}>Carrinho</Text>
               </TouchableOpacity>
-              <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('notificacoes')}>
-                  <Icon source={tabAtiva === 'notificacoes' ? 'bell' : 'bell-outline'}
-                          color={tabAtiva === 'notificacoes' ? MD3Colors.error50 : MD3Colors.neutral70}
-                          size={26} />
-                  <Text style={{color: '#fff'}}>Notificações</Text>
+             <TouchableOpacity style = {style.btn} onPress={() => navigation.navigate('menu')}>
+                  <Icon source={tabAtiva === 'menu' ? 'dots-vertical' : 'dots-vertical'}
+                  color={tabAtiva === 'menu' ? MD3Colors.error50 : MD3Colors.neutral70} size={26} />
+                  <Text style={{color: '#fff'}}>Menu</Text>
               </TouchableOpacity>
+              
+               
+              
     </View>
         
    )

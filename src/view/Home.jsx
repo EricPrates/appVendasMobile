@@ -6,6 +6,7 @@ import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
+import { PaperProvider } from "react-native-paper";
 export default function Home({ navigation }) {
 
    
@@ -13,6 +14,7 @@ export default function Home({ navigation }) {
     const [tabAtiva, setTabAtiva] = useState('home');
     
     return (
+        <PaperProvider>
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 <CompCard source = 'foto1'/>
@@ -25,7 +27,7 @@ export default function Home({ navigation }) {
                 <CompCard source = 'foto8'/>
             </View>
         </ViewBase>
-        
+        </PaperProvider>
     );
 }
 const styles = StyleSheet.create({
@@ -41,8 +43,9 @@ const styles = StyleSheet.create({
       flexWrap: 'wrap',
       alignItems: 'center',
       padding: 16,
-      gap: 3
-      
+      gap: 3,
+      position: 'relative',
+      zIndex: -500,
     },
      bottomNav: {
         position: 'absolute',
