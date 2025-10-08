@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { TextInput } from 'react-native-paper';
 
-const EntradadeTexto = ({text}) => {
-  const [text, setText] = React.useState("");
+export default function EntradadeTexto ({onChangeText, tabAtiva}) {
+  const [text, setText] = React.useState(tabAtiva);
 
   return (
     <TextInput
       label="Email"
       value={text}
-      onChangeText={text => setText(text)}
+     
+      onChangeText={text=> onChangeText(text)}
     />
   );
 };
 
-export default EntradadeTexto;

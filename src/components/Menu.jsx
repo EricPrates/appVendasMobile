@@ -5,7 +5,7 @@ import { useAuth } from './Provider';
 import ViewBase from '../view/ViewBase';
 import Lista from './Lista';
 import { useNavigation } from '@react-navigation/native';
-
+import CadastrarProduto from '../view/CadastrarProduto';
 export default function MenuComponent({ }) {
 const { nome, signOut, logado } = useAuth();
 const [tabAtiva, setTabAtiva] = React.useState('menu');

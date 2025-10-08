@@ -19,7 +19,7 @@ export default function Splash({ onFinish }) {
             <ActivityIndicator animating={true} color={MD2Colors.red800} size={100} position="absolute" zIndex={1} />
             <Image
                 style={styles.avatar}
-                source={require('../view/img/fundoPrincipal.jpeg')}
+                source={require('../view/img/tenimg.png')}
                 resizeMode='cover'
             
             />
