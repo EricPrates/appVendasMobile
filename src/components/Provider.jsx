@@ -17,9 +17,14 @@ const AuthProvider = ({children}) =>{
         if (usuario == 'Eric' && senha == '123'){
             setLogado({nome: 'Eric', tipo: 'admin'})
             setNome('Eric')
+            
             return true
         }
-        
+        else if (usuario == 'Maria' && senha == '123'){
+                setLogado({nome: 'Maria', tipo: 'usuario'})
+                setNome('Maria')
+                return true
+            }
         setLogado(null)
         return false
       }

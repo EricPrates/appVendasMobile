@@ -12,6 +12,7 @@ import carrinhos from './src/view/carrinhos';
 import Favoritos from './src/view/Favoritos';
 
 import MenuComponent from './src/components/Menu.jsx';
+import CadastrarProduto from './src/view/CadastrarProduto.jsx';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
             <Stack.Screen name="favoritos" component={Favoritos} />
             <Stack.Screen name="notificacoes" component={Notificacoes} />
             <Stack.Screen name="menu" component={MenuComponent} />
+            <Stack.Screen name="CadastrarProduto" component={CadastrarProduto} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>
