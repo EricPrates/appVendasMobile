@@ -10,7 +10,7 @@ import Home from './src/view/Home';
 import Notificacoes from './src/view/Notificacoes.jsx';
 import carrinhos from './src/view/carrinhos';
 import Favoritos from './src/view/Favoritos';
-
+import CadastrarUsuario from './src/view/CadastrarUsuario.jsx';
 import MenuComponent from './src/components/Menu.jsx';
 import CadastrarProduto from './src/view/CadastrarProduto.jsx';
 
@@ -32,6 +32,7 @@ export default function App() {
             <Stack.Screen name="notificacoes" component={Notificacoes} />
             <Stack.Screen name="menu" component={MenuComponent} />
             <Stack.Screen name="CadastrarProduto" component={CadastrarProduto} />
+            <Stack.Screen name="CadastrarUsuario" component={CadastrarUsuario} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

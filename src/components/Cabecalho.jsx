@@ -10,18 +10,7 @@ export default function Cabecalho({tabAtiva}) {
     const { nome, signOut } = useAuth();
     const navigation = useNavigation();
 
-  const openMenu = () => {
-        setMenuVisible(false);
-        setTimeout(() => {
-    
-            setMenuVisible(true);
-        }, 10);
-    
-    };
-    const cloneMenu = () => {
-        setMenuVisible(false);
-    }
-   
+ 
 
     return (
       
