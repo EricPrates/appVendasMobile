@@ -15,7 +15,8 @@ export default function Cabecalho({tabAtiva}) {
     return (
       
         <Appbar.Header dark={true} mode="center-aligned" style={{backgroundColor: '#000000ff'}} >{
-            tabAtiva !== 'home' && tabAtiva !== 'carrinhos' && tabAtiva !== 'menu' && <Appbar.BackAction color="#fff" style={{opacity: 0.5, marginRight: 16}} />
+            tabAtiva !== 'home' && tabAtiva !== 'carrinhos' && tabAtiva !== 'menu' && 
+            <Appbar.BackAction onPress={() => navigation.goBack()} color="#fff" />
         }
                 
                     <Searchbar

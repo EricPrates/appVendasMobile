@@ -1,10 +1,11 @@
 export default class Produto {
-    constructor(id = 0, nome = "", descricao = "", preco = 0.0, quantidade = 0) {
+    constructor(id = 0, nome = "", descricao = "", preco = 0.0, quantidade = 0, imagem = "") {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.quantidade = quantidade;
+        this.imagem = imagem;
     }
 
     setId(id) {
@@ -41,5 +42,11 @@ export default class Produto {
     getQuantidade() {
         return this.quantidade;
     }
-
+    setImagem(imagem) {
+        this.imagem = imagem;
+    }
+    getImagem() {
+        return this.imagem;
+    }
+    
 }

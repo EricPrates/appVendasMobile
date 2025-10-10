@@ -7,7 +7,7 @@ import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
-export default function Favoritos({ navigation }) {
+export default function Favoritos({  }) {
 
     const [tabAtiva, setTabAtiva] = useState('favoritos');
     

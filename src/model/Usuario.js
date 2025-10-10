@@ -1,7 +1,7 @@
 
 
 export default class Usuario {
-    constructor(nome = '', login = '', senha = '', tipo = 'admin' | 'comum') {
+    constructor(nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null) {
         this.nome = nome;
         this.login = login;
         this.senha = senha;

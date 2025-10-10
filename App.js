@@ -13,7 +13,7 @@ import Favoritos from './src/view/Favoritos';
 import CadastrarUsuario from './src/view/CadastrarUsuario.jsx';
 import MenuComponent from './src/components/Menu.jsx';
 import CadastrarProduto from './src/view/CadastrarProduto.jsx';
-
+import DetalhesProduto from './src/view/DetalhesProduto.jsx';
 const Stack = createNativeStackNavigator();
 export default function App() {
   
@@ -33,6 +33,7 @@ export default function App() {
             <Stack.Screen name="menu" component={MenuComponent} />
             <Stack.Screen name="CadastrarProduto" component={CadastrarProduto} />
             <Stack.Screen name="CadastrarUsuario" component={CadastrarUsuario} />
+            <Stack.Screen name="DetalhesProduto" component={DetalhesProduto} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

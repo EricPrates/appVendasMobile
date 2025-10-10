@@ -10,7 +10,7 @@ const useAuth = ()=>{
 
 const AuthProvider = ({children}) =>{
 
-    const [logado, setLogado] = useState(null)
+    const [logado, setLogado] = useState(false)
     const [nome, setNome] = useState("Eric")
 
     const login = (usuario, senha)=>{
@@ -21,7 +21,7 @@ const AuthProvider = ({children}) =>{
             return true
         }
         else if (usuario == 'Maria' && senha == '123'){
-                setLogado({nome: 'Maria', tipo: 'usuario'})
+                setLogado({nome: 'Maria', tipo: 'comum'})
                 setNome('Maria')
                 return true
             }
@@ -30,7 +30,7 @@ const AuthProvider = ({children}) =>{
       }
 
     const signOut = () =>{
-        setLogado(null)
+        setLogado(false)
         setNome("")
     }
 

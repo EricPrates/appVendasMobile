@@ -5,7 +5,7 @@ import BarraBaixa from "../components/BarraBaixa";
 import Cabecalho from "../components/Cabecalho";
 import { AuthProvider, useAuth } from "../components/Provider";
 
-export default function ViewBase({ navigation, children, showSearch= true, tabAtiva}) {
+export default function ViewBase({  children, showSearch= true, tabAtiva}) {
  
     const [searchQuery, setSearchQuery] = useState('');
 
