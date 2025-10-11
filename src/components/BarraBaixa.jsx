@@ -98,11 +98,11 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: -6 },
         shadowOpacity: 0.1,
         shadowRadius: 12,
-        height: 70,
+        height: 60,
     },
     btn: {
-        width: (width - 32) / 4,
-        height: 62,
+        width: (width-50) / 4,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
@@ -111,10 +111,6 @@ const styles = StyleSheet.create({
     btnActive: {
         backgroundColor: '#ff6b35',
         transform: [{ scale: 1.05 }],
-        shadowColor: '#ff6b35',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
         elevation: 8,
     },
     iconContainer: {
@@ -129,7 +125,8 @@ const styles = StyleSheet.create({
         color: '#666',
         fontSize: 11,
         fontWeight: '600',
-        marginTop: 2,
+        marginTop: -2,
+        paddingBottom: 2,
     },
     btnTextActive: {
         color: '#fff',
