@@ -1,6 +1,9 @@
 export default class Produto {
-    constructor(cores = [], id = 0, tamanho = "", nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "") {
+    constructor(fornecedor = '', desconto, cores = [], avaliacao = 0, id = 0, tamanho = "", nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "") {
+        this.fornecedor = fornecedor;
+        this.desconto = desconto;
         this.cores = cores;
+        this.avaliacao = avaliacao;
         this.id = id;
         this.tamanho = tamanho;
         this.nome = nome;
@@ -9,6 +12,26 @@ export default class Produto {
         this.quantidade = quantidade;
         this.urlImagem = urlImagem;
     }
+    setFornecedor(fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+    getFornecedor() {
+        return this.fornecedor;
+    }
+    setAvaliacao(avaliacao) {
+        this.avaliacao = avaliacao;
+    }
+    setDesconto(desconto) {
+        this.desconto = desconto;
+    }
+    getDesconto() {
+        return this.desconto;
+    }
+
+    getAvaliacao() {
+        return this.avaliacao;
+    }
+
     setTamanho(tamanho) {
         this.tamanho = tamanho;
     }

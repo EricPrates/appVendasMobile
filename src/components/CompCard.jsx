@@ -26,12 +26,10 @@ export default function CompCard({ source }) {
                 
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>R$ 299,99</Text>
-                    <Text style={styles.oldPrice}>R$ 399,99</Text>
+                   
                 </View>
                 
-                <View style={styles.discountBadge}>
-                    <Text style={styles.discountText}>25% OFF</Text>
-                </View>
+                
                 
                
                 <View style={styles.ratingContainer}>
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: '#f0f0f0',
+        borderColor: '#ff4757',
         position: 'relative',
     },
     badge: {
@@ -119,23 +117,8 @@ const styles = StyleSheet.create({
         color: '#ff6b35',
         textAlign: 'center',
     },
-    oldPrice: {
-        fontSize: 12,
-        color: '#999',
-        textAlign: 'center',
-        textDecorationLine: 'line-through',
-        fontWeight: '500',
-    },
-    discountBadge: {
-        position: 'absolute',
-        top: -8,
-        right: 12,
-        backgroundColor: '#4ecdc4',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 8,
-        elevation: 2,
-    },
+   
+    
     discountText: {
         color: '#fff',
         fontSize: 10,
