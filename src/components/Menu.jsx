@@ -1,63 +1,289 @@
 import * as React from 'react';
-import { View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Button, Menu, Divider, PaperProvider, Provider, Modal } from 'react-native-paper';
 import { useAuth } from './Provider';
 import ViewBase from '../view/ViewBase';
 import Lista from './Lista';
 import { useNavigation } from '@react-navigation/native';
 import CadastrarProduto from '../view/CadastrarProduto';
-
 import { useState } from 'react';
 
-
 export default function MenuComponent({ }) {
-const { nome, signOut, logado } = useAuth();
-const [tabAtiva, setTabAtiva] = useState('menu');
-const navigation = useNavigation();
-const [modalVisible, setModalVisible] = useState(false);
+    const { nome, signOut, logado } = useAuth();
+    const [tabAtiva, setTabAtiva] = useState('menu');
+    const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false);
 
-  const abrirModal = () => setModalVisible(true);
-  const fecharModal = () => setModalVisible(false)
+    const abrirModal = () => setModalVisible(true);
+    const fecharModal = () => setModalVisible(false);
 
-
-
-return (
-
-       
-      <ViewBase tabAtiva={tabAtiva}>
-         <Text style={{textAlign: 'center', fontSize: 18, fontWeight: 'bold', color: 'white', backgroundColor: 'black', padding: 10, marginTop:1, borderBottomWidth: 3, elevation: 5 }}>Olá, {nome}</Text>
-          <View style={{padding: 10, gap: 10, marginTop: 10, flex: 1, alignItems: 'space-between'}}>
-             <Lista onPress={() => {}} style={{...styles.item, borderTopWidth: 1, borderColor: '#9c9696ff'}} icon='account' title="Perfil" description="Perfil" />
-             <Lista onPress={() => {}} style={styles.item} icon='package-variant-closed' title="Meus Pedidos" description="Ver meus pedidos" />
+    return (
+        <ViewBase tabAtiva={tabAtiva}>
+            {/* Header Personalizado */}
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Olá, {nome}! 👋</Text>
+                <Text style={styles.subHeaderText}>Bem-vindo à sua área</Text>
+            </View>
             
-             <Lista onPress={() => {}} style={styles.item} icon='account' title="First Item" description="Perfil" />
-             <Lista onPress={() => setModalVisible(true)} style={styles.item} icon='logout' title="Sair" description="Sair"  />
-              {logado.tipo === 'admin' && (
-                <>
-                  <Lista onPress={() => {navigation.navigate('CadastrarUsuario')}} style={styles.item} icon='account-plus' title="Cadastrar novo usuário" description="cadastro" />
-                  <Lista onPress={() => {navigation.navigate('CadastrarProduto')}} style={styles.item} icon='package-variant-closed-plus' title="Cadastrar produto" description="cadastro" />
-                </>
-              )}
-          </View>
-          <Modal  visible={modalVisible} onDismiss={fecharModal} contentContainerStyle={{backgroundColor: 'white', padding: 20, margin: 20, borderRadius: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>Tem certeza que deseja sair?</Text>
-            <Button onPress={() => {signOut(); fecharModal(); navigation.navigate('Login')}} style={{marginBottom: 10, borderWidth: 1, borderColor: '#f70808ff'}}>Sair</Button>
-            <Button onPress={fecharModal} style={{borderWidth: 1, borderColor: '#9c9696ff'}}>Cancelar</Button>
-          </Modal>
+            {/* Lista de Opções */}
+            <View style={styles.menuContainer}>
+                <Lista 
+                    onPress={() => {}} 
+                    style={styles.itemFirst} 
+                    icon='account' 
+                    title="Perfil" 
+                    description="Gerencie suas informações" 
+                />
+                <Lista 
+                    onPress={() => {}} 
+                    style={styles.item} 
+                    icon='package-variant-closed' 
+                    title="Meus Pedidos" 
+                    description="Acompanhe seus pedidos" 
+                />
+                <Lista 
+                    onPress={() => {}} 
+                    style={styles.item} 
+                    icon='heart' 
+                    title="Favoritos" 
+                    description="Seus produtos favoritos" 
+                />
+                <Lista 
+                    onPress={() => setModalVisible(true)} 
+                    style={styles.itemLast} 
+                    icon='logout' 
+                    title="Sair" 
+                    description="Encerrar sessão" 
+                />
+                
+                {/* Opções de Admin */}
+                {logado.tipo === 'admin' && (
+                    <View style={styles.adminSection}>
+                        <Text style={styles.adminTitle}>Administração</Text>
+                        <Lista 
+                            onPress={() => {navigation.navigate('CadastrarUsuario')}} 
+                            style={styles.adminItem} 
+                            icon='account-plus' 
+                            title="Cadastrar usuário" 
+                            description="Novo usuário" 
+                        />
+                        <Lista 
+                            onPress={() => {navigation.navigate('CadastrarProduto')}} 
+                            style={styles.adminItemLast} 
+                            icon='package-variant-closed-plus' 
+                            title="Cadastrar produto" 
+                            description="Novo produto" 
+                        />
+                    </View>
+                )}
+            </View>
+
+            {/* Modal de Confirmação */}
+            <Modal 
+                visible={modalVisible} 
+                onDismiss={fecharModal} 
+                contentContainerStyle={styles.modalContainer}
+            >
+                <View style={styles.modalIcon}>
+                    <Text style={styles.modalIconText}>👟</Text>
+                </View>
+                <Text style={styles.modalTitle}>Sair da conta?</Text>
+                <Text style={styles.modalText}>Tem certeza que deseja sair?</Text>
+                
+                <View style={styles.modalButtons}>
+                    <Button 
+                        mode="contained" 
+                        onPress={() => {signOut(); fecharModal(); navigation.navigate('Login')}} 
+                        style={styles.buttonSair}
+                        labelStyle={styles.buttonSairText}
+                    >
+                        Sair
+                    </Button>
+                    <Button 
+                        mode="outlined" 
+                        onPress={fecharModal} 
+                        style={styles.buttonCancelar}
+                        labelStyle={styles.buttonCancelarText}
+                    >
+                        Cancelar
+                    </Button>
+                </View>
+            </Modal>
         </ViewBase>
-        
-  );
-};
+    );
+}
+
 const styles = StyleSheet.create({
- 
-  item: {
-   
-    fontSize: 18,
-    backgroundColor: '#c0e1e2ff', 
-    borderRadius: 8,
-    borderBottomWidth: 1,
-    borderColor: '#9c9696ff',
-    padding: 10,
-    marginTop: 1,
-    elevation: 20,
-  }});
+    header: {
+        backgroundColor: '#ff6b35',
+        padding: 20,
+        paddingTop: 25,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+    },
+    headerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
+        textAlign: 'center',
+        marginBottom: 4,
+    },
+    subHeaderText: {
+        fontSize: 14,
+        color: 'rgba(255, 255, 255, 0.9)',
+        textAlign: 'center',
+        fontWeight: '500',
+    },
+    menuContainer: {
+        padding: 16,
+        gap: 8,
+        flex: 1,
+    },
+    itemFirst: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        borderBottomWidth: 1,
+        borderColor: '#e8e8e8',
+        padding: 16,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderLeftWidth: 4,
+        borderLeftColor: '#ff6b35',
+    },
+    item: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        borderBottomWidth: 1,
+        borderColor: '#e8e8e8',
+        padding: 16,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderLeftWidth: 4,
+        borderLeftColor: '#4ecdc4',
+    },
+    itemLast: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        borderBottomWidth: 1,
+        borderColor: '#e8e8e8',
+        padding: 16,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderLeftWidth: 4,
+        borderLeftColor: '#ff4757',
+        marginBottom: 20,
+    },
+    adminSection: {
+        marginTop: 8,
+        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+        borderRadius: 16,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 107, 53, 0.2)',
+    },
+    adminTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#ff6b35',
+        marginBottom: 12,
+        textAlign: 'center',
+    },
+    adminItem: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        borderBottomWidth: 1,
+        borderColor: '#e8e8e8',
+        padding: 14,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        borderLeftWidth: 4,
+        borderLeftColor: '#ff9f43',
+    },
+    adminItemLast: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        borderBottomWidth: 1,
+        borderColor: '#e8e8e8',
+        padding: 14,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        borderLeftWidth: 4,
+        borderLeftColor: '#ff9f43',
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 24,
+        margin: 20,
+        borderRadius: 24,
+        elevation: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+    },
+    modalIcon: {
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    modalIconText: {
+        fontSize: 48,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 8,
+        color: '#2c2c2c',
+    },
+    modalText: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 24,
+        color: '#666',
+    },
+    modalButtons: {
+        gap: 12,
+    },
+    buttonSair: {
+        backgroundColor: '#ff4757',
+        paddingVertical: 6,
+        borderRadius: 12,
+        elevation: 4,
+    },
+    buttonSairText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    buttonCancelar: {
+        borderColor: '#ff6b35',
+        borderWidth: 2,
+        paddingVertical: 6,
+        borderRadius: 12,
+    },
+    buttonCancelarText: {
+        color: '#ff6b35',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+});

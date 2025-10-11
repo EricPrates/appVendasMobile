@@ -14,7 +14,7 @@ export default function Home({ navigation }) {
     const [tabAtiva, setTabAtiva] = useState('home');
     
     return (
-        <PaperProvider>
+    
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
             <TouchableOpacity onPress={() => navigation.navigate('DetalhesProduto')}>
@@ -43,7 +43,7 @@ export default function Home({ navigation }) {
                 </TouchableOpacity>
             </View>
         </ViewBase>
-        </PaperProvider>
+    
     );
 }
 const styles = StyleSheet.create({
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
       padding: 16,
       gap: 3,
       position: 'relative',
-      zIndex: -500,
+    
     },
      bottomNav: {
         position: 'absolute',
