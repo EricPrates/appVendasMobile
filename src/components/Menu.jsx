@@ -19,13 +19,13 @@ export default function MenuComponent({ }) {
 
     return (
         <ViewBase tabAtiva={tabAtiva}>
-            {/* Header Personalizado */}
+       
             <View style={styles.header}>
                 <Text style={styles.headerText}>Olá, {nome}! 👋</Text>
                 <Text style={styles.subHeaderText}>Bem-vindo à sua área</Text>
             </View>
             
-            {/* Lista de Opções */}
+         
             <View style={styles.menuContainer}>
                 <Lista 
                     onPress={() => {}} 
@@ -56,7 +56,7 @@ export default function MenuComponent({ }) {
                     description="Encerrar sessão" 
                 />
                 
-                {/* Opções de Admin */}
+                </View>
                 {logado.tipo === 'admin' && (
                     <View style={styles.adminSection}>
                         <Text style={styles.adminTitle}>Administração</Text>
@@ -76,9 +76,9 @@ export default function MenuComponent({ }) {
                         />
                     </View>
                 )}
-            </View>
+            
 
-            {/* Modal de Confirmação */}
+          
             <Modal 
                 visible={modalVisible} 
                 onDismiss={fecharModal} 
@@ -140,9 +140,12 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     menuContainer: {
+      marginTop: 8,
+        backgroundColor: 'rgba(249, 107, 25, 0.1)',
+        borderRadius: 16,
         padding: 16,
-        gap: 8,
-        flex: 1,
+        borderWidth: 1,
+        borderColor: 'rgba(243, 103, 33, 0.5)',
     },
     itemFirst: {
         backgroundColor: '#fff',
@@ -189,11 +192,11 @@ const styles = StyleSheet.create({
     },
     adminSection: {
         marginTop: 8,
-        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+        backgroundColor: 'rgba(37, 178, 254, 0.1)',
         borderRadius: 16,
         padding: 16,
         borderWidth: 1,
-        borderColor: 'rgba(255, 107, 53, 0.2)',
+        borderColor: 'rgba(53, 198, 255, 0.2)',
     },
     adminTitle: {
         fontSize: 16,
