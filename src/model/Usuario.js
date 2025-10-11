@@ -1,11 +1,32 @@
 
 
 export default class Usuario {
-    constructor(nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null) {
+    constructor(endereco = '', email = '', telefone = '', nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null) {
+        this.endereco = endereco;
+        this.email = email;
+        this.telefone = telefone;
         this.nome = nome;
         this.login = login;
         this.senha = senha;
         this.tipo = tipo;
+    }
+    setEndereco(endereco = '') {
+        this.endereco = endereco;
+    }
+    getEndereco() {
+        return this.endereco;
+    }
+    setEmail(email = '') {
+        this.email = email;
+    }
+    getEmail() {
+        return this.email;
+    }
+    setTelefone(telefone = '') {
+        this.telefone = telefone;
+    }
+    getTelefone() {
+        return this.telefone;
     }
     setNome(nome = '') {
         this.nome = nome;
