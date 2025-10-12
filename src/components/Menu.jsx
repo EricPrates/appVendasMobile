@@ -35,7 +35,7 @@ export default function MenuComponent({ }) {
                     description="Gerencie suas informações" 
                 />
                 <Lista 
-                    onPress={() => {}} 
+                    onPress={() => {navigation.navigate('MeusPedidos'); setTabAtiva('meusPedidos')}} 
                     style={styles.item} 
                     icon='package-variant-closed' 
                     title="Meus Pedidos" 
@@ -73,6 +73,13 @@ export default function MenuComponent({ }) {
                             icon='package-variant-closed-plus' 
                             title="Cadastrar produto" 
                             description="Novo produto" 
+                        />
+                        <Lista 
+                            onPress={() => {navigation.navigate('EditarProduto')}} 
+                            style={styles.adminItemLast} 
+                            icon='tag-edit' 
+                            title="Editar produto" 
+                            description="Editar produto existente" 
                         />
                     </View>
                 )}
@@ -116,8 +123,8 @@ export default function MenuComponent({ }) {
 const styles = StyleSheet.create({
     header: {
         backgroundColor: '#ff6b35',
-        padding: 20,
-        paddingTop: 25,
+        padding: 16,
+        paddingTop: 20,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
         elevation: 8,

@@ -1,6 +1,8 @@
+import Produto from '../model/Produto'
+
 export default class Carrinho {
     constructor() {
-        this.produtos = [];
+        this.produtos;
     }
 
     adicionarProduto(produto) {

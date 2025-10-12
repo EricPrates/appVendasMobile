@@ -59,7 +59,7 @@ export default function CadastrarUsuario({ navigation }) {
                         <EntradadeTexto 
                             title="Tipo de Usuário" 
                             style={styles.input}
-                            placeholder="Ex: admin, cliente, vendedor"
+                            placeholder=""
                             onChangeText={text => console.log(text)}
                         />
 
@@ -67,7 +67,7 @@ export default function CadastrarUsuario({ navigation }) {
                             title="Telefone" 
                             style={styles.input}
                             placeholder="(11) 99999-9999"
-                            keyboardType="phone-pad"
+                            keyboardType=""
                             onChangeText={text => console.log(text)}
                         />
 

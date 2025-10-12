@@ -14,6 +14,8 @@ import CadastrarUsuario from './src/view/CadastrarUsuario.jsx';
 import MenuComponent from './src/components/Menu.jsx';
 import CadastrarProduto from './src/view/CadastrarProduto.jsx';
 import DetalhesProduto from './src/view/DetalhesProduto.jsx';
+import MeusPedidos from './src/view/MeusPedidos.jsx';
+import EditarProduto from './src/view/EditarProduto.jsx';
 const Stack = createNativeStackNavigator();
 export default function App() {
   
@@ -34,6 +36,8 @@ export default function App() {
             <Stack.Screen name="CadastrarProduto" component={CadastrarProduto} />
             <Stack.Screen name="CadastrarUsuario" component={CadastrarUsuario} />
             <Stack.Screen name="DetalhesProduto" component={DetalhesProduto} />
+            <Stack.Screen name="MeusPedidos" component={MeusPedidos} />
+            <Stack.Screen name="EditarProduto" component={EditarProduto} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

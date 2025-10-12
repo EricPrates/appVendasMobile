@@ -2,8 +2,8 @@ import * as React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
-export default function EntradadeTexto ({onChangeText, tabAtiva, title}) {
-  const [text, setText] = React.useState('');
+export default function EntradadeTexto ({onChangeText, placeholder, title, value, keyboardType}) {
+ 
 
   return (
     <><Text style = {styles.texto} title = {title}>
@@ -11,10 +11,13 @@ export default function EntradadeTexto ({onChangeText, tabAtiva, title}) {
     </Text>
     <TextInput
       label={title}
-      value={text}
+      value={value}
         title={title}
+      keyboardType={keyboardType}
         mode="outlined"
-      onChangeText={text=> onChangeText(text)}
+      onChangeText={onChangeText}
+      placeholder={placeholder}
+      
     />
     </>
 

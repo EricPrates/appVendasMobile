@@ -1,23 +1,71 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, Text } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
 import { useState } from "react";
 import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
-import { PaperProvider } from "react-native-paper";
+import { Card, Icon, PaperProvider, Title } from "react-native-paper";
 
 export default function Notificacoes({ navigation }) {
 
     const [tabAtiva, setTabAtiva] = useState('notificacoes');
     
     return (
-   
-        <ViewBase tabAtiva = {tabAtiva}>
-            <View style={styles.content}>
-                <CompCard source = 'foto1'/>
+
+        <ViewBase  tabAtiva={tabAtiva}>
+            <View style={styles.root}>
+            <View style = {{marginTop: 10}}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
             </View>
+             <View style={styles.root}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
+            </View>
+             <View style={styles.root}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
+            </View>
+             <View style={styles.root}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
+            </View>
+             <View style={styles.root}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
+            </View>
+             <View style={styles.root}>
+               <Card>
+                   <Card.Content>
+                        <Icon name="bell" />
+                        <Text>Notificação 1</Text>
+                   </Card.Content>
+               </Card>
+            </View>
+            </View>
+
         </ViewBase>
         
         
@@ -28,7 +76,7 @@ const styles = StyleSheet.create({
       flex: 1,
         backgroundColor: '#f6f6f6',
         display: 'flex',
-        
+        gap:20
     },
     content: {
     
@@ -36,7 +84,9 @@ const styles = StyleSheet.create({
       flexWrap: 'wrap',
       alignItems: 'center',
       padding: 16,
-      gap: 3
+      gap: 3,
+      width: 300,
+
       
     },
      bottomNav: {
