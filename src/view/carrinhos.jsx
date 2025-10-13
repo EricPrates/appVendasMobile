@@ -136,7 +136,7 @@ export default function Carrinhos({ navigation }) {
                                 mode="contained" 
                                 style={styles.checkoutButton}
                                 labelStyle={styles.checkoutButtonText}
-                                onPress={() => navigation.navigate('Checkout')}
+                               
                             >
                                 Finalizar Compra
                             </Button>
