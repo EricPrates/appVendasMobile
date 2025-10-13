@@ -1,117 +1,147 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, FlatList, TextInput } from "react-native";
 import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
-import { Button, Icon } from "react-native-paper";
-import { useState } from "react";
+import { Button, Icon, Card } from "react-native-paper";
+import { useState, useEffect } from "react";
 import Produto from '../model/Produto'
 
 export default function EditarProduto({ navigation }) {
-
+    const [produtos, setProdutos] = useState([]);
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [busca, setBusca] = useState('');
-    const [valorBusca, setValorBusca] = useState('');
-    const [produto, setProduto] = useState('');
+
+
+    useEffect(() => {
+        const listaProdutos = [
+                new Produto(1, "Nike Air Max"),
+                new Produto(2, "Adidas Ultraboost"),
+                new Produto(3, "Puma Running Shoes"),
+                new Produto(4, "Reebok Classic"),
+            
+        ];
+        setProdutos(listaProdutos);
+    }, []);
+
+
+    const produtosFiltrados = produtos.filter(prod =>
+        prod.nome.toLowerCase().includes(busca.toLowerCase()) ||
+        prod.id.toString().includes(busca)
+    );
 
     return (
         <ViewBase tabAtiva="editarProduto">
-
             <View style={styles.header}>
                 <View style={styles.titleContainer}>
-                    <Icon source="package-variant-closed-plus" size={32} color="#fff" />
-                    <Text style={styles.title}>Editar Produto</Text>
+                    <Icon source="pencil" size={32} color="#fff" />
+                    <Text style={styles.title}>Editar Produtos</Text>
                 </View>
-                <Text style={styles.subtitle}>Edite as informações do produto</Text>
+                <Text style={styles.subtitle}>Selecione um produto para editar</Text>
             </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
+
+                  {!produtoSelecionado && (
                     <View style={styles.formCard}>
-                        <Text style={styles.formTitle}>Escolha como Buscar</Text>
-                        
-                
-
-                        <View style={styles.buttonContainer}>
-                        
-                            <Button 
-                                mode="contained" 
-                                style={styles.submitButton}
-                                labelStyle={styles.submitButtonText}
-                                onPress={() => setBusca('Nome')}
-                                icon="check"
-                            >
-                                Por Nome
-                            </Button>
-                            <Button 
-                                mode="contained" 
-                                style={styles.submitButton}
-                                labelStyle={styles.submitButtonText}
-                                onPress={() => setBusca('Id')}
-                                icon="check"
-                            >
-                                Por Id
-                            </Button>
-                           
-                            
-                        </View>
-                         {
-                                busca && (
-                                        <View>
-                                            <EntradadeTexto 
-                                                title={busca} 
-                                                style={styles.input}
-                                                value={valorBusca}
-                                                placeholder={`Digite o ${busca}`}
-                                                keyboardType={busca === 'Id' ? 'numeric' : 'default'}
-                                                onChangeText={(e) => setValorBusca(e)}
-                                            />
-                                            <View style={styles.buttonContainer}>
-                                                <Button style={styles.submitButton}
-                                                    labelStyle={styles.submitButtonText}
-                                                    onPress={() => setProduto(prod)}>
-                                                    
-                                                <Text>Buscar</Text>
-                                            </Button>
-                                            </View>
-                                        </View>
-                                        )
-
-                                    }
-                                    
+                        <Text style={styles.formTitle}>Buscar Produto</Text>
+                        <EntradadeTexto
+                            title="Buscar por nome ou ID"
+                            style={styles.input}
+                            value={busca}
+                            placeholder="Digite nome ou ID..."
+                            onChangeText={setBusca}
+                            keyboardType="default"
+                        />
                     </View>
-                    
+                   )}  
+                    {!produtoSelecionado ? (
+                        <View style={styles.formCard}>
+                            <Text style={styles.formTitle}>
+                                Produtos ({produtosFiltrados.length})
+                            </Text>
+                            
+                            {produtosFiltrados.length === 0 ? (
+                                <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
+                            ) : (
+                                produtosFiltrados.map(produto => (
+                                    <Card 
+                                        key={produto.id} 
+                                        style={styles.produtoCard}
+                                        onPress={() => setProdutoSelecionado(produto)}
+                                    >
+                                        <Card.Content>
+                                            <Text style={styles.produtoNome}>{produto.nome}</Text>
+                                            <Text style={styles.produtoId}>ID: {produto.id}</Text>
+                                            <Text style={styles.produtoPreco}>R$ {produto.preco}</Text>
+                                        </Card.Content>
+                                        <Card.Actions>
+                                            <Button 
+                                                onPress={() => setProdutoSelecionado(produto)}
+                                                icon="pencil"
+                                            >
+                                                Editar
+                                            </Button>
+                                        </Card.Actions>
+                                    </Card>
+                                ))
+                            )}
+                        </View>
+                    ) : (
+                        
+                        <View style={styles.formCard}>
+                            <View style={styles.headerEdicao}>
+                                <Text style={styles.formTitle}>
+                                    Editando: {produtoSelecionado.nome}
+                                </Text>
+                                <Button 
+                                    icon="arrow-left"
+                                    onPress={() => setProdutoSelecionado(null)}
+                                    mode="text"
+                                    
+                                >
+                                    Voltar
+                                </Button>
+                            </View>
+
+                            <EntradadeTexto
+                                title="Nome"
+                                style={styles.input}
+                                value={produtoSelecionado.nome}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, nome: text})}
+                            />
+                            
+                          
+
+                            <View style={styles.buttonContainer}>
+                                <Button 
+                                    mode="contained"
+                                    style={styles.cancelButton}
+                                    onPress={() => setProdutoSelecionado(null)}
+                                    icon="close"
+                                >
+                                    Cancelar
+                                </Button>
+                                <Button 
+                                    mode="contained"
+                                    style={styles.submitButton}
+                                    onPress={() => {
+                                      
+                                        console.log('Salvando:', produtoSelecionado);
+                                        setProdutoSelecionado(null);
+                                    }}
+                                    icon="content-save"
+                                >
+                                    Salvar
+                                </Button>
+                            </View>
+                        </View>
+                    )}
                 </View>
-                {produto && (
-                                        <View style={styles.formCard}>
-                                            <EntradadeTexto
-                                                title="Nome"
-                                                style={styles.input}
-                                                value={produto.nome}
-                                           
-                                                placeholder={produto.nome}
-                                                onChangeText={(e) => setProduto({ ...produto, nome: e })}
-                                            />
-                                            <EntradadeTexto
-                                                title="Descrição"
-                                                style={styles.input}
-                                                value={produto.descricao}
-                                                onChangeText={(e) => setProduto({ ...produto, descricao: e })}
-                                            />
-                                            <EntradadeTexto
-                                                title="Preço"
-                                                style={styles.input}
-                                                value={produto.preco}
-                                                keyboardType="numeric"
-                                                onChangeText={(e) => setProduto({ ...produto, preco: e })}
-                                            />
-                                        </View>
-                                    )}
             </ScrollView>
         </ViewBase>
     );
 }
-
-const prod  = new Produto( 1, "Nike Air Max 270", "Tênis Nike Air Max 270 com design moderno e conforto excepcional.", 599.99, "", "Corrida", [38, 39, 40, 41, 42], ["Preto", "Branco", "Azul"]);
-
 const styles = StyleSheet.create({
     header: {
         backgroundColor: '#357cffff',
@@ -137,6 +167,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         marginLeft: 12,
     },
+    produtoCard: {
+        marginBottom: 12,
+        borderRadius: 12,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+    },
     subtitle: {
         fontSize: 16,
         color: 'rgba(255, 255, 255, 0.9)',
@@ -150,8 +187,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+
     },
     formCard: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 24,
         backgroundColor: '#fff',
         borderRadius: 20,
         padding: 24,
@@ -205,15 +246,16 @@ const styles = StyleSheet.create({
     },
     cancelButton: {
         flex: 1,
-        backgroundColor: '#666',
+        backgroundColor: '#f60808ff',
         paddingVertical: 8,
         borderRadius: 12,
         elevation: 4,
+        
     },
     cancelButtonText: {
-        color: '#fff',
         fontWeight: 'bold',
         fontSize: 14,
+        color: '#fff',
     },
     submitButton: {
         flex: 2,

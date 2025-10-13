@@ -1,16 +1,11 @@
 export default class Produto {
-    constructor(fornecedor = '', desconto, cores = [], avaliacao = 0, id = 0, tamanho = "", nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "") {
-        this.fornecedor = fornecedor;
-        this.desconto = desconto;
-        this.cores = cores;
-        this.avaliacao = avaliacao;
+    constructor(id, nome = "") {
+       
+       
         this.id = id;
-        this.tamanho = tamanho;
+        
         this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.urlImagem = urlImagem;
+      
     }
     setFornecedor(fornecedor) {
         this.fornecedor = fornecedor;
