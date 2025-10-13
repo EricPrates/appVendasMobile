@@ -28,7 +28,7 @@ export default function MenuComponent({ }) {
          
             <View style={styles.menuContainer}>
                 <Lista 
-                    onPress={() => {}} 
+                    onPress={() => {navigation.navigate('Perfil')}} 
                     style={styles.itemFirst} 
                     icon='account' 
                     title="Perfil" 

@@ -20,7 +20,7 @@ const LoginController = () =>{
             setErrorMessage('Login e senha são obrigatórios.');
             return;
         }
-        // Aqui você pode adicionar a lógica de autenticação, como chamar uma API
+
         console.log('Usuário autenticado:', usuario);
         setErrorMessage('');
     };

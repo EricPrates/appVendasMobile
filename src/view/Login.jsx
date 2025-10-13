@@ -11,18 +11,24 @@ export default function Login({navigation}) {
         usuario: 'Eric',
         senha: '123'
     });
+    const [errorMessage, setErrorMessage] = useState('');
+    const [erro, setErro] = useState(false);
 
     const handleLogin = () =>{
         if (login(campos.usuario, campos.senha)){
              console.log("Login efetuado com sucesso");
             navigation.replace("Home")
         }
+        else{
+            setErro(true);
+            setErrorMessage('Usuário ou senha inválidos.');
+        }
     }
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="auto" />
             <KeyboardAvoidingView style={{flex: 1}}>
-                <Pressable onPress={()=>{Keyboard.dismiss()}}>
+                <Pressable onPress={()=>{Keyboard.dismiss();  }}>
                
                     <View style={styles.header}>
                         <Icon source="shoe-sneaker" size={40} color="#fff" />
@@ -49,6 +55,7 @@ export default function Login({navigation}) {
                             <Text style={styles.label}>Senha</Text>
                             <TextInput 
                                 right={<TextInput.Icon 
+                                    
                                     icon="eye"
                                     size={25}
                                     color="#357cff"
@@ -59,6 +66,7 @@ export default function Login({navigation}) {
                                 secureTextEntry
                                 onChangeText={text => setCampos({...campos, senha: text})}
                             />
+                            {erro && <Text style={{color: MD3Colors.error50, marginBottom: 10}}>{errorMessage}</Text>}
                         </Card.Content>
                         <Card.Actions style={styles.cardActions}>
                             <Button 

@@ -1,12 +1,19 @@
 import Produto from '../model/Produto'
 
 export default class Carrinho {
-    constructor() {
-        this.produtos;
+    constructor(user = null) {
+        this.produtos = [];
+        this.user = user;
     }
 
     adicionarProduto(produto) {
         this.produtos.push(produto);
+    }
+    setUser(user) {
+        this.user = user;
+    }   
+    getUser() {
+        return this.user;
     }
 
     removerProduto(id) {
