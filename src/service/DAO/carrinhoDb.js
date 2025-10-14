@@ -43,7 +43,7 @@ export async function addProdutoCarrinho(produto, quantidade, usuarioId = "defau
     const itemExistenteIndex = carrinho.findIndex(p => p.id === produto.id);
     if (itemExistenteIndex !== -1) {
         carrinho[itemExistenteIndex].quantidade += quantidade;
-        await saveCarrinho(carrinho);
+        await saveCarrinho(carrinho, usuarioId);
         return { success: true, message: "Quantidade do produto atualizada no carrinho." };
     }
     else{
