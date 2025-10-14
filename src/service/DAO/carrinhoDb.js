@@ -1,4 +1,4 @@
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 import { getJSON, setJSON } from "../storage";
 
 import { STORAGE_KEYS } from "../storegeKeys";
