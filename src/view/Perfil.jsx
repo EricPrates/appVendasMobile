@@ -13,7 +13,7 @@ export default function Perfil() {
         <ViewBase tabAtiva="perfil">
              <View style={styles.header}>
                 <View style={styles.titleContainer}>
-                    <Icon source="account" size={32} color="#fff" />
+                     <Icon source="account-circle" size={100} color="#f9f9faff" />
                     <Text style={styles.title}>Perfil</Text>
                 </View>
                 <Text style={styles.subtitle}>Gerencie suas informações pessoais</Text>
@@ -23,7 +23,7 @@ export default function Perfil() {
                     <View style={styles.formCard}>
                         <Text style={styles.formTitle}>Informações do Usuário</Text>
                          <View style={{display: 'flex', alignItems: 'center', marginBottom: 20}}>
-                            <Icon source="account-circle" size={100} color="#357cff" />
+                           
                          </View>
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>Nome:</Text>
@@ -36,6 +36,10 @@ export default function Perfil() {
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>Tipo:</Text>
                             <Text style={styles.formValue}>{tipo}</Text>
+                        </View>
+                        <View style={{marginBottom: 12}}>
+                            <Text style={styles.formLabel}>Usuário:</Text>
+                            <Text style={styles.formValue}>{usuario}</Text>
                         </View>
                         <View style={styles.buttonContainer}>
                            
@@ -69,13 +73,13 @@ export default function Perfil() {
 const styles = StyleSheet.create({
       header: {
         backgroundColor: '#ff6b35',
-        padding: 20,
+        padding: 18,
         paddingTop: 25,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
         elevation: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
     },
@@ -122,31 +126,22 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2c2c2c',
         textAlign: 'center',
-        marginBottom: 24,
+        marginBottom: 18,
         borderBottomWidth: 2,
         borderBottomColor: '#ff6b35',
         paddingBottom: 12,
     },
-    input: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: '#e8e8e8',
-        marginBottom: 16,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+    formLabel: {
+        fontSize: 16,
+        fontWeight: '600',
     },
     textArea: {
         minHeight: 80,
         textAlignVertical: 'top',
     },
-    rowInputs: {
-        flexDirection: 'row',
-        gap: 12,
-        marginBottom: 16,
+    formValue: {
+        fontSize: 16,
+        color: '#555',
     },
     halfInput: {
         flex: 1,

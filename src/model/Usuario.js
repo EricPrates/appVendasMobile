@@ -1,9 +1,9 @@
 
 
 export default class Usuario {
-    constructor(produtosFavoritos = [], endereco = '', email = '', telefone = '',
+    constructor( endereco = '', email = '', telefone = '',
          nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null) {
-        this.produtosFavoritos = produtosFavoritos;
+        this.produtosFavoritos  = [];
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
@@ -15,7 +15,7 @@ export default class Usuario {
     setEndereco(endereco = '') {
         this.endereco = endereco;
     }
-
+    
     addProdutoFavorito(produto) {
         this.produtosFavoritos.push(produto);
     }

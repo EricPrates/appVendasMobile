@@ -1,12 +1,19 @@
 export default class Produto {
-    constructor(id, nome = "") {
-       
-       
+    constructor(id, nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "", cores = [], tamanho = "", avaliacao = 0, desconto = 0 ) {
+        this.fornecedor = null;      
         this.id = id;
-        
         this.nome = nome;
-      
+        this.descricao = descricao;
+        this.preco = preco;
+        this.quantidade = quantidade;
+        this.urlImagem = urlImagem;
+        this.cores = cores;
+        this.tamanho = tamanho;
+        this.avaliacao = avaliacao;
+        this.desconto = desconto;
     }
+      
+    
     setFornecedor(fornecedor) {
         this.fornecedor = fornecedor;
     }
@@ -33,7 +40,7 @@ export default class Produto {
     getTamanho() {
         return this.tamanho;
     }
-    setCores(cor) {
+    addCores(cor) {
         this.cores.push(cor);
     }
     
@@ -77,5 +84,7 @@ export default class Produto {
     getImagem() {
         return this.urlImagem;
     }
-
+    getCores() {
+        return this.cores;
+    }
 }
