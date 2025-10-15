@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import Usuario from "../model/Usuario";
+import { UsuarioController } from "./controller/Usuario.controller";
 
 
 const AuthContext = createContext(null)
@@ -9,25 +11,39 @@ const useAuth = ()=>{
 }
 
 const AuthProvider = ({children}) =>{
+    const control = UsuarioController()
 
+    const PrincipalUser = new Usuario('Rua A', 'eric@gmail.com', '32222222',
+     'Eric', 'Eric', '123', 'admin');
+
+    const {usuarios, setusuarios} = useState([])
+    const [loading, setLoading] = useState(true)
     const [logado, setLogado] = useState(false)
     const [nome, setNome] = useState("Eric")
 
-    const login = (usuario, senha)=>{
-        if (usuario == 'Eric' && senha == '123'){
-            setLogado({nome: 'Eric', tipo: 'admin', email: 'eric@example.com', usuario: 'Eric'})
-            setNome('Eric')
-            
-            return true
-        }
-        else if (usuario == 'Maria' && senha == '123'){
-                setLogado({nome: 'Maria', tipo: 'comum'})
-                setNome('Maria')
-                return true
+    const login = async (usuario, senha)=>{
+        try{
+        const res = await control.loginUsuario(usuario, senha)
+        if (res.success){
+            setLogado(res.data)
+            setNome(res.data.nome)
+            return {
+                success: true,
+                data: res.data
             }
-        setLogado(null)
-        return false
-      }
+        }
+        else{
+            setLogado(false)
+            return {
+                success: false,
+                errors: res.errors
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        return false;
+    }
+}
 
     const signOut = () =>{
         setLogado(false)

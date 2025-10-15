@@ -11,7 +11,7 @@ export async function getUsuarioLogado() {
 export async function setUsuarioLogado(usuario) {
     await setJSON(USUARIO_LOGADO_KEY, usuario);
 }
-export async function logout() {
+export async function logoutUsuario() {
     await setJSON(USUARIO_LOGADO_KEY, null);
 }
 
@@ -59,7 +59,7 @@ export async function updateUsuario(usuarioAtualizado, id) {
     const usuarios = await getUsuarios();
     const usuario = usuarios.find(u => u.id === id);
     if (!usuario) {
-        return { success: false, errors: ["Usuário não encontrado."] };
+        return { success: false, errors: ["Login ou senha não encontrados."] };
     }
     const errors = validaUsuario(usuarioAtualizado);
     if (errors.length > 0) {
@@ -118,9 +118,9 @@ export async function deleteUsuario(id) {
     return { success: true };
 }
 
-export async function Logar(login, senha) {
+export async function loginUsuario(login, senha) {
     if (!login || login.trim() === '' || !senha || senha.trim() === '') {
-        return { success: false, errors: ["Login e senha são obrigatórios."] };
+        return { success: false, errors: ["Login ou senha são obrigatórios."] };
     }
     const usuarios = await getUsuarios();
     const usuario = usuarios.find(u => u.login === login && u.senha === senha);

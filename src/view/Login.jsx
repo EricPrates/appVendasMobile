@@ -1,27 +1,37 @@
 import { View, StyleSheet, StatusBar, KeyboardAvoidingView, Pressable, Keyboard, BackHandler} from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { Avatar, Button, Card, Text, TextInput } from 'react-native-paper';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { UsuarioController } from "../components/controller/Usuario.controller";
 import { useAuth } from "../components/Provider";
 import { Icon, MD3Colors } from 'react-native-paper';
 
 export default function Login({navigation}) {
+    const control = UsuarioController()
     const {login} = useAuth()
-    const [campos, setCampos] = useState({
-        usuario: 'Eric',
-        senha: '123'
-    });
+    const [usuario, setUsuario] = useState({});
+    const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [erro, setErro] = useState(false);
+    const [vizualizarSenha, setVisualizarSenha] = useState(false);
 
-    const handleLogin = () =>{
-        if (login(campos.usuario, campos.senha)){
-             console.log("Login efetuado com sucesso");
+    
+   
+    const handleLogin = async () =>{
+
+        setLoading(true)
+        setErro(false);
+    
+        const res = await login(usuario.usuario, usuario.senha);
+        if (res.success){
+            setLoading(false)
             navigation.replace("Home")
+
         }
         else{
             setErro(true);
-            setErrorMessage('Usuário ou senha inválidos.');
+            setLoading(false)
+            setErrorMessage(res.errors);
         }
     }
     return (
@@ -47,24 +57,24 @@ export default function Login({navigation}) {
                                     size={25}
                                     color="#357cff"
                                 />}
-                                value={campos.usuario}
-                                style={styles.input}
-                                onChangeText={text => setCampos({...campos, usuario: text})}
+                                value={usuario.usuario}
+                                style={[styles.input, erro && { borderColor: MD3Colors.error50 }]}
+                                onChangeText={text => setUsuario({...usuario        , usuario: text})}
                             />
                             
                             <Text style={styles.label}>Senha</Text>
-                            <TextInput 
+                            <TextInput
+                                placeholder="Digite sua senha"
                                 right={<TextInput.Icon 
-                                    
-                                    icon="eye"
+                                    onPress={() => setVisualizarSenha(!vizualizarSenha)}
+                                    icon={vizualizarSenha ? "eye-off" : "eye"}
                                     size={25}
                                     color="#357cff"
                                 />}
-                                placeholder="Digite sua senha"
-                                value={campos.senha}
-                                style={styles.input}
-                                secureTextEntry
-                                onChangeText={text => setCampos({...campos, senha: text})}
+                                value={usuario.senha}
+                                style={[styles.input, erro && { borderColor: MD3Colors.error50 }]}
+                                secureTextEntry={vizualizarSenha}
+                                onChangeText={text => setUsuario({...usuario, senha: text})}
                             />
                             {erro && <Text style={{color: MD3Colors.error50, marginBottom: 10}}>{errorMessage}</Text>}
                         </Card.Content>

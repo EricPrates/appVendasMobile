@@ -5,8 +5,15 @@ import { StyleSheet, View, Text} from 'react-native';
 import { Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
-
+import { UsuarioController } from '../components/controller/Usuario.controller';
+import {useAuth} from '../components/Provider';
 export default function Splash({ onFinish }) {
+    
+    const control = UsuarioController()
+    const {logado, nome, login, carregarUsuarios} = useAuth();
+
+   
+
     useEffect(()=>{
         const id = setTimeout(() => {
            onFinish() 
@@ -15,7 +22,11 @@ export default function Splash({ onFinish }) {
     },[onFinish])
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>{
+            
+            
+        }
+          
           
             <View style={styles.backgroundOverlay} />
             
