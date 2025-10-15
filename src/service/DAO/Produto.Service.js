@@ -188,10 +188,10 @@ export async function getProdutosByAvaliacao(min, max) {
     const produtosFiltrados = produtos.filter(p => p.avaliacao >= min && p.avaliacao <= max);
     return { success: true, data: produtosFiltrados };
 }
-export async function getProdutosByDesconto() {
+export async function getProdutosByDesconto(desconto) {
     const produtos = await getProdutos();
-    
-   const produtosFiltrados = produtos.filter(p => p.desconto? p.desconto : false);
+
+   const produtosFiltrados = produtos.filter(p => p.desconto >= desconto);
    if(produtosFiltrados.length === 0) {
         return {success: false, errors: ["Nenhum produto com desconto encontrado."]};
    }

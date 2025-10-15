@@ -3,8 +3,22 @@ import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
 import { Button, Icon } from "react-native-paper";
+import { useAuth } from "../components/Provider";
 
 export default function CadastrarProduto({ navigation }) {
+
+    const control = ProdutoController()
+
+    const [produto, setProduto] = useState({
+        nome: '',
+        descricao: '',
+        preco: '',
+        quantidade: '',
+        categoria: '',
+        tamanhos: '',
+        cores: '',
+        imagemUrl: ''
+    });
     return (
         <ViewBase tabAtiva="cadastrarProduto">
            

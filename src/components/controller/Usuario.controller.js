@@ -7,7 +7,7 @@ export const UsuarioController = () => {
             return await UserService.loginUsuario(login, senha);
             
         } catch (error) {
-            console.error("Erro inesperado", error);
+            
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -16,7 +16,7 @@ export const UsuarioController = () => {
         try{
             return await UserService.logoutUsuario();
         } catch (error) {
-            console.error("Erro inesperado", error);
+            
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -24,7 +24,7 @@ export const UsuarioController = () => {
         try{
             return await UserService.createUsuario(novoUsuario);
         } catch (error) {
-            console.error("Erro inesperado", error);
+           
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -32,7 +32,7 @@ export const UsuarioController = () => {
         try{
             return await UserService.updateUsuario(usuarioAtualizado, id);
         } catch (error) {
-            console.error("Erro inesperado", error);
+       
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -40,7 +40,6 @@ export const UsuarioController = () => {
         try{
             return await UserService.deleteUsuario(id);
         } catch (error) {
-            console.error("Erro inesperado", error);
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -49,7 +48,6 @@ export const UsuarioController = () => {
             const usuarios = await UserService.getUsuarios();
             return { success: true, data: usuarios };
         } catch (error) {
-            console.error("Erro inesperado", error);
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -58,7 +56,6 @@ export const UsuarioController = () => {
             return await UserService.getUsuarioById(id);
             
         } catch (error) {
-            console.error("Erro inesperado", error);
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -66,7 +63,6 @@ export const UsuarioController = () => {
         try{
             return await UserService.estaLogado();
         } catch (error) {
-            console.error("Erro inesperado", error);
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
@@ -76,7 +72,6 @@ export const UsuarioController = () => {
             const usuario = await UserService.getUsuarioLogado();
             return { success: true, data: usuario };
         } catch (error) {
-            console.error("Erro inesperado", error);
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
