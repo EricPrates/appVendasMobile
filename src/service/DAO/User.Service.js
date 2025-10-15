@@ -2,18 +2,31 @@ import { getJSON, setJSON } from "../storage";
 import { STORAGE_KEYS } from "../storegeKeys";
 
 const USUARIO_KEY = STORAGE_KEYS.USUARIO;
+const USUARIO_LOGADO_KEY = STORAGE_KEYS.USUARIO_LOGADO;
 
-export async function getUsuario() {
-    const usuario = await getJSON(USUARIO_KEY, null);
-    return usuario;
+export async function getUsuarioLogado() {
+    const usuarioLogado = await getJSON(USUARIO_LOGADO_KEY, null);
+    return  usuarioLogado;
+}
+export async function setUsuarioLogado(usuario) {
+    await setJSON(USUARIO_LOGADO_KEY, usuario);
+}
+export async function logout() {
+    await setJSON(USUARIO_LOGADO_KEY, null);
 }
 
-export async function setUsuario(usuario) {
-    await setJSON(USUARIO_KEY, usuario);
+export async function getUsuarios() {
+    const usuarios = await getJSON(USUARIO_KEY, []);
+    return usuarios;
 }
-export async function clearUsuario() {
-    await setJSON(USUARIO_KEY, null);
+
+export async function setUsuarios(usuarios) {
+    await setJSON(USUARIO_KEY, usuarios);
 }
+export async function clearUsuarios() {
+    await setJSON(USUARIO_KEY, null)
+}
+
 function validaUsuario(updatedFields) {
     const { endereco, email, telefone, nome, login, senha, tipo } = updatedFields;
     const errors = [];
@@ -40,23 +53,30 @@ function validaUsuario(updatedFields) {
     }
     return errors;
 }
-export async function isLoggedIn() {
-    const usuario = await getUsuario();
-    return usuario !== null;
-}
+
 
 export async function updateUsuario(usuarioAtualizado, id) {
-    const usuarios = await getUsuario();
+    const usuarios = await getUsuarios();
     const usuario = usuarios.find(u => u.id === id);
     if (!usuario) {
-        return { success: false, errors: "Usuário não encontrado." };
+        return { success: false, errors: ["Usuário não encontrado."] };
     }
     const errors = validaUsuario(usuarioAtualizado);
     if (errors.length > 0) {
         return { success: false, errors };
     }
+    const emailExiste = usuarios.some(u => u.id !== id && u.email === usuarioAtualizado.email);
+    const loginExiste = usuarios.some(u => u.id !== id && u.login === usuarioAtualizado.login);
+
+    if (emailExiste) {
+        return { success: false, errors: ["Email já está em uso."] };
+    }
+    if (loginExiste) {
+        return { success: false, errors: ["Login já está em uso."] };
+    }
     const updatedUsuario = { ...usuario, ...usuarioAtualizado };
-    await setUsuario(updatedUsuario);
+    const updateUsuario = usuarios.map(u => u.id === id ? updatedUsuario : u);
+    await setUsuarios(updateUsuario);
     return { success: true, data: updatedUsuario };
 }
 
@@ -65,39 +85,61 @@ export async function createUsuario(novoUsuario) {
     if (errors.length > 0) {
         return { success: false, errors };
     }
-    const usuarios = await getUsuario();
+    
+    const usuarios = await getUsuarios();
+
+    const loginExiste = usuarios.some(u => u.login === novoUsuario.login);
+    const emailExiste = usuarios.some(u => u.email === novoUsuario.email);
+    if (emailExiste) {
+        return { success: false, errors: ["Email já está em uso."] };
+    }
+    if (loginExiste) {
+        return { success: false, errors: ["Login já está em uso."] };
+    }
+  
     const id = Date.now().toString();
     const usuario = { id, ...novoUsuario };
-    await setUsuario([...usuarios, usuario]);
+    await setUsuarios([...usuarios, usuario]);
     return { success: true, data: usuario };
 }
+
 export async function deleteUsuario(id) {
     if (!id) {
         return { success: false, errors: ["ID do usuário é obrigatório."] };
     }
-    const usuarios = await getUsuario();
+    const usuarios = await getUsuarios();
     const usuarioIndex = usuarios.findIndex(u => u.id === id);
 
     if (usuarioIndex === -1) {
         return { success: false, errors: ["Usuário não encontrado."] };
     }
     usuarios.splice(usuarioIndex, 1);
-    await setUsuario(usuarios);
+    await setUsuarios(usuarios);
     return { success: true };
 }
 
-export async function authenticateUsuario(login, senha) {
+export async function Logar(login, senha) {
     if (!login || login.trim() === '' || !senha || senha.trim() === '') {
         return { success: false, errors: ["Login e senha são obrigatórios."] };
     }
-    const usuarios = await getUsuario();
+    const usuarios = await getUsuarios();
     const usuario = usuarios.find(u => u.login === login && u.senha === senha);
     if (!usuario) {
         return { success: false, errors: ["Login ou senha inválidos."] };
     }
+    await setUsuarioLogado(usuario);
     return { success: true, data: usuario };
 }
-export async function getAllUsuarios() {
-    const usuarios = await getUsuario();
-    return usuarios || [];
+
+export async function getUsuarioById(id) {
+    if (!id) {
+        return { success: false, errors: ["ID do usuário é obrigatório."] };
+    }
+    const usuarios = await getUsuarios();
+    const usuario = usuarios.find(u => u.id === id);
+    if (!usuario) {
+        return { success: false, errors: ["Usuário não encontrado."] };
+    }
+    return { success: true, data: usuario };
 }
+

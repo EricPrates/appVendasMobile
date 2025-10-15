@@ -3,5 +3,6 @@ export const STORAGE_KEYS   = {
     PEDIDOS: "@sneaker/pedidos",
     PRODUTOS: "@sneaker/produtos",
     CARRINHO: "@sneaker/carrinho",
-    FAVORITOS: "@sneaker/favoritos"
+    FAVORITOS: "@sneaker/favoritos",
+    USUARIO_LOGADO: "@sneaker/usuario_logado"
 }
