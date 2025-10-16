@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import Usuario from "../model/Usuario";
 import { UsuarioController } from "./controller/Usuario.controller";
+import { ProdutoController } from "./controller/Produto.controller";
 
 
 const AuthContext = createContext(null)
@@ -12,21 +13,18 @@ const useAuth = ()=>{
 
 const AuthProvider = ({children}) =>{
     const control = UsuarioController()
+   
 
-    const PrincipalUser = new Usuario('Rua A', 'eric@gmail.com', '32222222',
-     'Eric', 'Eric', '123', 'admin');
-
-    const {usuarios, setusuarios} = useState([])
+   
     const [loading, setLoading] = useState(true)
-    const [logado, setLogado] = useState(false)
-    const [nome, setNome] = useState("Eric")
+    const [logado, setLogado] = useState(null)
+    const nome = logado ? logado.nome : ""
 
     const login = async (usuario, senha)=>{
         try{
         const res = await control.loginUsuario(usuario, senha)
         if (res.success){
             setLogado(res.data)
-            setNome(res.data.nome)
             return {
                 success: true,
                 data: res.data

@@ -104,6 +104,7 @@ export default function CadastrarProduto({ navigation }) {
                             style={[styles.input, styles.textArea]}
                             placeholder="Descreva as características do tênis..."
                             multiline={true}
+                            value={produto.descricao}
                             numberOfLines={4}
                             onChangeText={text => setProduto({ ...produto, descricao: text })}
                         />
@@ -113,6 +114,7 @@ export default function CadastrarProduto({ navigation }) {
                                 <EntradadeTexto 
                                     title="Preço (R$)" 
                                     style={styles.input}
+                                    value={produto.preco}
                                     placeholder="299,99"
                                     keyboardType="numeric"
                                     onChangeText={text => setProduto({ ...produto, preco: text })}
@@ -122,6 +124,7 @@ export default function CadastrarProduto({ navigation }) {
                                 <EntradadeTexto 
                                     title="Quantidade" 
                                     style={styles.input}
+                                    value={produto.quantidade}
                                     placeholder="50"
                                     keyboardType="numeric"
                                     onChangeText={text => setProduto({ ...produto, quantidade: text })}
@@ -133,6 +136,7 @@ export default function CadastrarProduto({ navigation }) {
                             title="Categoria" 
                             style={styles.input}
                             placeholder="Ex: Corrida, Casual, Basquete"
+                            value={produto.categoria}
                             onChangeText={text => setProduto({ ...produto, categoria: text })}
                         />
 
@@ -140,6 +144,7 @@ export default function CadastrarProduto({ navigation }) {
                             title="Tamanhos Disponíveis" 
                             style={styles.input}
                             placeholder="Ex: 38, 39, 40, 41, 42"
+                            value={produto.tamanhos}
                             onChangeText={text => setProduto({ ...produto, tamanhos: text })}
                         />
 
@@ -147,6 +152,7 @@ export default function CadastrarProduto({ navigation }) {
                             title="Cores Disponíveis" 
                             style={styles.input}
                             placeholder="Ex: Preto, Branco, Azul"
+                            value={produto.cores}
                             onChangeText={text => setProduto({ ...produto, cores: text })}
                         />
 
@@ -154,7 +160,8 @@ export default function CadastrarProduto({ navigation }) {
                             title="URL da Imagem" 
                             style={styles.input}
                             placeholder="https://exemplo.com/imagem.jpg"
-                            onChangeText={text => setProduto({ ...produto, imagem: text })}
+                            value={produto.imagemUrl}
+                            onChangeText={text => setProduto({ ...produto, imagemUrl: text })}
                         />
 
                         <View style={styles.buttonContainer}>

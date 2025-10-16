@@ -4,8 +4,8 @@ import { STORAGE_KEYS } from "../storegeKeys";
 
 const PRODUTOS_KEY = STORAGE_KEYS.PRODUTOS;
 
-validarProduto = (produto) => {
-    const { nome, descricao, preco, quantidade, imagem, cores, tamanho, categoria, fornecedor } = produto;
+const validarProduto  = (produto) => {
+    const { nome, descricao, preco, quantidade, urlImagem, cores, tamanho, categoria, fornecedor } = produto;
     const errors = [];
     if(!nome || nome.trim() === '') {
         errors.push("Nome é obrigatório.");
@@ -22,11 +22,11 @@ validarProduto = (produto) => {
     else if(isNaN(quantidade) || quantidade < 0 || !Number.isInteger(quantidade)|| quantidade === null || quantidade === undefined) {
         errors.push("Não é possível cadastrar um produto com quantidade negativa, não inteira ou vazia.");
     }
-    else if(!imagem || imagem.trim() === '') {
-        errors.push("Imagem é obrigatória.");
+    else if(!urlImagem || urlImagem.trim() === '') {
+        errors.push("urlImagem é obrigatória.");
     }
-   else if(!/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)(?:\?.*)?$/i.test(imagem)) {
-    errors.push("URL da imagem inválida.");
+   else if(!/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)(?:\?.*)?$/i.test(urlImagem)) {
+    errors.push("URL da urlImagem inválida.");
     }
     else if (!Array.isArray(cores) || cores.length === 0) {
         errors.push("Pelo menos uma cor é obrigatória.");
@@ -65,7 +65,7 @@ export async function addProduto(produto) {
 
     produtos.push(produto);
     await saveProdutos(produtos);
-    return { success: true, data: novoProduto, message: "Produto adicionado com sucesso." };
+    return { success: true, data: produto, message: "Produto adicionado com sucesso." };
 }
 
 export async function updateProduto(id, produtoAtualizado) {

@@ -1,7 +1,5 @@
 export default class Produto {
-    constructor(idUsuario,id, nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "", cores = [], tamanho = "", avaliacao = 0, desconto = 0 ) {
-        this.fornecedor = null;      
-        this.id = id;
+    constructor( nome, descricao, preco, quantidade, urlImagem, cores = [], tamanho = "", avaliacao = 0, desconto = 0, fornecedor = "", idUsuario = "", categoria="") {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
@@ -11,7 +9,9 @@ export default class Produto {
         this.tamanho = tamanho;
         this.avaliacao = avaliacao;
         this.desconto = desconto;
+        this.fornecedor = fornecedor;
         this.idUsuario = idUsuario;
+        this.categoria = categoria;
     }
       
     

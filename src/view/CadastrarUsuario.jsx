@@ -3,8 +3,61 @@ import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
 import { Button, Icon } from "react-native-paper";
-
+import  UsuarioController  from "../components/controller/Usuario.controller";
+import { useEffect, useState } from "react";
 export default function CadastrarUsuario({ navigation }) {
+
+    const control = UsuarioController();
+    const [usuario, setUsuario] = useState({});
+    const [mensagem, setMensagem] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+
+       setUsuario({ nome: "", 
+        email: "", 
+        login: "", 
+        senha: "", 
+        tipo: "", 
+        telefone: "", 
+        endereco: "" });
+    }, []);
+
+useEffect(() => {
+        if(usuario.nome == '' || usuario.email == '' || usuario.login == '' || 
+            usuario.senha == '' || usuario.tipo == '' || 
+            usuario.telefone == '' || usuario.endereco == '') {
+            return setMensagem("Os campos não podem estar vazios.");
+        }
+        if(usuario.telefone) {
+            const telefoneFloat = parseFloat(usuario.telefone.replace(',', '.'));
+            if(isNaN(telefoneFloat) || telefoneFloat <= 0) {
+                return setMensagem("O telefone deve ser um número válido maior que zero.");
+            }
+
+        }
+        setMensagem(null);
+    }, [usuario.nome, usuario.email, usuario.login, usuario.senha, usuario.tipo, usuario.telefone, usuario.endereco]);
+
+
+
+    const cadastrarUsuario = async (usuario) => {
+        setLoading(true);
+        try {
+            const response = await control.createUsuario(usuario);
+            if(response.error) {
+                setMensagem(response.error);
+            } else {
+                setMensagem("Usuário cadastrado com sucesso!");
+                setUsuario({});
+            }
+        } catch (error) {
+            setMensagem("Erro ao cadastrar usuário.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <ViewBase tabAtiva="cadastrarUsuario">
            
@@ -25,7 +78,7 @@ export default function CadastrarUsuario({ navigation }) {
                             title="Nome do Usuário" 
                             style={styles.input}
                             placeholder="Ex: João Silva"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setUsuario({ ...usuario, nome: text })}
                         />
                          
                         <EntradadeTexto 
@@ -33,7 +86,7 @@ export default function CadastrarUsuario({ navigation }) {
                             style={styles.input}
                             placeholder="exemplo@email.com"
                             keyboardType="email-address"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setUsuario({ ...usuario, email: text })}
                         />
                          
                         <View style={styles.rowInputs}>
@@ -42,7 +95,7 @@ export default function CadastrarUsuario({ navigation }) {
                                     title="Login" 
                                     style={styles.input}
                                     placeholder="joaosilva"
-                                    onChangeText={text => console.log(text)}
+                                    onChangeText={text => setUsuario({ ...usuario, login: text })}
                                 />
                             </View>
                             <View style={styles.halfInput}>
@@ -51,7 +104,7 @@ export default function CadastrarUsuario({ navigation }) {
                                     style={styles.input}
                                     placeholder="••••••••"
                                     secureTextEntry={true}
-                                    onChangeText={text => console.log(text)}
+                                    onChangeText={text => setUsuario({ ...usuario, senha: text })}
                                 />
                             </View>
                         </View>
@@ -60,15 +113,15 @@ export default function CadastrarUsuario({ navigation }) {
                             title="Tipo de Usuário" 
                             style={styles.input}
                             placeholder=""
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setUsuario({ ...usuario, tipo: text })}
                         />
 
                         <EntradadeTexto 
                             title="Telefone" 
                             style={styles.input}
                             placeholder="(11) 99999-9999"
-                            keyboardType=""
-                            onChangeText={text => console.log(text)}
+                            keyboardType="phone-pad"
+                            onChangeText={text => setUsuario({ ...usuario, telefone: text })}
                         />
 
                         <EntradadeTexto 
@@ -77,7 +130,7 @@ export default function CadastrarUsuario({ navigation }) {
                             placeholder="Rua, número, bairro, cidade..."
                             multiline={true}
                             numberOfLines={3}
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setUsuario({ ...usuario, endereco: text })}
                         />
 
                         <View style={styles.buttonContainer}>
@@ -94,7 +147,7 @@ export default function CadastrarUsuario({ navigation }) {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => console.log('Cadastrar Usuário')}
+                                onPress={() => cadastrarUsuario(usuario)}
                                 icon="account-check"
                             >
                                 Cadastrar Usuário

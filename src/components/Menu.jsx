@@ -7,14 +7,17 @@ import Lista from './Lista';
 import { useNavigation } from '@react-navigation/native';
 import CadastrarProduto from '../view/CadastrarProduto';
 import { useState } from 'react';
+import { ProdutoController } from './controller/Produto.controller';
 
 export default function MenuComponent({ }) {
+    const control = ProdutoController();
     const { nome, signOut, logado } = useAuth();
     const [tabAtiva, setTabAtiva] = useState('menu');
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
 
     const abrirModal = () => setModalVisible(true);
+
     const fecharModal = () => setModalVisible(false);
 
     return (

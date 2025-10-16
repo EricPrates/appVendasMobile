@@ -1,15 +1,30 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
-import { useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
+import testes from "../components/testes";
+import { ProdutoController } from "../components/controller/Produto.controller";
 export default function Home({ navigation }) {
-
-   
+    const produtoController = ProdutoController();
+    const [produtos, setProdutos] = useState([]);
+   useEffect( () => {
+    const carregarProdutos = async () => {
+        try {
+            const produtos = await produtoController.getProdutos();
+         
+            setProdutos(produtos);
+        }
+        catch (error) {
+            console.error("Erro ao carregar produtos:", error);
+        }
+    }
+    carregarProdutos();
+   }, []);
     
     const [tabAtiva, setTabAtiva] = useState('home');
     
@@ -17,31 +32,16 @@ export default function Home({ navigation }) {
     
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
-            <TouchableOpacity onPress={() => navigation.navigate('DetalhesProduto')}>
-                <CompCard source = 'foto1'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('favoritos')}>
-                <CompCard source = 'foto2'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto3')}>
-                <CompCard source = 'foto3'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto4')}>
-                <CompCard source = 'foto4'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto5')}>
-                <CompCard source = 'foto5'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto6')}>
-                <CompCard source = 'foto6'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto7')}>
-                <CompCard source = 'foto7'/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('foto8')}>
-                <CompCard source = 'foto8'/>
-                </TouchableOpacity>
+                { produtos.map((produto) => (
+                    console.log(produto.urlImagem),
+                <TouchableOpacity  onPress={() => navigation.navigate('DetalhesProduto')}>
+                        <CompCard source={produto.urlImagem} key={produto.id} nome={produto.nome} preco={produto.preco} />
+                    </TouchableOpacity>
+                    
+                ))}
+                
             </View>
+            <Button title="Testar Model" onPress={() => navigation.navigate('testes')} />
         </ViewBase>
     
     );

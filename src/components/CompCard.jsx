@@ -1,8 +1,8 @@
 import { Card, Text } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
 
-export default function CompCard({ source }) {
+export default function CompCard({  source, nome, preco }) {
     return (
         <Surface style={styles.card} elevation={8}>
 
@@ -11,21 +11,22 @@ export default function CompCard({ source }) {
             </View>
             
            
-            <Card.Cover 
-                style={styles.cardImage} 
-                source={{ uri: `https://picsum.photos/200/300?random=${source}` }} 
+            <Image
+
+                style={styles.cardImage}
+                source={{ uri: source }}
             />
             
             <Card.Content style={styles.cardContent}>
                 <Text style={styles.productName} variant="titleLarge">
-                    Tênis Esportivo
+                    {nome}
                 </Text>
                 <Text style={styles.productCategory} variant="bodyMedium">
-                    Corrida & Performance
+                    
                 </Text>
                 
                 <View style={styles.priceContainer}>
-                    <Text style={styles.price}>R$ 299,99</Text>
+                    <Text style={styles.price}>R$ {preco}</Text>
                    
                 </View>
                 
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
         borderWidth: 0,
         backgroundColor: '#f8f9fa',
+        resizeMode: 'contain',
     },
     cardContent: {
         padding: 12,
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
     },
     productName: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#2c2c2c',
         textAlign: 'center',

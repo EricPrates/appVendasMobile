@@ -5,17 +5,20 @@ import { useEffect, useState } from "react";
 import { UsuarioController } from "../components/controller/Usuario.controller";
 import { useAuth } from "../components/Provider";
 import { Icon, MD3Colors } from 'react-native-paper';
+import { ProdutoController } from "../components/controller/Produto.controller";
+import Produto from "../model/Produto";
 
 export default function Login({navigation}) {
     const control = UsuarioController()
-    const {login} = useAuth()
+    const {login, logado} = useAuth()
     const [usuario, setUsuario] = useState({});
     const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [erro, setErro] = useState(false);
     const [vizualizarSenha, setVisualizarSenha] = useState(false);
 
-    
+
+
    
     const handleLogin = async () =>{
 
@@ -25,7 +28,8 @@ export default function Login({navigation}) {
         const res = await login(usuario.usuario, usuario.senha);
         if (res.success){
             setLoading(false)
-            navigation.replace("Home")
+            
+           navigation.replace("Home")
 
         }
         else{

@@ -1,4 +1,4 @@
-import * as ProdutoService from '../../services/Produto.service';
+import * as ProdutoService from '../../service/DAO/Produto.Service';
 
 export const ProdutoController = () => {
 
@@ -22,7 +22,7 @@ export const ProdutoController = () => {
     }
     async function deleteProduto(id) {
         try{
-            const response = await ProdutoService.deleteProduto(id);
+            const response = await ProdutoService.deleteProdutoId(id);
             return response;
         }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
