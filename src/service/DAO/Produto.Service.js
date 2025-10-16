@@ -62,8 +62,8 @@ export async function addProduto(produto) {
         return {success: false, errors};
     }
     const produtos = await getProdutos();
-    const novoProduto = { id: Date.now().toString(), ...produto };
-    produtos.push(novoProduto);
+
+    produtos.push(produto);
     await saveProdutos(produtos);
     return { success: true, data: novoProduto, message: "Produto adicionado com sucesso." };
 }

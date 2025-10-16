@@ -4,7 +4,9 @@ export const ProdutoController = () => {
 
     async function addProduto(novoProduto) {
         try{
-            const response = await ProdutoService.createProduto(novoProduto);
+            const id = Date.now().toString();
+            const produtoComId = { id, ...novoProduto };
+            const response = await ProdutoService.addProduto(produtoComId);
             return response;
     }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };

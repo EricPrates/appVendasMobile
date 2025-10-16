@@ -1,5 +1,5 @@
 export default class Produto {
-    constructor(id, nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "", cores = [], tamanho = "", avaliacao = 0, desconto = 0 ) {
+    constructor(idUsuario,id, nome = "", descricao = "", preco = 0.0, quantidade = 0, urlImagem = "", cores = [], tamanho = "", avaliacao = 0, desconto = 0 ) {
         this.fornecedor = null;      
         this.id = id;
         this.nome = nome;
@@ -11,6 +11,7 @@ export default class Produto {
         this.tamanho = tamanho;
         this.avaliacao = avaliacao;
         this.desconto = desconto;
+        this.idUsuario = idUsuario;
     }
       
     
@@ -86,5 +87,11 @@ export default class Produto {
     }
     getCores() {
         return this.cores;
+    }
+    setIdUsuario(idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    getIdUsuario() {
+        return this.idUsuario;
     }
 }

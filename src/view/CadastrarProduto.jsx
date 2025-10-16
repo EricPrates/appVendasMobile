@@ -3,22 +3,75 @@ import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
 import { Button, Icon } from "react-native-paper";
+import  ProdutoController  from "../components/controller/Produto.controller";
+import { useEffect, useState } from "react";
 import { useAuth } from "../components/Provider";
 
 export default function CadastrarProduto({ navigation }) {
+    const {logado} = useAuth();
+    const control = ProdutoController();
 
-    const control = ProdutoController()
+    const [produto, setProduto] = useState({});
+    const [mensagem, setMensagem] = useState();
+    const [loading, setLoading] = useState(false);
 
-    const [produto, setProduto] = useState({
-        nome: '',
-        descricao: '',
-        preco: '',
-        quantidade: '',
-        categoria: '',
-        tamanhos: '',
-        cores: '',
-        imagemUrl: ''
-    });
+    useEffect(() => {
+        setProduto({
+            idUsuario: '',
+            nome: '',
+            descricao: '',
+            preco: '',
+            quantidade: '',
+            categoria: '',
+            tamanhos: '',
+            cores: '',
+            imagemUrl: '',
+            fornecedor: '',
+            desconto: 0,
+            avaliacao: 0
+        });
+    }, []);
+
+    useEffect(() => {
+        if(produto.nome == '' || produto.descricao == '' || produto.preco == '' || 
+            produto.quantidade == '' || produto.categoria == '' || 
+            produto.tamanhos == '' || produto.cores == '' ||
+            produto.imagemUrl == '' || produto.fornecedor == '') {
+            return setMensagem("Os campos não podem estar vazios.");
+        }
+        if(produto.preco) {
+            const precoFloat = parseFloat(produto.preco.replace(',', '.'));
+            if(isNaN(precoFloat) || precoFloat <= 0) {
+                return setMensagem("O preço deve ser um número válido maior que zero.");
+            }
+
+        }
+        setMensagem(null);
+    }, [produto.nome, produto.descricao, produto.preco, produto.quantidade, produto.categoria, produto.tamanhos, produto.cores, produto.imagemUrl, produto.fornecedor]);
+
+    const cadastrarProduto = async (produto) => {
+        if(!logado) {
+            setMensagem("Você precisa estar logado para cadastrar um produto.");
+            return;
+        }
+        if(mensagem) {
+            return;
+        }
+        setLoading(true);
+        try {
+        const response = await control.addProduto({ ...produto, idUsuario: logado.id });
+        if(response.success) {
+            setMensagem("Produto cadastrado com sucesso!");
+            setProduto({});
+        } else {
+            setMensagem("Erro ao cadastrar produto.");
+        }
+    } catch (error) {
+        setMensagem("Erro interno no servidor, tente novamente.");
+    }finally {
+        setLoading(false);
+    }
+    }
     return (
         <ViewBase tabAtiva="cadastrarProduto">
            
@@ -34,12 +87,16 @@ export default function CadastrarProduto({ navigation }) {
                 <View style={styles.container}>
                     <View style={styles.formCard}>
                         <Text style={styles.formTitle}>Informações do Produto</Text>
-                        
+                        {
+                            mensagem ? <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10, textTransform: 'capitalize', fontSize: 14 }}>{mensagem}</Text> : null
+                        }
                         <EntradadeTexto 
                             title="Nome do Produto" 
+                            value={produto.nome}
                             style={styles.input}
-                            placeholder="Ex: Tênis Nike Air Max 270"
-                            onChangeText={text => console.log(text)}
+                            placeholder="Nome do Tênis"
+                            onChangeText={text => setProduto({ ...produto, nome: text })}
+                            
                         />
                          
                         <EntradadeTexto 
@@ -48,7 +105,7 @@ export default function CadastrarProduto({ navigation }) {
                             placeholder="Descreva as características do tênis..."
                             multiline={true}
                             numberOfLines={4}
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setProduto({ ...produto, descricao: text })}
                         />
                          
                         <View style={styles.rowInputs}>
@@ -58,7 +115,7 @@ export default function CadastrarProduto({ navigation }) {
                                     style={styles.input}
                                     placeholder="299,99"
                                     keyboardType="numeric"
-                                    onChangeText={text => console.log(text)}
+                                    onChangeText={text => setProduto({ ...produto, preco: text })}
                                 />
                             </View>
                             <View style={styles.halfInput}>
@@ -67,7 +124,7 @@ export default function CadastrarProduto({ navigation }) {
                                     style={styles.input}
                                     placeholder="50"
                                     keyboardType="numeric"
-                                    onChangeText={text => console.log(text)}
+                                    onChangeText={text => setProduto({ ...produto, quantidade: text })}
                                 />
                             </View>
                         </View>
@@ -76,28 +133,28 @@ export default function CadastrarProduto({ navigation }) {
                             title="Categoria" 
                             style={styles.input}
                             placeholder="Ex: Corrida, Casual, Basquete"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setProduto({ ...produto, categoria: text })}
                         />
 
                         <EntradadeTexto 
                             title="Tamanhos Disponíveis" 
                             style={styles.input}
                             placeholder="Ex: 38, 39, 40, 41, 42"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setProduto({ ...produto, tamanhos: text })}
                         />
 
                         <EntradadeTexto 
                             title="Cores Disponíveis" 
                             style={styles.input}
                             placeholder="Ex: Preto, Branco, Azul"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setProduto({ ...produto, cores: text })}
                         />
 
                         <EntradadeTexto 
                             title="URL da Imagem" 
                             style={styles.input}
                             placeholder="https://exemplo.com/imagem.jpg"
-                            onChangeText={text => console.log(text)}
+                            onChangeText={text => setProduto({ ...produto, imagem: text })}
                         />
 
                         <View style={styles.buttonContainer}>
@@ -114,7 +171,7 @@ export default function CadastrarProduto({ navigation }) {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => console.log('Cadastrar')}
+                                onPress={() => cadastrarProduto(produto)}
                                 icon="check"
                             >
                                 Cadastrar Produto

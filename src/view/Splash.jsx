@@ -8,11 +8,9 @@ import { useEffect } from 'react';
 import { UsuarioController } from '../components/controller/Usuario.controller';
 import {useAuth} from '../components/Provider';
 export default function Splash({ onFinish }) {
-    
-    const control = UsuarioController()
-    const {logado, nome, login, carregarUsuarios} = useAuth();
 
-   
+    const control = UsuarioController();
+    const { logado, nome, login, carregarUsuarios } = useAuth();
 
     useEffect(()=>{
         const id = setTimeout(() => {
