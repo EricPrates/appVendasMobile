@@ -6,29 +6,31 @@ import { Button, Icon } from "react-native-paper";
 import  ProdutoController  from "../components/controller/Produto.controller";
 import { useEffect, useState } from "react";
 import { useAuth } from "../components/Provider";
+import Produto from "../model/Produto";
 
 export default function CadastrarProduto({ navigation }) {
     const {logado} = useAuth();
+    
     const control = ProdutoController();
 
-    const [produto, setProduto] = useState({});
+    const [produto, setProduto] = useState(new Produto());
     const [mensagem, setMensagem] = useState();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setProduto({
-            idUsuario: '',
-            nome: '',
-            descricao: '',
-            preco: '',
-            quantidade: '',
-            categoria: '',
-            tamanhos: '',
-            cores: '',
-            imagemUrl: '',
-            fornecedor: '',
-            desconto: 0,
-            avaliacao: 0
+        nome: '',
+        descricao: '',
+        preco: '',
+        quantidade: '',
+        urlImagem: '',
+        cores: '',
+        tamanho: '',
+        avaliacao: '',
+        desconto: 0,
+        fornecedor: '',
+        idUsuario: '',
+        categoria: '',
         });
     }, []);
 

@@ -1,10 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ViewBase from "./ViewBase";
 import CompCard from "../components/CompCard";
+import { Icon } from "react-native-paper";
+import { useAuth } from "../components/Provider";
+import { useState } from "react";
 
-export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao }) {
+export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao ,route }) {
+
+    const { addFavorito } = useAuth();
+    const { produto } = route.params;
+    const [clicFavoritos, setClicFavoritos] = useState(false);
+
     return (
-        <ViewBase tabAtiva = 'detalhesProduto'>
+        <ViewBase tabAtiva='detalhesProduto'>
          
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Detalhes do Produto</Text>
@@ -13,43 +21,46 @@ export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao 
 
             <View style={styles.content}>
                 <View style={styles.cardContainer}>
-                    <CompCard style={styles.productCard} source='foto1'/>
+                    <CompCard style={styles.productCard} source={produto.urlImagem} preco={produto.preco}  />
                 </View>
-                
+                <TouchableOpacity style={styles.favoritos} onPress={() => {addFavorito(produto); setClicFavoritos(!clicFavoritos);}}>
+                    <Icon source={ clicFavoritos ? "heart" : "heart-outline"} size={40} color="#ff4757" />
+                </TouchableOpacity>
+                {clicFavoritos && <Text>adicionado aos favoritos</Text>}
                 <View style={styles.detailsContainer}>
                     <View style={styles.detailRow}>
-                        <Text style={styles.detailLabel}>Nome:</Text>
-                        <Text style={styles.detailValue}></Text>
+                        <Text style={styles.detailLabel}>Nome:{}</Text>
+                        <Text style={styles.detailValue}>{produto.nome}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Descrição:</Text>
-                        <Text style={styles.detailValue}></Text>
+                        <Text style={styles.detailValue}>{produto.descricao}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Preço:</Text>
-                        <Text style={[styles.detailValue, styles.price]}>R$ 299,99</Text>
+                        <Text style={[styles.detailValue, styles.price]}>R$ {produto.preco}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Estoque:</Text>
-                        <Text style={styles.detailValue}></Text>
+                        <Text style={styles.detailValue}>{produto.quantidade}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Categoria:</Text>
-                        <Text style={styles.detailValue}></Text>
+                        <Text style={styles.detailValue}>{produto.categoria}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Fornecedor:</Text>
-                        <Text style={styles.detailValue}></Text>
+                        <Text style={styles.detailValue}>{produto.fornecedor}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Avaliação:</Text>
-                        <Text style={[styles.detailValue, styles.rating]}>★★★★☆ (4.8/5)</Text>
+                        <Text style={[styles.detailValue, styles.rating]}>{produto.avaliacao}</Text>
                     </View>
                 </View>
             </View>
@@ -58,6 +69,12 @@ export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao 
 }
 
 const styles = StyleSheet.create({
+    favoritos: {
+        alignContent: 'flex-end',
+        position: 'absolute',
+        top: 130,
+        right: 20,
+    },
     header: {
         backgroundColor: '#ff6b35',
         padding: 20,
@@ -131,8 +148,8 @@ const styles = StyleSheet.create({
     detailValue: {
         fontSize: 16,
         color: '#666',
-        flex: 2,
-        textAlign: 'right',
+        flex: 1,
+        textAlign: 'justify',
         fontWeight: '500',
     },
     price: {

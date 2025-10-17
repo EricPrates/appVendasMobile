@@ -2,6 +2,14 @@ import * as ProdutoService from '../../service/DAO/Produto.Service';
 
 export const ProdutoController = () => {
 
+    async function saveProdutos(produtos) {
+        try{
+           const produtosComId = produtos.map((p, index) => ({ ...p, id: `${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}` }));
+            await ProdutoService.saveProdutos(produtosComId);
+        }catch(error){
+            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+        }
+    }
     async function addProduto(novoProduto) {
         try{
             const id = Date.now().toString();
@@ -101,6 +109,7 @@ export const ProdutoController = () => {
         }
 
     }
+    
     async function getProdutosByTamanho(tamanho) {
         try{
             const produtos = await ProdutoService.getProdutosByTamanho(tamanho);
@@ -133,8 +142,17 @@ export const ProdutoController = () => {
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
-    
+    async function clearAll() {
+        try{
+            await ProdutoService.clearAll();
+        }catch(error){
+            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+        }
+    }
+
     return {
+        saveProdutos,
+        clearAll,
         addProduto,
         updateProduto,
         deleteProduto,

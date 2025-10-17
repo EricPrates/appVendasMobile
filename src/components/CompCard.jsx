@@ -1,15 +1,16 @@
-import { Card, Text } from "react-native-paper";
+import { Card, Icon, Text } from "react-native-paper";
 import { Image, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
+import { TouchableOpacity } from "react-native";
+import { AuthProvider, useAuth } from "./Provider";
 
-export default function CompCard({  source, nome, preco }) {
+export default function CompCard({ object, source, nome, preco, route }) {
+
+    const { addFavorito } = useAuth();
+
     return (
         <Surface style={styles.card} elevation={8}>
 
-            <View style={styles.badge}>
-                <Text style={styles.badgeText}>🔥 POPULAR</Text>
-            </View>
-            
            
             <Image
 
@@ -27,7 +28,7 @@ export default function CompCard({  source, nome, preco }) {
                 
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>R$ {preco}</Text>
-                   
+                    <Text style={styles.discountText}>R$ {}</Text>
                 </View>
                 
                 
@@ -37,6 +38,9 @@ export default function CompCard({  source, nome, preco }) {
                     <Text style={styles.rating}>⭐ 4.8</Text>
                     <Text style={styles.reviews}>(128 reviews)</Text>
                 </View>
+                <View>
+                    
+                </View>
             </Card.Content>
         </Surface>
     );
@@ -45,6 +49,7 @@ export default function CompCard({  source, nome, preco }) {
 const styles = StyleSheet.create({
     card: {
         width: 150,
+        height: 300,
         margin: 6,
         backgroundColor: '#ffffff',
         borderRadius: 20,
@@ -53,6 +58,7 @@ const styles = StyleSheet.create({
         borderColor: '#ff4757',
         position: 'relative',
     },
+   
     badge: {
         position: 'absolute',
         top: 8,
@@ -61,7 +67,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 12,
-        zIndex: 2,
+        zIndex: 10,
         elevation: 4,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -75,14 +81,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cardImage: {
-        height: 120,
+        height: '150',
+        width: '100%',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderWidth: 0,
         backgroundColor: '#f8f9fa',
-        resizeMode: 'contain',
+        resizeMode: 'extend',
     },
     cardContent: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
         padding: 12,
         paddingTop: 8,
         borderLeftWidth: 1,
@@ -93,11 +103,11 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
     },
     productName: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
         color: '#2c2c2c',
         textAlign: 'center',
-        marginBottom: 4,
+    
     },
     productCategory: {
         fontSize: 12,
@@ -110,7 +120,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 6,
+        marginBottom: 2,
         gap: 6,
     },
     price: {

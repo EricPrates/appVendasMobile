@@ -4,6 +4,7 @@ import { UsuarioController } from "./controller/Usuario.controller";
 import { ProdutoController } from "./controller/Produto.controller";
 
 
+
 const AuthContext = createContext(null)
 
 
@@ -14,8 +15,7 @@ const useAuth = ()=>{
 const AuthProvider = ({children}) =>{
     const control = UsuarioController()
    
-
-   
+    const [favoritos, setFavoritos] = useState([])
     const [loading, setLoading] = useState(true)
     const [logado, setLogado] = useState(null)
     const nome = logado ? logado.nome : ""
@@ -42,14 +42,19 @@ const AuthProvider = ({children}) =>{
         return false;
     }
 }
+    const addFavorito = async (produto) =>{
 
+        favoritos.find((p) => p.id === produto.id) ? console.log(`Produto já está nos favoritos: ${ produto.id }`) : setFavoritos([...favoritos, produto])
+    }
     const signOut = () =>{
         setLogado(false)
         setNome("")
     }
 
+
+
     return (
-        <AuthContext.Provider value={{logado, nome ,login, signOut}}>
+        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos}}>
             {children}
         </AuthContext.Provider>
     )

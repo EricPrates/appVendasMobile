@@ -13,31 +13,31 @@ const validarProduto  = (produto) => {
     else if(nome.length < 3) {
         errors.push("Nome deve ter pelo menos 3 caracteres.");
     }
-    else if(descricao.length < 10 || descricao.trim() === '' || !descricao || descricao === null || descricao === undefined) {
+     if(descricao.length < 10 || descricao.trim() === '' || !descricao || descricao === null || descricao === undefined) {
         errors.push("Descrição deve ter pelo menos 10 caracteres.");
     }
-    else if(isNaN(preco) || preco <= 0) {
+     if(isNaN(preco) || preco <= 0) {
         errors.push("Preço deve ser um número positivo.");
     }
-    else if(isNaN(quantidade) || quantidade < 0 || !Number.isInteger(quantidade)|| quantidade === null || quantidade === undefined) {
+    if(isNaN(quantidade) || quantidade < 0 || !Number.isInteger(quantidade)|| quantidade === null || quantidade === undefined) {
         errors.push("Não é possível cadastrar um produto com quantidade negativa, não inteira ou vazia.");
     }
-    else if(!urlImagem || urlImagem.trim() === '') {
+    if(!urlImagem || urlImagem.trim() === '') {
         errors.push("urlImagem é obrigatória.");
     }
-   else if(!/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)(?:\?.*)?$/i.test(urlImagem)) {
+    if(!/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)(?:\?.*)?$/i.test(urlImagem)) {
     errors.push("URL da urlImagem inválida.");
     }
-    else if (!Array.isArray(cores) || cores.length === 0) {
+    if (!Array.isArray(cores) || cores.length === 0) {
         errors.push("Pelo menos uma cor é obrigatória.");
     }
-    else if (!tamanho || tamanho.trim() === '') {
+    if (!tamanho || tamanho.trim() === '') {
         errors.push("Tamanho é obrigatório.");
     }
     else if(tamanho.length < 1) {
         errors.push("Tamanho deve ter pelo menos 1 caractere.");
     }
-    else if (!categoria || categoria.trim() === '') {
+     if (!categoria || categoria.trim() === '') {
         errors.push("Categoria é obrigatória.");
     }
     else if(fornecedor === null || fornecedor === undefined || fornecedor.trim() === '') {
@@ -66,6 +66,10 @@ export async function addProduto(produto) {
     produtos.push(produto);
     await saveProdutos(produtos);
     return { success: true, data: produto, message: "Produto adicionado com sucesso." };
+}
+export async function clearAll() {
+    await setJSON(PRODUTOS_KEY, []);
+    return { success: true, message: "Todos os produtos foram removidos com sucesso." };
 }
 
 export async function updateProduto(id, produtoAtualizado) {

@@ -7,7 +7,7 @@ import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
-import testes from "../components/testes";
+import Insercoes from "../components/insercoes";
 import { ProdutoController } from "../components/controller/Produto.controller";
 export default function Home({ navigation }) {
     const produtoController = ProdutoController();
@@ -33,15 +33,14 @@ export default function Home({ navigation }) {
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 { produtos.map((produto) => (
-                    console.log(produto.urlImagem),
-                <TouchableOpacity  onPress={() => navigation.navigate('DetalhesProduto')}>
-                        <CompCard source={produto.urlImagem} key={produto.id} nome={produto.nome} preco={produto.preco} />
+                <TouchableOpacity  onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
+                        <CompCard key={produto.id} source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     
                 ))}
                 
             </View>
-            <Button title="Testar Model" onPress={() => navigation.navigate('testes')} />
+            <Button title="Testar Model" onPress={() => navigation.navigate('insercoes')} />
         </ViewBase>
     
     );
