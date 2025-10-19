@@ -2,68 +2,69 @@ import { View, ScrollView } from "react-native";
 import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
-import { Button, Icon } from "react-native-paper";
-import  ProdutoController  from "../components/controller/Produto.controller";
+import { Button, Icon, Modal, Snackbar} from "react-native-paper";
+import { ProdutoController } from "../components/controller/Produto.controller";
 import { useEffect, useState } from "react";
 import { useAuth } from "../components/Provider";
 import Produto from "../model/Produto";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CadastrarProduto({ navigation }) {
+export default function CadastrarProduto({  }) {
     const {logado} = useAuth();
-    
     const control = ProdutoController();
-
+    const [modalVisible, setModalVisible] = useState(false);
     const [produto, setProduto] = useState(new Produto());
     const [mensagem, setMensagem] = useState();
     const [loading, setLoading] = useState(false);
-
+    const abrirModal = () => setModalVisible(true);
+    const navigation = useNavigation();
+    const fecharModal = () => setModalVisible(false);
+    const snackbarRef = Snackbar;
     useEffect(() => {
         setProduto({
-        nome: '',
-        descricao: '',
-        preco: '',
-        quantidade: '',
-        urlImagem: '',
-        cores: '',
-        tamanho: '',
+        nome: 'TESTE',
+        descricao: 'TESTE INSERÇÃO MANUAL',
+        preco: '100',
+        quantidade: '10',
+        urlImagem: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=500&q=80',
+        cores: 'Preto',
+        tamanho: '42',
         avaliacao: '',
         desconto: 0,
-        fornecedor: '',
+        fornecedor: 'Fornecedor Teste',
         idUsuario: '',
-        categoria: '',
+        categoria: 'Corrida',
         });
     }, []);
 
-    useEffect(() => {
+   const verificaCampos = (produto) => {
         if(produto.nome == '' || produto.descricao == '' || produto.preco == '' || 
-            produto.quantidade == '' || produto.categoria == '' || 
-            produto.tamanhos == '' || produto.cores == '' ||
-            produto.imagemUrl == '' || produto.fornecedor == '') {
-            return setMensagem("Os campos não podem estar vazios.");
+            produto.quantidade == '' || produto.urlImagem == '' || produto.cores == '' ||
+            produto.tamanho == '' ||  produto.fornecedor == '' ||
+            produto.categoria == '') {
+            setMensagem("Os campos não podem estar vazios.");
+            return false;
         }
         if(produto.preco) {
             const precoFloat = parseFloat(produto.preco.replace(',', '.'));
             if(isNaN(precoFloat) || precoFloat <= 0) {
-                return setMensagem("O preço deve ser um número válido maior que zero.");
+                setMensagem("O preço deve ser um número válido maior que zero.");
+                return false;
             }
-
         }
         setMensagem(null);
-    }, [produto.nome, produto.descricao, produto.preco, produto.quantidade, produto.categoria, produto.tamanhos, produto.cores, produto.imagemUrl, produto.fornecedor]);
+        setModalVisible(true);
+        return true;
+    }
 
     const cadastrarProduto = async (produto) => {
-        if(!logado) {
-            setMensagem("Você precisa estar logado para cadastrar um produto.");
-            return;
-        }
-        if(mensagem) {
-            return;
-        }
+        
         setLoading(true);
         try {
         const response = await control.addProduto({ ...produto, idUsuario: logado.id });
         if(response.success) {
-            setMensagem("Produto cadastrado com sucesso!");
+           console.log(response.data);
+            response.data
             setProduto({});
         } else {
             setMensagem("Erro ao cadastrar produto.");
@@ -90,7 +91,7 @@ export default function CadastrarProduto({ navigation }) {
                     <View style={styles.formCard}>
                         <Text style={styles.formTitle}>Informações do Produto</Text>
                         {
-                            mensagem ? <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10, textTransform: 'capitalize', fontSize: 14 }}>{mensagem}</Text> : null
+                            mensagem && <Text style={{ color: 'red', textAlign: 'center', marginBottom: 10, textTransform: 'capitalize', fontSize: 14 }}>{mensagem}</Text>
                         }
                         <EntradadeTexto 
                             title="Nome do Produto" 
@@ -146,8 +147,8 @@ export default function CadastrarProduto({ navigation }) {
                             title="Tamanhos Disponíveis" 
                             style={styles.input}
                             placeholder="Ex: 38, 39, 40, 41, 42"
-                            value={produto.tamanhos}
-                            onChangeText={text => setProduto({ ...produto, tamanhos: text })}
+                            value={produto.tamanho}
+                            onChangeText={text => setProduto({ ...produto, tamanho: text })}
                         />
 
                         <EntradadeTexto 
@@ -157,13 +158,20 @@ export default function CadastrarProduto({ navigation }) {
                             value={produto.cores}
                             onChangeText={text => setProduto({ ...produto, cores: text })}
                         />
+                        <EntradadeTexto 
+                            title="Fornecedor" 
+                            style={styles.input}
+                            placeholder="Ex: Nike, Adidas"
+                            value={produto.fornecedor}
+                            onChangeText={text => setProduto({ ...produto, fornecedor: text })}
+                        />
 
                         <EntradadeTexto 
                             title="URL da Imagem" 
                             style={styles.input}
                             placeholder="https://exemplo.com/imagem.jpg"
-                            value={produto.imagemUrl}
-                            onChangeText={text => setProduto({ ...produto, imagemUrl: text })}
+                            value={produto.urlImagem}
+                            onChangeText={text => setProduto({ ...produto, urlImagem: text })}
                         />
 
                         <View style={styles.buttonContainer}>
@@ -180,14 +188,56 @@ export default function CadastrarProduto({ navigation }) {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => cadastrarProduto(produto)}
+                                onPress={() => { verificaCampos(produto) }}
                                 icon="check"
                             >
                                 Cadastrar Produto
                             </Button>
                         </View>
                     </View>
+                </View>{
+                  verificaCampos && (
+                  <Modal 
+                visible= {modalVisible}
+                onDismiss={fecharModal} 
+                contentContainerStyle={styles.modalContainer}
+            >
+                <View style={styles.modalIcon}>
+                    <Text style={styles.modalIconText}>👟</Text>
                 </View>
+                <Text style={styles.modalTitle}>Cadastro de Produto</Text>
+                <Text style={styles.modalText}>Confirma a criação do produto com todos os dados?</Text>
+                <Text style={styles.modalText}>Nome: {produto.nome}</Text>
+                <Text style={styles.modalText}>Descrição: {produto.descricao}</Text>
+                <Text style={styles.modalText}>Preço: {produto.preco}</Text>
+                <Text style={styles.modalText}>Categoria: {produto.categoria}</Text>
+                <Text style={styles.modalText}>Tamanho: {produto.tamanho}</Text>
+                <Text style={styles.modalText}>Cores Disponíveis: {produto.cores}</Text>
+                <Text style={styles.modalText}>URL da Imagem: {produto.urlImagem}</Text>
+                <Text style={styles.modalText}>Quantidade: {produto.quantidade}</Text>
+                <Text style={styles.modalText}>Fornecedor: {produto.fornecedor}</Text>
+                
+                <View style={styles.modalButtons}>
+                    <Button
+                        mode="contained"
+                        onPress={() => { cadastrarProduto(produto);  navigation.navigate('Home'); }}
+                        style={styles.buttonSim}
+                        labelStyle={styles.buttonSimText}
+                    >
+                        Sim
+                    </Button>
+                    <Button 
+                        mode="outlined" 
+                        onPress={fecharModal} 
+                        style={styles.buttonCancelar}
+                        labelStyle={styles.buttonCancelarText}
+                    >
+                        Cancelar
+                    </Button>
+                </View>
+            </Modal>
+                    )
+}
             </ScrollView>
         </ViewBase>
     );
@@ -205,6 +255,62 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         
+    },
+     modalContainer: {
+        backgroundColor: 'white',
+        padding: 24,
+        margin: 20,
+        borderRadius: 24,
+        elevation: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+    },
+    modalIcon: {
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    modalIconText: {
+        fontSize: 48,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 8,
+        color: '#2c2c2c',
+    },
+    modalText: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 24,
+        color: '#666',
+    },
+    modalButtons: {
+        gap: 12,
+    },
+    buttonSim: {
+        backgroundColor: '#0833f5ff',
+        paddingVertical: 6,
+        borderRadius: 12,
+        elevation: 4,
+    },
+    buttonSimText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    buttonCancelar: {
+        borderColor: '#ff6b35',
+        borderWidth: 2,
+        paddingVertical: 6,
+        borderRadius: 12,
+    },
+    buttonCancelarText: {
+        color: '#ff6b35',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     titleContainer: {
         flexDirection: 'row',

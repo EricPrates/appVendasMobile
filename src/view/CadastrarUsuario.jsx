@@ -11,7 +11,9 @@ export default function CadastrarUsuario({ navigation }) {
     const [usuario, setUsuario] = useState({});
     const [mensagem, setMensagem] = useState("");
     const [loading, setLoading] = useState(false);
-
+    const abrirModal = () => setModalVisible(true);
+    const fecharModal = () => setModalVisible(false);
+    
     useEffect(() => {
 
        setUsuario({ nome: "", 

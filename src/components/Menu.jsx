@@ -19,6 +19,7 @@ export default function MenuComponent({ }) {
     const abrirModal = () => setModalVisible(true);
 
     const fecharModal = () => setModalVisible(false);
+    
 
     return (
         <ViewBase tabAtiva={tabAtiva}>

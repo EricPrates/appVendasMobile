@@ -15,9 +15,8 @@ export default function Home({ navigation }) {
    useEffect( () => {
     const carregarProdutos = async () => {
         try {
-            const produtos = await produtoController.getProdutos();
-         
-            setProdutos(produtos);
+            const BuscarProdutos = await produtoController.getProdutos();
+            setProdutos(BuscarProdutos);
         }
         catch (error) {
             console.error("Erro ao carregar produtos:", error);
@@ -33,7 +32,7 @@ export default function Home({ navigation }) {
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
                 { produtos.map((produto) => (
-                <TouchableOpacity  onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
+                <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard key={produto.id} source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     
