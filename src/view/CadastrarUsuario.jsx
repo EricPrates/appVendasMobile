@@ -2,44 +2,42 @@ import { View, ScrollView } from "react-native";
 import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
-import { Button, Icon } from "react-native-paper";
-import  UsuarioController  from "../components/controller/Usuario.controller";
+import { Button, Icon, Modal, Snackbar } from "react-native-paper";
+import  {UsuarioController}  from "../components/controller/Usuario.controller";
 import { useEffect, useState } from "react";
+import Usuario from "../model/Usuario";
 export default function CadastrarUsuario({ navigation }) {
 
     const control = UsuarioController();
-    const [usuario, setUsuario] = useState({});
+    const [usuario, setUsuario] = useState(new Usuario());
     const [mensagem, setMensagem] = useState("");
     const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const abrirModal = () => setModalVisible(true);
     const fecharModal = () => setModalVisible(false);
-    
+    const [snackbarVisible, setSnackbarVisible] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     useEffect(() => {
 
-       setUsuario({ nome: "", 
-        email: "", 
-        login: "", 
-        senha: "", 
-        tipo: "", 
-        telefone: "", 
-        endereco: "" });
+       setUsuario({
+        produtosFavoritos: [], endereco: 'Rua A', email: 'pedro@pedro', telefone: '3299999999',
+        nome: 'Pedro', login: 'Pedro', senha: '321', tipo: 'comum' });
     }, []);
 
-useEffect(() => {
+const verificaCampos = (usuario) => {
         if(usuario.nome == '' || usuario.email == '' || usuario.login == '' || 
             usuario.senha == '' || usuario.tipo == '' || 
             usuario.telefone == '' || usuario.endereco == '') {
-            return setMensagem("Os campos não podem estar vazios.");
+            setMensagem("Os campos não podem estar vazios.");
+            return false;
         }
-        if(usuario.telefone) {
-            const telefoneFloat = parseFloat(usuario.telefone.replace(',', '.'));
-            if(isNaN(telefoneFloat) || telefoneFloat <= 0) {
-                return setMensagem("O telefone deve ser um número válido maior que zero.");
-            }
-
-        }
+       
+        
         setMensagem(null);
-    }, [usuario.nome, usuario.email, usuario.login, usuario.senha, usuario.tipo, usuario.telefone, usuario.endereco]);
+        setModalVisible(true);
+        return true;
+    };
 
 
 
@@ -47,11 +45,12 @@ useEffect(() => {
         setLoading(true);
         try {
             const response = await control.createUsuario(usuario);
-            if(response.error) {
-                setMensagem(response.error);
+            if(response.errors) {
+                return response
             } else {
                 setMensagem("Usuário cadastrado com sucesso!");
-                setUsuario({});
+                return response;
+                
             }
         } catch (error) {
             setMensagem("Erro ao cadastrar usuário.");
@@ -59,6 +58,10 @@ useEffect(() => {
             setLoading(false);
         }
     };
+           
+      
+
+   
 
     return (
         <ViewBase tabAtiva="cadastrarUsuario">
@@ -79,6 +82,7 @@ useEffect(() => {
                         <EntradadeTexto 
                             title="Nome do Usuário" 
                             style={styles.input}
+                            value={usuario.nome}
                             placeholder="Ex: João Silva"
                             onChangeText={text => setUsuario({ ...usuario, nome: text })}
                         />
@@ -86,6 +90,7 @@ useEffect(() => {
                         <EntradadeTexto 
                             title="Email" 
                             style={styles.input}
+                            value={usuario.email}
                             placeholder="exemplo@email.com"
                             keyboardType="email-address"
                             onChangeText={text => setUsuario({ ...usuario, email: text })}
@@ -94,7 +99,8 @@ useEffect(() => {
                         <View style={styles.rowInputs}>
                             <View style={styles.halfInput}>
                                 <EntradadeTexto 
-                                    title="Login" 
+                                    title="Login"
+                                    value={usuario.login}
                                     style={styles.input}
                                     placeholder="joaosilva"
                                     onChangeText={text => setUsuario({ ...usuario, login: text })}
@@ -104,6 +110,7 @@ useEffect(() => {
                                 <EntradadeTexto 
                                     title="Senha" 
                                     style={styles.input}
+                                    value={usuario.senha}
                                     placeholder="••••••••"
                                     secureTextEntry={true}
                                     onChangeText={text => setUsuario({ ...usuario, senha: text })}
@@ -114,6 +121,7 @@ useEffect(() => {
                         <EntradadeTexto 
                             title="Tipo de Usuário" 
                             style={styles.input}
+                            value={usuario.tipo}
                             placeholder=""
                             onChangeText={text => setUsuario({ ...usuario, tipo: text })}
                         />
@@ -121,6 +129,7 @@ useEffect(() => {
                         <EntradadeTexto 
                             title="Telefone" 
                             style={styles.input}
+                            value={usuario.telefone}
                             placeholder="(11) 99999-9999"
                             keyboardType="phone-pad"
                             onChangeText={text => setUsuario({ ...usuario, telefone: text })}
@@ -129,6 +138,7 @@ useEffect(() => {
                         <EntradadeTexto 
                             title="Endereço" 
                             style={[styles.input, styles.textArea]}
+                            value={usuario.endereco}
                             placeholder="Rua, número, bairro, cidade..."
                             multiline={true}
                             numberOfLines={3}
@@ -149,18 +159,79 @@ useEffect(() => {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => cadastrarUsuario(usuario)}
+                                onPress={() => { if (verificaCampos(usuario)) { setModalVisible(true); } }}
                                 icon="account-check"
                             >
                                 Cadastrar Usuário
                             </Button>
                         </View>
                     </View>
+                      <Modal 
+                                  visible= {modalVisible}
+                                  onDismiss={fecharModal} 
+                                  contentContainerStyle={styles.modalContainer}
+                              >
+                                  <View style={styles.modalIcon}>
+                                      <Text style={styles.modalIconText}>👟</Text>
+                                  </View>
+                                  <Text style={styles.modalTitle}>Cadastro de Usuario</Text>
+                                  <Text style={styles.modalText}>Confirma a criação do usuario com todos os dados?</Text>
+                                  <Text style={styles.modalText}>Nome: {usuario.nome}</Text>
+                                  <Text style={styles.modalText}>Email: {usuario.email}</Text>
+                                  <Text style={styles.modalText}>Telefone: {usuario.telefone}</Text>
+                                  <Text style={styles.modalText}>Endereço: {usuario.endereco}</Text>
+                                  <Text style={styles.modalText}>Login: {usuario.login}</Text>
+                                  <Text style={styles.modalText}>Tipo: {usuario.tipo}</Text>
+                                
+
+                                  <View style={styles.modalButtons}>
+                                      <Button
+                                          mode="contained"
+                                          onPress={async () => { const usuarioCadastrado = await cadastrarUsuario(usuario);
+                                            console.log(usuarioCadastrado);
+                                            
+                                                 if (usuarioCadastrado) {
+                                                  setSnackbarVisible(true);
+                                                  setSnackbarMessage(usuarioCadastrado.success ? "Usuário cadastrado com sucesso!" :usuarioCadastrado.errors.join('\n'));
+                                                    if(usuarioCadastrado.success){
+                                                      fecharModal();
+                                                      setUsuario(new Usuario());
+                                                    }
+                                                } 
+                                            }}
+                                                
+                                          style={styles.buttonSim}
+                                          labelStyle={styles.buttonSimText}
+                                      >
+                                          Sim
+                                      </Button>
+                                      <Button 
+                                          mode="outlined" 
+                                          onPress={fecharModal} 
+                                          style={styles.buttonCancelar}
+                                          labelStyle={styles.buttonCancelarText}
+                                      >
+                                          Cancelar
+                                      </Button>
+                                  </View>
+                    </Modal>
                 </View>
             </ScrollView>
+              <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={3000}
+            action={{
+                label: 'Fechar',
+                onPress: () => setSnackbarVisible(false),
+            }}
+        >
+            {snackbarMessage}
+        </Snackbar>
         </ViewBase>
     );
 }
+
 
 const styles = StyleSheet.create({
     header: {
@@ -180,6 +251,62 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 8,
+    },
+      modalContainer: {
+        backgroundColor: 'white',
+        padding: 24,
+        margin: 20,
+        borderRadius: 24,
+        elevation: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+    },
+    modalIcon: {
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    modalIconText: {
+        fontSize: 48,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 8,
+        color: '#2c2c2c',
+    },
+    modalText: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 24,
+        color: '#666',
+    },
+    modalButtons: {
+        gap: 12,
+    },
+    buttonSim: {
+        backgroundColor: '#0833f5ff',
+        paddingVertical: 6,
+        borderRadius: 12,
+        elevation: 4,
+    },
+    buttonSimText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    buttonCancelar: {
+        borderColor: '#ff6b35',
+        borderWidth: 2,
+        paddingVertical: 6,
+        borderRadius: 12,
+    },
+    buttonCancelarText: {
+        color: '#ff6b35',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     title: {
         fontSize: 28,

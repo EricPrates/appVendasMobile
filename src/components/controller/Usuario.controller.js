@@ -22,7 +22,8 @@ export const UsuarioController = () => {
     }
     async function createUsuario(novoUsuario) {
         try{
-            return await UserService.createUsuario(novoUsuario);
+            const response = await UserService.createUsuario(novoUsuario);
+            return response;
         } catch (error) {
            
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };

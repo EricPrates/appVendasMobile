@@ -11,7 +11,7 @@ import Produto from "../model/Produto";
 export default function Login({navigation}) {
     const control = UsuarioController()
     const {login, logado} = useAuth()
-    const [usuario, setUsuario] = useState({});
+    const [usuario, setUsuario] = useState({usuario: 'Eric', senha: '123'});
     const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [erro, setErro] = useState(false);

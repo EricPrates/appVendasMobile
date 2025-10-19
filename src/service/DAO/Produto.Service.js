@@ -25,8 +25,8 @@ const validarProduto  = (produto) => {
     if(!urlImagem || urlImagem.trim() === '') {
         errors.push("urlImagem é obrigatória.");
     }
-    if(!/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)(?:\?.*)?$/i.test(urlImagem)) {
-    errors.push("URL da urlImagem inválida.");
+    else if(!urlImagem.startsWith('http')) {
+        errors.push("URL da imagem deve começar com http ou https.");
     }
     if (!Array.isArray(cores) || cores.length === 0) {
         errors.push("Pelo menos uma cor é obrigatória.");

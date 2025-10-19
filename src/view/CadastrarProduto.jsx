@@ -16,23 +16,25 @@ export default function CadastrarProduto({  }) {
     const [produto, setProduto] = useState(new Produto());
     const [mensagem, setMensagem] = useState();
     const [loading, setLoading] = useState(false);
-    const abrirModal = () => setModalVisible(true);
+   
     const navigation = useNavigation();
     const fecharModal = () => setModalVisible(false);
-    const snackbarRef = Snackbar;
+    const [snackbarVisible, setSnackbarVisible] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    
     useEffect(() => {
         setProduto({
-        nome: 'TESTE',
+       nome: 'TESTE',
         descricao: 'TESTE INSERÇÃO MANUAL',
-        preco: '100',
-        quantidade: '10',
-        urlImagem: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&auto=format&fit=crop&w=500&q=80',
-        cores: 'Preto',
-        tamanho: '42',
-        avaliacao: '',
+        preco: 200.00, 
+        quantidade: 10, 
+        urlImagem: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&q=80', 
+        cores: ['Preto', 'Branco'], 
+        tamanho: '42', 
+        avaliacao: 0,
         desconto: 0,
         fornecedor: 'Fornecedor Teste',
-        idUsuario: '',
+        idUsuario: logado.id,
         categoria: 'Corrida',
         });
     }, []);
@@ -45,13 +47,7 @@ export default function CadastrarProduto({  }) {
             setMensagem("Os campos não podem estar vazios.");
             return false;
         }
-        if(produto.preco) {
-            const precoFloat = parseFloat(produto.preco.replace(',', '.'));
-            if(isNaN(precoFloat) || precoFloat <= 0) {
-                setMensagem("O preço deve ser um número válido maior que zero.");
-                return false;
-            }
-        }
+       
         setMensagem(null);
         setModalVisible(true);
         return true;
@@ -63,14 +59,14 @@ export default function CadastrarProduto({  }) {
         try {
         const response = await control.addProduto({ ...produto, idUsuario: logado.id });
         if(response.success) {
-           console.log(response.data);
-            response.data
-            setProduto({});
+           console.log(response);
+           return response
+           
         } else {
-            setMensagem("Erro ao cadastrar produto.");
+           return response.errors;
         }
     } catch (error) {
-        setMensagem("Erro interno no servidor, tente novamente.");
+        return ["Erro ao cadastrar produto."];
     }finally {
         setLoading(false);
     }
@@ -188,15 +184,14 @@ export default function CadastrarProduto({  }) {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => { verificaCampos(produto) }}
+                                onPress={() => {if (verificaCampos(produto)) { setModalVisible(true); }}}
                                 icon="check"
                             >
                                 Cadastrar Produto
                             </Button>
                         </View>
                     </View>
-                </View>{
-                  verificaCampos && (
+                </View>
                   <Modal 
                 visible= {modalVisible}
                 onDismiss={fecharModal} 
@@ -220,7 +215,14 @@ export default function CadastrarProduto({  }) {
                 <View style={styles.modalButtons}>
                     <Button
                         mode="contained"
-                        onPress={() => { cadastrarProduto(produto);  navigation.navigate('Home'); }}
+                        onPress={async () => { const produtoCadastrado = await cadastrarProduto(produto);
+                             if(produtoCadastrado.success) { setSnackbarVisible(true);
+                                setSnackbarMessage('Produto cadastrado com sucesso!');
+                              }
+                              else{
+                                setSnackbarVisible(true);
+                                setSnackbarMessage('Erro ao cadastrar produto.');
+                              } fecharModal(); navigation.navigate('Home');}}
                         style={styles.buttonSim}
                         labelStyle={styles.buttonSimText}
                     >
@@ -236,9 +238,19 @@ export default function CadastrarProduto({  }) {
                     </Button>
                 </View>
             </Modal>
-                    )
-}
+        
             </ScrollView>
+             <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={3000}
+            action={{
+                label: 'Fechar',
+                onPress: () => setSnackbarVisible(false),
+            }}
+        >
+            {snackbarMessage}
+        </Snackbar>
         </ViewBase>
     );
 }

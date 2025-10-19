@@ -17,6 +17,8 @@ export default function Home({ navigation }) {
         try {
             const BuscarProdutos = await produtoController.getProdutos();
             setProdutos(BuscarProdutos);
+            console.log(BuscarProdutos);
+            
         }
         catch (error) {
             console.error("Erro ao carregar produtos:", error);
