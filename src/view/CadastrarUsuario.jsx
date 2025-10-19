@@ -45,15 +45,14 @@ const verificaCampos = (usuario) => {
         setLoading(true);
         try {
             const response = await control.createUsuario(usuario);
-            if(response.errors) {
-                return response
-            } else {
-                setMensagem("Usuário cadastrado com sucesso!");
-                return response;
-                
-            }
+            return response;
+            
         } catch (error) {
-            setMensagem("Erro ao cadastrar usuário.");
+            console.error("Erro ao cadastrar usuário:", error);
+            return{
+                success: false,
+                errors: ["Erro ao cadastrar usuário. Tente novamente mais tarde."]
+            }
         } finally {
             setLoading(false);
         }
@@ -189,15 +188,17 @@ const verificaCampos = (usuario) => {
                                           mode="contained"
                                           onPress={async () => { const usuarioCadastrado = await cadastrarUsuario(usuario);
                                             console.log(usuarioCadastrado);
-                                            
-                                                 if (usuarioCadastrado) {
-                                                  setSnackbarVisible(true);
-                                                  setSnackbarMessage(usuarioCadastrado.success ? "Usuário cadastrado com sucesso!" :usuarioCadastrado.errors.join('\n'));
-                                                    if(usuarioCadastrado.success){
-                                                      fecharModal();
-                                                      setUsuario(new Usuario());
-                                                    }
+                                            setSnackbarVisible(true);
+                                                 if (usuarioCadastrado && usuarioCadastrado.success) {
+                                                    setSnackbarMessage("Usuário cadastrado com sucesso!");
+                                                    fecharModal();
+                                                    setUsuario(new Usuario());
+                                                    
                                                 } 
+                                                else {
+                                                    const erros = usuarioCadastrado.errors.join('\n');
+                                                    setSnackbarMessage(`Erro ao cadastrar usuário:\n${erros}`);
+                                                }
                                             }}
                                                 
                                           style={styles.buttonSim}
@@ -220,7 +221,7 @@ const verificaCampos = (usuario) => {
               <Snackbar
             visible={snackbarVisible}
             onDismiss={() => setSnackbarVisible(false)}
-            duration={3000}
+            duration={8000}
             action={{
                 label: 'Fechar',
                 onPress: () => setSnackbarVisible(false),

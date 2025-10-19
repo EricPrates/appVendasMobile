@@ -58,15 +58,14 @@ export default function CadastrarProduto({  }) {
         setLoading(true);
         try {
         const response = await control.addProduto({ ...produto, idUsuario: logado.id });
-        if(response.success) {
-           console.log(response);
-           return response
-           
-        } else {
-           return response.errors;
-        }
+        return response;
+        
     } catch (error) {
-        return ["Erro ao cadastrar produto."];
+        console.error("Erro ao cadastrar produto:", error);
+        return {
+            success: false,
+            errors: ["Erro ao cadastrar produto. Tente novamente mais tarde."]
+        };
     }finally {
         setLoading(false);
     }
@@ -216,13 +215,17 @@ export default function CadastrarProduto({  }) {
                     <Button
                         mode="contained"
                         onPress={async () => { const produtoCadastrado = await cadastrarProduto(produto);
-                             if(produtoCadastrado.success) { setSnackbarVisible(true);
-                                setSnackbarMessage('Produto cadastrado com sucesso!');
+                            setSnackbarVisible(true);
+                             if(produtoCadastrado && produtoCadastrado.success) {
+                                 setSnackbarMessage('Produto cadastrado com sucesso!');
+                                 fecharModal();
+                                 setProduto(new Produto());
                               }
                               else{
-                                setSnackbarVisible(true);
-                                setSnackbarMessage('Erro ao cadastrar produto.');
-                              } fecharModal(); navigation.navigate('Home');}}
+                                const errors = produtoCadastrado.errors.join('\n');
+                                 setSnackbarMessage(`Erro ao cadastrar produto:\n${errors}`);
+                              }}
+                            }
                         style={styles.buttonSim}
                         labelStyle={styles.buttonSimText}
                     >
@@ -243,7 +246,7 @@ export default function CadastrarProduto({  }) {
              <Snackbar
             visible={snackbarVisible}
             onDismiss={() => setSnackbarVisible(false)}
-            duration={3000}
+            duration={8000}
             action={{
                 label: 'Fechar',
                 onPress: () => setSnackbarVisible(false),
