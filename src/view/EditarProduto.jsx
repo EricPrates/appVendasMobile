@@ -5,29 +5,36 @@ import { StyleSheet, Text } from "react-native";
 import { Button, Icon, Card } from "react-native-paper";
 import { useState, useEffect } from "react";
 import Produto from '../model/Produto'
+import { ProdutoController } from "../components/controller/Produto.controller";
 
 export default function EditarProduto({ navigation }) {
+    const control = ProdutoController();
+
     const [produtos, setProdutos] = useState([]);
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [busca, setBusca] = useState('');
+    
+    const buscarProdutos = async (busca) => {
+        try {
+            if(busca.trim() === '') {
+                const todosProdutos = await control.getProdutos();
+                setProdutos(todosProdutos);
+                if(todosProdutos.success){
+                    setProdutos(todosProdutos.data);
+            }
+            else{
+                const resposta = await control.getProdutoByNome(busca);
+                if(resposta.success){
+                    setProdutos(resposta.data);
+                }
+            }
+        } 
+        }catch (error) {
+                    console.error("Erro ao buscar produtos:", error);
+                }
+            }
 
-
-    useEffect(() => {
-        const listaProdutos = [
-                new Produto(1, "Nike Air Max"),
-                new Produto(2, "Adidas Ultraboost"),
-                new Produto(3, "Puma Running Shoes"),
-                new Produto(4, "Reebok Classic"),
-            
-        ];
-        setProdutos(listaProdutos);
-    }, []);
-
-
-    const produtosFiltrados = produtos.filter(prod =>
-        prod.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        prod.id.toString().includes(busca)
-    );
+   
 
     return (
         <ViewBase tabAtiva="editarProduto">
@@ -50,7 +57,10 @@ export default function EditarProduto({ navigation }) {
                             style={styles.input}
                             value={busca}
                             placeholder="Digite nome ou ID..."
-                            onChangeText={setBusca}
+                            onChangeText={(text) => {
+                                setBusca(text);
+                                buscarProdutos(text);
+                            }}
                             keyboardType="default"
                         />
                     </View>
@@ -110,8 +120,44 @@ export default function EditarProduto({ navigation }) {
                                 value={produtoSelecionado.nome}
                                 onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, nome: text})}
                             />
+                            <EntradadeTexto
+                                title="Descrição"
+                                style={[styles.input, styles.textArea]}
+                                value={produtoSelecionado.descricao}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, descricao: text})}
+                            />
                             
-                          
+                                <EntradadeTexto
+                                    title="Preço"
+                                    style={styles.input}
+                                    value={produtoSelecionado.preco.toString()}
+                                    onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, preco: parseFloat(text)})}
+                                />
+
+                            <EntradadeTexto
+                                title="Categoria"
+                                style={styles.input}
+                                value={produtoSelecionado.categoria}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, categoria: text})}
+                            />
+                            <EntradadeTexto
+                                title="Quantidade em Estoque"
+                                style={styles.input}
+                                value={produtoSelecionado.estoque}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, estoque: parseInt(text)})}
+                            />
+                            <EntradadeTexto
+                                title="Imagem (URL)"
+                                style={styles.input}
+                                value={produtoSelecionado.imagem}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, imagem: text})}
+                            />
+                            <EntradadeTexto
+                                title="Avaliação"
+                                style={styles.input}
+                                value={produtoSelecionado.avaliacao}
+                                onChangeText={(text) => setProdutoSelecionado({...produtoSelecionado, avaliacao: parseFloat(text)})}
+                            />
 
                             <View style={styles.buttonContainer}>
                                 <Button 
