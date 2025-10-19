@@ -6,6 +6,7 @@ import { Button, Icon, Card } from "react-native-paper";
 import { useState, useEffect } from "react";
 import Produto from '../model/Produto'
 import { ProdutoController } from "../components/controller/Produto.controller";
+import { updateProduto } from "../service/DAO/Produto.Service";
 
 export default function EditarProduto({ navigation }) {
     const control = ProdutoController();
@@ -14,27 +15,28 @@ export default function EditarProduto({ navigation }) {
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [busca, setBusca] = useState('');
     
-    const buscarProdutos = async (busca) => {
-        try {
-            if(busca.trim() === '') {
-                const todosProdutos = await control.getProdutos();
-                setProdutos(todosProdutos);
-                if(todosProdutos.success){
-                    setProdutos(todosProdutos.data);
-            }
-            else{
-                const resposta = await control.getProdutoByNome(busca);
-                if(resposta.success){
-                    setProdutos(resposta.data);
-                }
-            }
-        } 
-        }catch (error) {
-                    console.error("Erro ao buscar produtos:", error);
-                }
-            }
+    useEffect(() => {
+        const carregarProdutos = async () => {
+            const response = await control.getProdutos();
+            console.log(response);
+            
+            setProdutos(response);
+            console.log(produtos);
+            
+        };
+        carregarProdutos();
+    }, []);
 
-   
+    const produtosFiltrados = produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(busca.toLowerCase()) ||
+        produto.id.toString().includes(busca)
+    );
+    const updateProduto = async () => {
+        if (produtoSelecionado) {
+            const response = await control.updateProduto(produtoSelecionado.id, produtoSelecionado);
+            console.log(response);
+        }
+    };
 
     return (
         <ViewBase tabAtiva="editarProduto">
@@ -57,10 +59,7 @@ export default function EditarProduto({ navigation }) {
                             style={styles.input}
                             value={busca}
                             placeholder="Digite nome ou ID..."
-                            onChangeText={(text) => {
-                                setBusca(text);
-                                buscarProdutos(text);
-                            }}
+                            onChangeText={setBusca}
                             keyboardType="default"
                         />
                     </View>
@@ -174,6 +173,7 @@ export default function EditarProduto({ navigation }) {
                                     onPress={() => {
                                       
                                         console.log('Salvando:', produtoSelecionado);
+                                        updateProduto();
                                         setProdutoSelecionado(null);
                                     }}
                                     icon="content-save"

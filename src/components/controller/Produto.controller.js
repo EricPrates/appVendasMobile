@@ -4,7 +4,7 @@ export const ProdutoController = () => {
 
     async function saveProdutos(produtos) {
         try{
-           const produtosComId = produtos.map((p, index) => ({ ...p, id: `${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}` }));
+           const produtosComId = produtos.map(p => ({ ...p, id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}` }));
             await ProdutoService.saveProdutos(produtosComId);
         }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
@@ -16,10 +16,11 @@ export const ProdutoController = () => {
             const produtoComId = { id, ...novoProduto };
             const response = await ProdutoService.addProduto(produtoComId);
             return response;
-    }catch(error){
-            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+            }catch(error){
+                    return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+            }
     }
-    }
+
     async function updateProduto(id, produtoAtualizado) {
         try{
             const response = await ProdutoService.updateProduto(id, produtoAtualizado);
@@ -121,7 +122,7 @@ export const ProdutoController = () => {
     async function getProdutosByEstoque(minEstoque, maxEstoque) {
         try{
             const produtos = await ProdutoService.getProdutosByEstoque(minEstoque, maxEstoque);
-            return produtos;
+            return { success: true, data: [produtos] };
         }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }

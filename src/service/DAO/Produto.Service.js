@@ -110,25 +110,26 @@ export async function deleteProdutoNome(nome) {
 }
 
 export async function getProdutoById(id) {
+
     const produtos = await getProdutos();
     
     const produtoBuscado = produtos.find(p => p.id === id);
     if (!produtoBuscado) {
         return { success: false, errors: ["Produto não encontrado."] };
     }
-    return { success: true, data: produtoBuscado };
+    return { success: true, data: [produtoBuscado] };
 }
 
 export async function getProdutoByNome(nome) {
     const produtos = await getProdutos();
 
-    const produtoBuscado = [produtos.find(p => p.nome === nome)];
+    const produtoBuscado = produtos.find(p => p.nome === nome);
 
     if(!produtoBuscado){
-        return {sucess: false, errors: ["Produto não encontrado."]};
+        return {success: false, errors: ["Produto não encontrado."]};
     }
 
-    return {sucess: true, data: produtoBuscado};
+    return {success: true, data: [produtoBuscado]};
 
 }
 
