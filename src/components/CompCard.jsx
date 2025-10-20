@@ -4,7 +4,7 @@ import { Surface } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import { AuthProvider, useAuth } from "./Provider";
 
-export default function CompCard({ object, source, nome, preco, route }) {
+export default function CompCard({ object, source, nome, preco, avaliacao,route }) {
 
     const { addFavorito } = useAuth();
 
@@ -35,8 +35,8 @@ export default function CompCard({ object, source, nome, preco, route }) {
                 
                
                 <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>⭐ 4.8</Text>
-                    <Text style={styles.reviews}>(128 reviews)</Text>
+                    <Text style={styles.rating}>⭐ {avaliacao}</Text>
+                    <Text style={styles.reviews}></Text>
                 </View>
                 <View>
                     

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import Produto from '../model/Produto'
 import { ProdutoController } from "../components/controller/Produto.controller";
 import { updateProduto } from "../service/DAO/Produto.Service";
+import CompCard from "../components/CompCard";
 
 export default function EditarProduto({ navigation }) {
     const control = ProdutoController();
@@ -18,10 +19,10 @@ export default function EditarProduto({ navigation }) {
     useEffect(() => {
         const carregarProdutos = async () => {
             const response = await control.getProdutos();
-            console.log(response);
+            
             
             setProdutos(response);
-            console.log(produtos);
+            
             
         };
         carregarProdutos();
@@ -74,25 +75,19 @@ export default function EditarProduto({ navigation }) {
                                 <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
                             ) : (
                                 produtosFiltrados.map(produto => (
-                                    <Card 
+                                    <Button key={produto.id} onPress={() => setProdutoSelecionado(produto)}>
+                                   <CompCard 
                                         key={produto.id} 
                                         style={styles.produtoCard}
                                         onPress={() => setProdutoSelecionado(produto)}
+                                        preco={produto.preco}
+                                        nome={produto.nome}
+                                        descricao={produto.descricao}
+                                        source={produto.urlImagem}
                                     >
-                                        <Card.Content>
-                                            <Text style={styles.produtoNome}>{produto.nome}</Text>
-                                            <Text style={styles.produtoId}>ID: {produto.id}</Text>
-                                            <Text style={styles.produtoPreco}>R$ {produto.preco}</Text>
-                                        </Card.Content>
-                                        <Card.Actions>
-                                            <Button 
-                                                onPress={() => setProdutoSelecionado(produto)}
-                                                icon="pencil"
-                                            >
-                                                Editar
-                                            </Button>
-                                        </Card.Actions>
-                                    </Card>
+                                    
+                                    </CompCard>
+                                    </Button>
                                 ))
                             )}
                         </View>
