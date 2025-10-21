@@ -80,11 +80,18 @@ export default function MenuComponent({ }) {
                         />
                         <Lista 
                             onPress={() => {navigation.navigate('EditarProduto')}} 
-                            style={styles.adminItemLast} 
+                            style={styles.adminItem} 
                             icon='tag-edit' 
                             title="Editar produto" 
                             description="Editar produto existente" 
                         />
+                        <Lista 
+                            onPress={() => {navigation.navigate('EditarUsuarios'); setTabAtiva('editarUsuarios')}} 
+                            style={styles.adminItemLast} 
+                            icon='account-cog' 
+                            title="Gerenciar Usuários" 
+                            description="Gerenciar usuários" 
+                />
                     </View>
                 )}
             

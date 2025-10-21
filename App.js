@@ -19,6 +19,7 @@ import EditarProduto from './src/view/EditarProduto.jsx';
 import Perfil from './src/view/Perfil.jsx';
 import Produto from './src/model/Produto.js';
 import Insercoes from './src/components/insercoes.jsx';
+import EditarUsuarios from './src/view/EditarUsuarios.jsx';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -44,6 +45,8 @@ export default function App() {
             <Stack.Screen name="EditarProduto" component={EditarProduto} />
             <Stack.Screen name="Perfil" component={Perfil} />
             <Stack.Screen name="insercoes" component={Insercoes} />
+            <Stack.Screen name="EditarUsuarios" component={EditarUsuarios} />
+            
         
           </Stack.Navigator>
         </NavigationContainer>

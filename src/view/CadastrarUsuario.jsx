@@ -6,10 +6,12 @@ import { Button, Icon, Modal, Snackbar } from "react-native-paper";
 import  {UsuarioController}  from "../components/controller/Usuario.controller";
 import { useEffect, useState } from "react";
 import Usuario from "../model/Usuario";
-export default function CadastrarUsuario({ navigation }) {
+export default function CadastrarUsuario({ usuarioEditar}) {
+
+    
 
     const control = UsuarioController();
-    const [usuario, setUsuario] = useState(new Usuario());
+    const [usuario, setUsuario] = useState(usuarioEditar ? usuarioEditar : new Usuario());
     const [mensagem, setMensagem] = useState("");
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +21,9 @@ export default function CadastrarUsuario({ navigation }) {
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
-
+        if (usuarioEditar) {
+            setUsuario(usuarioEditar);
+        }
        setUsuario({
         produtosFavoritos: [], endereco: 'Rua A', email: 'pedro@pedro', telefone: '3299999999',
         nome: 'Pedro', login: 'Pedro', senha: '321', tipo: 'comum' });
