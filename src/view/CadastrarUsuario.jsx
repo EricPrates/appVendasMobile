@@ -6,12 +6,25 @@ import { Button, Icon, Modal, Snackbar } from "react-native-paper";
 import  {UsuarioController}  from "../components/controller/Usuario.controller";
 import { useEffect, useState } from "react";
 import Usuario from "../model/Usuario";
-export default function CadastrarUsuario({ usuarioEditar}) {
-
+export default function CadastrarUsuario({ route}) {
+   
     
-
+    const { usuarioEditar } = route.params;
     const control = UsuarioController();
-    const [usuario, setUsuario] = useState(usuarioEditar ? usuarioEditar : new Usuario());
+    const [usuario, setUsuario] = useState(usuarioEditar ?{
+        id: usuarioEditar.id,
+        endereco: usuarioEditar.endereco,
+        email: usuarioEditar.email,
+        telefone: usuarioEditar.telefone,
+        nome: usuarioEditar.nome,
+        login: usuarioEditar.login,
+        senha: usuarioEditar.senha,
+        tipo: usuarioEditar.tipo,
+        
+        
+    } : new Usuario());
+   
+    
     const [mensagem, setMensagem] = useState("");
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -20,14 +33,11 @@ export default function CadastrarUsuario({ usuarioEditar}) {
     const [snackbarVisible, setSnackbarVisible] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
-    useEffect(() => {
-        if (usuarioEditar) {
-            setUsuario(usuarioEditar);
-        }
-       setUsuario({
-        produtosFavoritos: [], endereco: 'Rua A', email: 'pedro@pedro', telefone: '3299999999',
-        nome: 'Pedro', login: 'Pedro', senha: '321', tipo: 'comum' });
-    }, []);
+    
+
+
+
+
 
 const verificaCampos = (usuario) => {
         if(usuario.nome == '' || usuario.email == '' || usuario.login == '' || 
@@ -61,20 +71,39 @@ const verificaCampos = (usuario) => {
             setLoading(false);
         }
     };
+    const editarUsuario = async (usuario, id) => {
+                
+        setLoading(true);
+        
+        
+        try {
+            const response = await control.updateUsuario(usuario, id);
            
-      
+            return response;
 
-   
-
+        } catch (error) {
+            console.error("Erro ao editar usuário:", error);
+            return {
+                success: false,
+                errors: ["Erro ao editar usuário. Tente novamente mais tarde."]
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <ViewBase tabAtiva="cadastrarUsuario">
            
             <View style={styles.header}>
                 <View style={styles.titleContainer}>
                     <Icon source="account-plus" size={32} color="#fff" />
-                    <Text style={styles.title}>Cadastrar Usuário</Text>
+                    {usuarioEditar && <Text style={styles.title}>Editar Usuário</Text>}
+                    {!usuarioEditar && <Text style={styles.title}>Cadastrar Usuário</Text>}
                 </View>
+                {usuarioEditar && (<Text style={styles.subtitle}>Editando usuário: {usuarioEditar.nome}</Text>)}
+                {!usuarioEditar && (
                 <Text style={styles.subtitle}>Adicione um novo usuário ao sistema 👤</Text>
+                )}
             </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -158,6 +187,18 @@ const verificaCampos = (usuario) => {
                             >
                                 Voltar
                             </Button>
+                            {usuarioEditar && (
+                                <Button 
+                                mode="contained" 
+                                style={styles.submitButton}
+                                labelStyle={styles.submitButtonText}
+                                onPress={() => { if (verificaCampos(usuario)) { setModalVisible(true); } }}
+                                icon="account-check"
+                            >
+                                Editar Usuário
+                            </Button>
+                            )}
+                            {!usuarioEditar && (
                             <Button 
                                 mode="contained" 
                                 style={styles.submitButton}
@@ -167,6 +208,7 @@ const verificaCampos = (usuario) => {
                             >
                                 Cadastrar Usuário
                             </Button>
+                            )}
                         </View>
                     </View>
                       <Modal 
@@ -177,8 +219,16 @@ const verificaCampos = (usuario) => {
                                   <View style={styles.modalIcon}>
                                       <Text style={styles.modalIconText}>👟</Text>
                                   </View>
-                                  <Text style={styles.modalTitle}>Cadastro de Usuario</Text>
-                                  <Text style={styles.modalText}>Confirma a criação do usuario com todos os dados?</Text>
+                                  {
+                                    usuarioEditar ? (<Text style={styles.modalTitle}>Edição de Usuario</Text>
+                                        
+                                    ) : (<Text style={styles.modalTitle}>Cadastro de Usuario</Text>)
+                                  }
+                                  {
+                                    usuarioEditar ? (<Text style={styles.modalText}>Confirma a edição do usuario com todos os dados?</Text>
+
+                                    ) : (<Text style={styles.modalText}>Confirma a criação do usuario com todos os dados?</Text>)
+                                  }
                                   <Text style={styles.modalText}>Nome: {usuario.nome}</Text>
                                   <Text style={styles.modalText}>Email: {usuario.email}</Text>
                                   <Text style={styles.modalText}>Telefone: {usuario.telefone}</Text>
@@ -190,10 +240,10 @@ const verificaCampos = (usuario) => {
                                   <View style={styles.modalButtons}>
                                       <Button
                                           mode="contained"
-                                          onPress={async () => { const usuarioCadastrado = await cadastrarUsuario(usuario);
-                                            console.log(usuarioCadastrado);
+                                          onPress={async () => { const novoUsuario =  usuarioEditar?  await editarUsuario(usuario, usuario.id): await cadastrarUsuario(usuario);
+                                            
                                             setSnackbarVisible(true);
-                                                 if (usuarioCadastrado && usuarioCadastrado.success) {
+                                                 if (novoUsuario && novoUsuario.success) {
                                                     setSnackbarMessage("Usuário cadastrado com sucesso!");
                                                     fecharModal();
                                                     setUsuario(new Usuario());

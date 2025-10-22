@@ -29,9 +29,12 @@ export const UsuarioController = () => {
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
-    async function updateUsuario(id, usuarioAtualizado) {
+    async function updateUsuario(usuarioAtualizado, id) {
+        console.log(usuarioAtualizado);
+        
+        
         try{
-            return await UserService.updateUsuario(usuarioAtualizado, id);
+            return await UserService.updateUsuario(usuarioAtualizado, id.toString());
         } catch (error) {
        
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };

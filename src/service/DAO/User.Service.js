@@ -57,9 +57,12 @@ function validaUsuario(updatedFields) {
 
 export async function updateUsuario(usuarioAtualizado, id) {
     const usuarios = await getUsuarios();
+    
     const usuario = usuarios.find(u => u.id === id);
+    
+    
     if (!usuario) {
-        return { success: false, errors: ["Login ou senha não encontrados."] };
+        return { success: false, errors: ["Id não encontrado."] };
     }
     const errors = validaUsuario(usuarioAtualizado);
     if (errors.length > 0) {
@@ -74,7 +77,7 @@ export async function updateUsuario(usuarioAtualizado, id) {
     if (loginExiste) {
         return { success: false, errors: ["Login já está em uso."] };
     }
-    const updatedUsuario = { ...usuario, ...usuarioAtualizado };
+    const updatedUsuario = { ...usuario, ...usuarioAtualizado, id: id };
     const updateUsuario = usuarios.map(u => u.id === id ? updatedUsuario : u);
     await setUsuarios(updateUsuario);
     return { success: true, data: updatedUsuario };

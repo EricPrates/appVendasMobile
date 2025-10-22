@@ -1,8 +1,8 @@
 import { UsuarioController } from "../components/controller/Usuario.controller";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FlatList, Text, View, Alert, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { FlatList, Text, View, Alert, StyleSheet, TouchableOpacity, ScrollView, Button } from "react-native";
+import { ActivityIndicator,Snackbar } from "react-native-paper";
 import ViewBase from "./ViewBase";
 
 export default function EditarUsuarios() {
@@ -12,13 +12,13 @@ export default function EditarUsuarios() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [erro, setErro] = useState(null);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const fetchUsuarios = async () => {
         try {
             setLoading(true);
             const response = await control.getUsuarios();
-            
-            
             
             if (response.success && Array.isArray(response.data)) {
                 setUsuarios(response.data);
@@ -42,9 +42,43 @@ export default function EditarUsuarios() {
     };
 
     const handleEditUser = (usuario) => {
-        navigation.navigate('CadastrarUsuario', { usuario });
-    };
+     
 
+        navigation.navigate('CadastrarUsuario', { usuarioEditar: usuario });
+    };
+    const handleExcluirUsuario = (id) => {
+        Alert.alert(
+            "Confirmar Exclusão",
+            "Tem certeza que deseja excluir este usuário?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+
+                },
+                {
+                    text: "Excluir",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const response = await control.deleteUsuario(id);
+                            if (response.success) {
+                                setSnackbarVisible(true);
+                                setSnackbarMessage("Usuário excluído com sucesso!");
+                                fetchUsuarios();
+                            } else {
+                                setSnackbarVisible(true);
+                                setSnackbarMessage("Erro ao excluir usuário: " + response.errors.join(', '));
+                            }
+                        } catch (error) {
+                            console.error("Erro ao excluir usuário:", error);
+                            setSnackbarMessage("Erro ao excluir usuário.");
+                        }
+                    }
+                }
+            ]
+        );
+    };
     useEffect(() => {
         fetchUsuarios();
     }, []);
@@ -72,15 +106,15 @@ export default function EditarUsuarios() {
           
             <FlatList
                 data={usuarios}
-                keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity 
                         style={UsuarioStyles.userItem}
                         onPress={() => handleEditUser(item)}
                         activeOpacity={0.7}
                     >
-                        <Text style={UsuarioStyles.userName}>{item.nome || "Nome não disponível"}</Text>
-                        <Text style={UsuarioStyles.userEmail}>{item.email || "Email não disponível"}</Text>
+                        <Text style={UsuarioStyles.userName}>{item.nome }</Text>
+                        <Text style={UsuarioStyles.userEmail}>{item.email }</Text>
                         <Text style={UsuarioStyles.userInfo}>
                             ID: {item.id} • {item.tipo || "Usuário"}
                         </Text>
@@ -89,13 +123,13 @@ export default function EditarUsuarios() {
                         <View style={UsuarioStyles.actionButtons}>
                             <TouchableOpacity 
                                 style={UsuarioStyles.editButton}
-                                onPress={() => { handleEditUser(item);}}
+                                onPress={() => { handleEditUser(item)}}
                             >
                                 <Text style={UsuarioStyles.buttonText}>Editar</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={UsuarioStyles.deleteButton}
-                                onPress={() => {}}
+                                onPress={() => {handleExcluirUsuario(item.id)}}
                             >
                                 <Text style={UsuarioStyles.buttonText}>Excluir</Text>
                             </TouchableOpacity>
@@ -126,7 +160,19 @@ export default function EditarUsuarios() {
                 <Text style={UsuarioStyles.fabText}>+</Text>
             </TouchableOpacity>
         </View>
+           <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={8000}
+            action={{
+                label: 'Fechar',
+                onPress: () => setSnackbarVisible(false),
+            }}
+        >
+            {snackbarMessage}
+        </Snackbar>
         </ViewBase>
+        
     );
 }
 
