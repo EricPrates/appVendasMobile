@@ -31,7 +31,7 @@ export default function Home({ navigation }) {
    }, []);
 
    useEffect( () => {
-       const filtrarProdutosNome = async () => {
+       const buscarNomeOuCategoria = async () => {
         setError(null);
            try {
                if(buscarProdutos && searchQuery) {
@@ -51,26 +51,27 @@ export default function Home({ navigation }) {
                console.error("Erro ao filtrar produtos:", error);
            }
        }
-       filtrarProdutosNome();
+       buscarNomeOuCategoria();
    }, [searchQuery]);
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
-                {!error && produtos.map((produto) => (
+                {produtos.length > 0 && produtos.map((produto) => (
                 <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard  source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     
                 ))}
-                {error && 
+                {error && (
                     <View style={styles.errorContainer}>
                         <Text style={styles.errorText}> {error}</Text>
                     </View>
-                }
-                
+                )}
+
             </View>
-            <Button title="Testar Model" onPress={() => navigation.navigate('insercoes')} />
+           <View>
+            </View>
         </ViewBase>
     
     );

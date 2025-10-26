@@ -21,7 +21,7 @@ export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao 
 
             <View style={styles.content}>
                 <View style={styles.cardContainer}>
-                    <CompCard style={styles.productCard} source={produto.urlImagem} preco={produto.preco}  />
+                    <CompCard style={styles.productCard} source={produto.urlImagem} preco={produto.preco} key={produto.id} />
                 </View>
                 <TouchableOpacity style={styles.favoritos} onPress={() => {addFavorito(produto); setClicFavoritos(!clicFavoritos);}}>
                     <Icon source={ clicFavoritos ? "heart" : "heart-outline"} size={40} color="#ff4757" />
@@ -37,10 +37,13 @@ export default function DetalhesProduto({ desconto, valorSemDesconto, avaliacao 
                         <Text style={styles.detailLabel}>Descrição:</Text>
                         <Text style={styles.detailValue}>{produto.descricao}</Text>
                     </View>
-                    
                     <View style={styles.detailRow}>
-                        <Text style={styles.detailLabel}>Preço:</Text>
-                        <Text style={[styles.detailValue, styles.price]}>R$ {produto.preco}</Text>
+                        <Text style={styles.detailLabel}>Descrição:</Text>
+                        <Text style={styles.detailValue}>{produto.descricao}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                        <Text style={styles.detailLabel}>Cores:</Text>
+                        <Text style={styles.detailValue}>{produto.cores.join(", ")}</Text>
                     </View>
                     
                     <View style={styles.detailRow}>

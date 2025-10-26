@@ -141,8 +141,12 @@ export async function getProdutosGeral(filtro){
         p.descricao.toLowerCase().includes(filtro.toLowerCase()) ||
         p.categoria.toLowerCase().includes(filtro.toLowerCase()) ||
         p.fornecedor.toLowerCase().includes(filtro.toLowerCase()) ||
-        p.id.toString() === filtro
+        p.cores.some(c => c.toLowerCase().includes(filtro.toLowerCase()))
     );
+    if(produtosFiltrados.length === 0){
+        return {success: false, errors: ["Nenhum produto encontrado com esse filtro."]};
+    }
+
     return { success: true, data: produtosFiltrados };  
 }
 

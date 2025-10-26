@@ -44,7 +44,6 @@ export default function App() {
             <Stack.Screen name="MeusPedidos" component={MeusPedidos} />
             <Stack.Screen name="EditarProduto" component={EditarProduto} />
             <Stack.Screen name="Perfil" component={Perfil} />
-            <Stack.Screen name="insercoes" component={Insercoes} />
             <Stack.Screen name="EditarUsuarios" component={EditarUsuarios} />
             
         

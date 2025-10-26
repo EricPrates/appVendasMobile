@@ -49,9 +49,9 @@ const AuthProvider = ({children}) =>{
     }
     const buscarProdutos = async (searchQuery) => {
         const controlProduto = ProdutoController();
-        const res = await controlProduto.getProdutoByNome(searchQuery);
+        const res = await controlProduto.getProdutosGeral(searchQuery);
         
-        return res;
+        return res
     };
     const signOut = () =>{
         setLogado(false)
