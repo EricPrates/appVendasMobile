@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#ff4757',
+        zIndex: 1,
         position: 'relative',
     },
    

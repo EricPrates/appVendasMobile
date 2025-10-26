@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Appbar, Searchbar, Modal, Portal, PaperProvider, MD3Colors } from 'react-native-paper';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
 import { useAuth } from './Provider';
 import { useNavigation } from '@react-navigation/native';
 import { ProdutoController } from './controller/Produto.controller';
@@ -8,8 +8,9 @@ export default function Cabecalho({ tabAtiva }) {
     const controlProduto = ProdutoController();
     
     const [menuVisible, setMenuVisible] = useState(false);
-    const { nome, signOut, buscarProdutos, setSearchQuery, searchQuery } = useAuth();
+    const { nome, signOut, buscarProdutos, setSearchQuery, searchQuery, alterarFiltro } = useAuth();
     const navigation = useNavigation();
+   
 
 
     return (
@@ -35,9 +36,16 @@ export default function Cabecalho({ tabAtiva }) {
                 onChangeText = {(query) => { setSearchQuery(query) }}
             />
             <Appbar.Action 
-                icon={tabAtiva === "filtro" ? "filter" : "filter-outline"} 
-                color={tabAtiva === "filtro" ? "#fff" : "#fff"}
+                icon={"filter-variant"}
+                size={24}
+                onPress={() => alterarFiltro()}
+                color={"#fff"}
+                
             />
+            
+               
+        
+            
             <Appbar.Action 
                 icon={tabAtiva === "notificacoes" ? "bell" : "bell-outline"} 
                 color={tabAtiva === "notificacoes" ? "#fff" : "#fff"} 
@@ -55,7 +63,7 @@ export default function Cabecalho({ tabAtiva }) {
 const styles = StyleSheet.create({
     header: {
         backgroundColor: '#ff6b35',
-        elevation: 8,
+        elevation: 50,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
@@ -96,4 +104,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         transform: [{ scale: 1.1 }],
     },
+      
 });

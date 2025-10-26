@@ -1,21 +1,21 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text, TextInput } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
-import { use, useEffect, useEffectEvent, useState } from "react";
-import BarraBaixa from "../components/BarraBaixa";
+import { useEffect, useState } from "react";
+import { Modal } from "react-native";
 import CompCard from "../components/CompCard";
-import Cabecalho from "../components/Cabecalho";
+
 import ViewBase from "./ViewBase";
-import { PaperProvider } from "react-native-paper";
-import Insercoes from "../components/insercoes";
 import { ProdutoController } from "../components/controller/Produto.controller";
 
+
 export default function Home({ navigation }) {
-    const { buscarProdutos, searchQuery } = useAuth();
+    const { buscarProdutos, searchQuery, filtroVisible } = useAuth();
     const produtoController = ProdutoController();
     const [produtos, setProdutos] = useState([]);
      const [tabAtiva, setTabAtiva] = useState('home');
      const [error, setError] = useState(null);
+     const [tipoFiltro, setTipoFiltro] = useState(null);
 
    useEffect( () => {
     const carregarProdutos = async () => {
@@ -56,6 +56,83 @@ export default function Home({ navigation }) {
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
+            { filtroVisible && (
+        <View style={styles.filtroContainer}>
+    <Text style={styles.filtroTitulo}>Filtrar por</Text>
+    
+    <View style={styles.filtrosGrid}>
+        <TouchableOpacity 
+            style={[
+                styles.filterElement,
+                tipoFiltro === 'preco' && styles.filterElementAtivo
+            ]} 
+            onPress={() => setTipoFiltro('preco')}
+        >
+            <Text style={styles.filterIcon}>💰</Text>
+            <Text style={styles.filterText}>Preço</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+            style={[
+                styles.filterElement,
+                tipoFiltro === 'categoria' && styles.filterElementAtivo
+            ]} 
+            onPress={() => setTipoFiltro('categoria')}
+        >
+            <Text style={styles.filterIcon}>📁</Text>
+            <Text style={styles.filterText}>Categoria</Text>
+        </TouchableOpacity>
+        
+        
+    </View>
+
+    {tipoFiltro === 'preco' && (
+        <View style={styles.filtroDetalhes}>
+            <Text style={styles.filtroSubtitulo}>Faixa de Preço</Text>
+            
+            <TextInput 
+                placeholder="Valor mínimo" 
+                placeholderTextColor="#999"
+                style={styles.input} 
+                keyboardType="numeric"
+            />
+            
+            <TextInput 
+                placeholder="Valor máximo" 
+                placeholderTextColor="#999"
+                style={styles.input} 
+                keyboardType="numeric"
+            />
+            
+            <TouchableOpacity style={styles.botaoAplicar}>
+                <Text style={styles.botaoAplicarTexto}>Aplicar Filtro</Text>
+            </TouchableOpacity>
+        </View>
+    )}
+    
+    {tipoFiltro === 'categoria' && (
+        <View style={styles.filtroDetalhes}>
+            <Text style={styles.filtroSubtitulo}>Categorias</Text>
+            
+            <TouchableOpacity style={styles.opcaoCategoria}>
+                <Text style={styles.opcaoTexto}>👟 Casual</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.opcaoCategoria}>
+                <Text style={styles.opcaoTexto}>🏃 Corrida</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.opcaoCategoria}>
+                <Text style={styles.opcaoTexto}>🏀 Basquete</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.opcaoCategoria}>
+                <Text style={styles.opcaoTexto}>⚽ Futebol</Text>
+            </TouchableOpacity>
+        </View>
+    )}
+</View>
+            )}
             <View style={styles.content}>
                 {produtos.length > 0 && produtos.map((produto) => (
                 <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
@@ -113,5 +190,118 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center',
+    
+    },
+   filtroContainer: {
+        width: 220,
+        position: 'absolute',
+        right: 20,
+        top: 0,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        margin: 0,
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ffd8cc',
+        zIndex: 1000,
+    },
+    filtroTitulo: {
+        color: '#2c2c2c',
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 16,
+        borderBottomWidth: 2,
+        borderBottomColor: '#ff6b35',
+        paddingBottom: 8,
+    },
+    filtrosGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        gap: 5,
+    },
+    filterElement: {
+        backgroundColor: '#ff6b35',
+        padding: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '48%',
+        minHeight: 70,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    filterElementAtivo: {
+        backgroundColor: '#e55a2b',
+        transform: [{ scale: 1.05 }],
+        elevation: 4,
+    },
+    filterIcon: {
+        fontSize: 20,
+        marginBottom: 4,
+    },
+    filterText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 12,
+        textAlign: 'center',
+    },
+    filtroDetalhes: {
+        marginTop: 16,
+        paddingTop: 16,
+        borderTopWidth: 1,
+        borderTopColor: '#f0f0f0',
+    },
+    filtroSubtitulo: {
+        color: '#2c2c2c',
+        fontWeight: '600',
+        fontSize: 14,
+        marginBottom: 12,
+    },
+    input: {
+        backgroundColor: '#f8f9fa',
+        borderRadius: 8,
+        padding: 12,
+        marginVertical: 6,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+        fontSize: 14,
+        color: '#2c2c2c',
+    },
+    botaoAplicar: {
+        backgroundColor: '#ff6b35',
+        padding: 14,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 10,
+        elevation: 2,
+    },
+    botaoAplicarTexto: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    opcaoCategoria: {
+        backgroundColor: '#f8f9fa',
+        padding: 12,
+        borderRadius: 8,
+        marginVertical: 4,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+    },
+    opcaoTexto: {
+        color: '#2c2c2c',
+        fontSize: 14,
+        fontWeight: '500',
     },
 });

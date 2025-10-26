@@ -20,7 +20,7 @@ const AuthProvider = ({children}) =>{
     const [logado, setLogado] = useState(null)
     const [searchQuery, setSearchQuery] = useState('');
     const nome = logado ? logado.nome : ""
-
+    const [filtroVisible, setFiltroVisible] = useState(false);
     const login = async (usuario, senha)=>{
         try{
         const res = await control.loginUsuario(usuario, senha)
@@ -58,13 +58,13 @@ const AuthProvider = ({children}) =>{
         setNome("")
     }
 
-
+    const alterarFiltro = () => setFiltroVisible(!filtroVisible); console.log(filtroVisible);
 
     return (
-        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos, buscarProdutos, setSearchQuery, searchQuery}}>
+        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos, buscarProdutos, setSearchQuery, searchQuery, alterarFiltro, filtroVisible, setFiltroVisible}}>
             {children}
         </AuthContext.Provider>
-    )
+    ) 
 
 }
 
