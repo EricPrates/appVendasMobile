@@ -123,13 +123,13 @@ export async function getProdutoById(id) {
 export async function getProdutoByNome(nome) {
     const produtos = await getProdutos();
 
-    const produtoBuscado = produtos.find(p => p.nome === nome);
+    const produtoBuscado = produtos.filter(p => p.nome.toLowerCase().includes(nome.toLowerCase()));
 
-    if(!produtoBuscado){
+    if(!produtoBuscado || produtoBuscado.length === 0){
         return {success: false, errors: ["Produto não encontrado."]};
     }
 
-    return {success: true, data: [produtoBuscado]};
+    return {success: true, data: produtoBuscado};
 
 }
 

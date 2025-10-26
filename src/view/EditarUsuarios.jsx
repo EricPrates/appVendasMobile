@@ -72,7 +72,7 @@ export default function EditarUsuarios() {
                             }
                         } catch (error) {
                             console.error("Erro ao excluir usuário:", error);
-                            setSnackbarMessage("Erro ao excluir usuário.");
+                            setSnackbarMessage("Erro interno ao excluir usuário.");
                         }
                     }
                 }

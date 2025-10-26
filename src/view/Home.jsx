@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
-import { useEffect, useEffectEvent, useState } from "react";
+import { use, useEffect, useEffectEvent, useState } from "react";
 import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
@@ -9,36 +9,65 @@ import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
 import Insercoes from "../components/insercoes";
 import { ProdutoController } from "../components/controller/Produto.controller";
+
 export default function Home({ navigation }) {
+    const { buscarProdutos, searchQuery } = useAuth();
     const produtoController = ProdutoController();
     const [produtos, setProdutos] = useState([]);
+     const [tabAtiva, setTabAtiva] = useState('home');
+     const [error, setError] = useState(null);
+
    useEffect( () => {
     const carregarProdutos = async () => {
         try {
-            const BuscarProdutos = await produtoController.getProdutos();
-            setProdutos(BuscarProdutos);
-            console.log(BuscarProdutos);
-            
+            const todosProdutos = await produtoController.getProdutos();
+            setProdutos(todosProdutos);
         }
         catch (error) {
-            console.error("Erro ao carregar produtos:", error);
+            setError(error);
         }
     }
     carregarProdutos();
    }, []);
-    
-    const [tabAtiva, setTabAtiva] = useState('home');
-    
+
+   useEffect( () => {
+       const filtrarProdutosNome = async () => {
+        setError(null);
+           try {
+               if(buscarProdutos && searchQuery) {
+                   const produtosFiltrados = await buscarProdutos(searchQuery);
+                   if (produtosFiltrados.success) {
+                       setProdutos(produtosFiltrados.data);
+                   }
+                   if(produtosFiltrados.errors){
+                    setProdutos([]);
+                       setError(produtosFiltrados.errors);
+                   }
+
+               }
+               
+           }
+           catch (error) {
+               console.error("Erro ao filtrar produtos:", error);
+           }
+       }
+       filtrarProdutosNome();
+   }, [searchQuery]);
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
-                { produtos.map((produto) => (
+                {!error && produtos.map((produto) => (
                 <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
-                        <CompCard key={produto.id} source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
+                        <CompCard  source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     
                 ))}
+                {error && 
+                    <View style={styles.errorContainer}>
+                        <Text style={styles.errorText}> {error}</Text>
+                    </View>
+                }
                 
             </View>
             <Button title="Testar Model" onPress={() => navigation.navigate('insercoes')} />
@@ -74,6 +103,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
-   
-    
+    errorContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });

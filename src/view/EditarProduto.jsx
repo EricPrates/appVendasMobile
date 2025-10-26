@@ -2,46 +2,59 @@ import { View, ScrollView, FlatList, TextInput } from "react-native";
 import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
-import { Button, Icon, Card } from "react-native-paper";
+import { Button, Icon, Snackbar} from "react-native-paper";
 import { useState, useEffect } from "react";
 import Produto from '../model/Produto'
 import { ProdutoController } from "../components/controller/Produto.controller";
 import { updateProduto } from "../service/DAO/Produto.Service";
 import CompCard from "../components/CompCard";
 
+
 export default function EditarProduto({ navigation }) {
     const control = ProdutoController();
-
+    const [loading, setLoading] = useState(false);
     const [produtos, setProdutos] = useState([]);
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [busca, setBusca] = useState('');
-    
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     useEffect(() => {
         const carregarProdutos = async () => {
             const response = await control.getProdutos();
-            
-            
-            setProdutos(response);
-            
-            
+            setProdutos(response);            
         };
         carregarProdutos();
-    }, []);
+    }, [loading]);
 
     const produtosFiltrados = produtos.filter(produto =>
         produto.nome.toLowerCase().includes(busca.toLowerCase()) ||
         produto.id.toString().includes(busca)
     );
-    const updateProduto = async () => {
+    const salvarProduto = async () => {
+        setLoading(true);
         if (produtoSelecionado) {
-            const response = await control.updateProduto(produtoSelecionado.id, produtoSelecionado);
-            console.log(response);
+            try {
+                const response = await control.updateProduto(produtoSelecionado.id, produtoSelecionado);
+                if (response.success) {
+                    
+                    setSnackbarVisible(true);
+                    setSnackbarMessage("Produto atualizado com sucesso!");
+                    setProdutoSelecionado(null);
+                }
+            } catch (error) {
+                setSnackbarMessage("Erro ao atualizar produto: " + error.message);
+                setSnackbarVisible(true);
+                
+            }
         }
+        setLoading(false);
     };
 
     return (
         <ViewBase tabAtiva="editarProduto">
+            
             <View style={styles.header}>
+                
                 <View style={styles.titleContainer}>
                     <Icon source="pencil" size={32} color="#fff" />
                     <Text style={styles.title}>Editar Produtos</Text>
@@ -51,7 +64,7 @@ export default function EditarProduto({ navigation }) {
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
-
+                
                   {!produtoSelecionado && (
                     <View style={styles.formCard}>
                         <Text style={styles.formTitle}>Buscar Produto</Text>
@@ -75,22 +88,28 @@ export default function EditarProduto({ navigation }) {
                                 <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
                             ) : (
                                 produtosFiltrados.map(produto => (
-                                    <Button key={produto.id} onPress={() => setProdutoSelecionado(produto)}>
-                                   <CompCard 
-                                        key={produto.id} 
-                                        style={styles.produtoCard}
+                                <View key={produto.id} style={{ borderBottomColor: '#0612f8ff', borderBottomWidth: 2, paddingVertical: 8 }}>
+                                        <Button key={produto.id} onPress={() => setProdutoSelecionado(produto)}>
+                                            <CompCard
+                                                key={produto.id}
+                                                style={styles.produtoCard}
                                         onPress={() => setProdutoSelecionado(produto)}
                                         preco={produto.preco}
                                         nome={produto.nome}
                                         descricao={produto.descricao}
                                         source={produto.urlImagem}
                                     >
-                                    
+                               
                                     </CompCard>
                                     </Button>
+                                    
+                                </View>
                                 ))
+                                
                             )}
+                            
                         </View>
+                        
                     ) : (
                         
                         <View style={styles.formCard}>
@@ -165,11 +184,9 @@ export default function EditarProduto({ navigation }) {
                                 <Button 
                                     mode="contained"
                                     style={styles.submitButton}
-                                    onPress={() => {
-                                      
-                                        console.log('Salvando:', produtoSelecionado);
-                                        updateProduto();
-                                        setProdutoSelecionado(null);
+                                    onPress={() =>{
+                                        salvarProduto();                                      
+                                        
                                     }}
                                     icon="content-save"
                                 >
@@ -180,6 +197,7 @@ export default function EditarProduto({ navigation }) {
                     )}
                 </View>
             </ScrollView>
+          
         </ViewBase>
     );
 }

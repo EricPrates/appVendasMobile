@@ -63,7 +63,7 @@ export default function Login({navigation}) {
                                 />}
                                 value={usuario.usuario}
                                 style={[styles.input, erro && { borderColor: MD3Colors.error50 }]}
-                                onChangeText={text => setUsuario({...usuario        , usuario: text})}
+                                onChangeText={text => setUsuario({...usuario , usuario: text})}
                             />
                             
                             <Text style={styles.label}>Senha</Text>
@@ -77,7 +77,7 @@ export default function Login({navigation}) {
                                 />}
                                 value={usuario.senha}
                                 style={[styles.input, erro && { borderColor: MD3Colors.error50 }]}
-                                secureTextEntry={vizualizarSenha}
+                                secureTextEntry={!vizualizarSenha}
                                 onChangeText={text => setUsuario({...usuario, senha: text})}
                             />
                             {erro && <Text style={{color: MD3Colors.error50, marginBottom: 10}}>{errorMessage}</Text>}

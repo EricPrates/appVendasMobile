@@ -18,6 +18,7 @@ const AuthProvider = ({children}) =>{
     const [favoritos, setFavoritos] = useState([])
     const [loading, setLoading] = useState(true)
     const [logado, setLogado] = useState(null)
+    const [searchQuery, setSearchQuery] = useState('');
     const nome = logado ? logado.nome : ""
 
     const login = async (usuario, senha)=>{
@@ -46,6 +47,12 @@ const AuthProvider = ({children}) =>{
 
         favoritos.find((p) => p.id === produto.id) ? console.log(`Produto já está nos favoritos: ${ produto.id }`) : setFavoritos([...favoritos, produto])
     }
+    const buscarProdutos = async (searchQuery) => {
+        const controlProduto = ProdutoController();
+        const res = await controlProduto.getProdutoByNome(searchQuery);
+        
+        return res;
+    };
     const signOut = () =>{
         setLogado(false)
         setNome("")
@@ -54,7 +61,7 @@ const AuthProvider = ({children}) =>{
 
 
     return (
-        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos}}>
+        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos, buscarProdutos, setSearchQuery, searchQuery}}>
             {children}
         </AuthContext.Provider>
     )

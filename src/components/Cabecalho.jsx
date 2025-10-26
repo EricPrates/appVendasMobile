@@ -3,12 +3,14 @@ import { Appbar, Searchbar, Modal, Portal, PaperProvider, MD3Colors } from 'reac
 import { View, StyleSheet, Text } from 'react-native';
 import { useAuth } from './Provider';
 import { useNavigation } from '@react-navigation/native';
-
+import { ProdutoController } from './controller/Produto.controller';
 export default function Cabecalho({ tabAtiva }) {
-    const [searchQuery, setSearchQuery] = useState('');
+    const controlProduto = ProdutoController();
+    
     const [menuVisible, setMenuVisible] = useState(false);
-    const { nome, signOut } = useAuth();
+    const { nome, signOut, buscarProdutos, setSearchQuery, searchQuery } = useAuth();
     const navigation = useNavigation();
+
 
     return (
         <Appbar.Header 
@@ -26,13 +28,16 @@ export default function Cabecalho({ tabAtiva }) {
             <Searchbar
                 placeholder="Encontre seus tênis..."
                 placeholderTextColor="#888"
-                onChangeText={setSearchQuery}
                 value={searchQuery}
                 style={styles.searchbar}
                 iconColor="#ff6b35"
                 inputStyle={styles.searchInput}
+                onChangeText = {(query) => { setSearchQuery(query) }}
             />
-            
+            <Appbar.Action 
+                icon={tabAtiva === "filtro" ? "filter" : "filter-outline"} 
+                color={tabAtiva === "filtro" ? "#fff" : "#fff"}
+            />
             <Appbar.Action 
                 icon={tabAtiva === "notificacoes" ? "bell" : "bell-outline"} 
                 color={tabAtiva === "notificacoes" ? "#fff" : "#fff"} 
