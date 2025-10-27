@@ -16,6 +16,7 @@ export default function Home({ navigation }) {
      const [tabAtiva, setTabAtiva] = useState('home');
      const [error, setError] = useState(null);
      const [tipoFiltro, setTipoFiltro] = useState(null);
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
 
    useEffect( () => {
     const carregarProdutos = async () => {
@@ -53,6 +54,22 @@ export default function Home({ navigation }) {
        }
        buscarNomeOuCategoria();
    }, [searchQuery]);
+   const pesquisarPorCategoria = async (categoria) => {
+        setCategoriaSelecionada(categoria);
+        try {
+            const produtosFiltrados = await produtoController.getProdutosByCategoria(categoria);
+            if (produtosFiltrados.success) {
+                setProdutos(produtosFiltrados.data);
+            }
+            if (produtosFiltrados.errors) {
+                setProdutos([]);
+                setError(produtosFiltrados.errors);
+            }
+        }
+        catch (error) {
+            console.error("Erro ao filtrar produtos por categoria:", error);
+        }
+   }
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
@@ -95,6 +112,7 @@ export default function Home({ navigation }) {
                 placeholderTextColor="#999"
                 style={styles.input} 
                 keyboardType="numeric"
+                onChange={(text) => console.log(text)}
             />
             
             <TextInput 
@@ -109,30 +127,30 @@ export default function Home({ navigation }) {
             </TouchableOpacity>
         </View>
     )}
-    
+
     {tipoFiltro === 'categoria' && (
         <View style={styles.filtroDetalhes}>
             <Text style={styles.filtroSubtitulo}>Categorias</Text>
-            
-            <TouchableOpacity style={styles.opcaoCategoria}>
+
+            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'casual' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('casual')}>
                 <Text style={styles.opcaoTexto}>👟 Casual</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.opcaoCategoria}>
+
+            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'corrida' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('corrida')}>
                 <Text style={styles.opcaoTexto}>🏃 Corrida</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.opcaoCategoria}>
+
+            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'basquete' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('basquete')}>
                 <Text style={styles.opcaoTexto}>🏀 Basquete</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.opcaoCategoria}>
+
+            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'futebol' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('futebol')}>
                 <Text style={styles.opcaoTexto}>⚽ Futebol</Text>
             </TouchableOpacity>
         </View>
     )}
 </View>
-            )}
+    )}
             <View style={styles.content}>
                 {produtos.length > 0 && produtos.map((produto) => (
                 <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
@@ -228,7 +246,7 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     filterElement: {
-        backgroundColor: '#ff6b35',
+        backgroundColor: '#e55a2b7a',
         padding: 12,
         borderRadius: 10,
         alignItems: 'center',
@@ -243,7 +261,9 @@ const styles = StyleSheet.create({
     },
     filterElementAtivo: {
         backgroundColor: '#e55a2b',
-        transform: [{ scale: 1.05 }],
+        transform: [{ scale: 1.1 }],
+        borderWidth: 2,
+        borderColor: '#f6e930ff',
         elevation: 4,
     },
     filterIcon: {
@@ -274,7 +294,7 @@ const styles = StyleSheet.create({
         padding: 12,
         marginVertical: 6,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: '#ff6b35',
         fontSize: 14,
         color: '#2c2c2c',
     },
@@ -292,15 +312,19 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     opcaoCategoria: {
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#fdfaf9ab',
         padding: 12,
         borderRadius: 8,
         marginVertical: 4,
-        borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderWidth: 2,
+        borderColor: '#ff6b35',
+    },
+    opcaoCategoriaAtiva: {
+        backgroundColor: '#ff6b35',
     },
     opcaoTexto: {
-        color: '#2c2c2c',
+      
+        color: '#000000ff',
         fontSize: 14,
         fontWeight: '500',
     },
