@@ -37,9 +37,10 @@ export default function Cabecalho({ tabAtiva }) {
             />
             <Appbar.Action 
                 icon={"filter-variant"}
+                color={"#fff"}
                 size={24}
                 onPress={() => alterarFiltro()}
-                color={"#fff"}
+                style={styles.notificationIcon}
                 
             />
             

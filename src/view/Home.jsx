@@ -10,7 +10,7 @@ import { ProdutoController } from "../components/controller/Produto.controller";
 
 
 export default function Home({ navigation }) {
-    const { buscarProdutos, searchQuery, filtroVisible, setFiltroVisible } = useAuth();
+    const { buscarProdutos, searchQuery, filtroVisible, setFiltroVisible, setSearchQuery } = useAuth();
     const produtoController = ProdutoController();
     const [produtos, setProdutos] = useState([]);
      const [tabAtiva, setTabAtiva] = useState('home');
@@ -20,7 +20,28 @@ export default function Home({ navigation }) {
     const [preco, setPreco] = useState({ min: '', max: '' });
     
 
-   useEffect( () => {
+    useEffect( () => {
+        if (error)
+            Alert.alert(
+                "Erro", 
+                Array.isArray(error) ? error.join("\n") : error,
+                [
+                    { 
+                        text: "OK", 
+                        onPress: async ()=> {
+                            setPreco({ min: '', max: '' });
+                            setSearchQuery('');
+                            setError(null);
+                            setFiltroVisible(false);
+                            setCategoriaSelecionada(null);
+                            setTabAtiva('home');
+                            await carregarProdutos();
+                        }
+                    }
+            ]
+        );
+    }, [error])
+
     const carregarProdutos = async () => {
         try {
             const todosProdutos = await produtoController.getProdutos();
@@ -30,7 +51,9 @@ export default function Home({ navigation }) {
             setError(error);
         }
     }
-    carregarProdutos();
+
+   useEffect( () => {
+       carregarProdutos();
    }, []);
 
    useEffect( () => {
@@ -57,6 +80,8 @@ export default function Home({ navigation }) {
        buscarNomeOuCategoria();
    }, [searchQuery]);
    const buscarPorPreco = async () => {
+    setError(null);
+    setFiltroVisible(false);
         try {
             const min = parseFloat(preco.min) || 0;
             const max = parseFloat(preco.max) || Infinity;
@@ -87,7 +112,7 @@ export default function Home({ navigation }) {
             }
         }
         catch (error) {
-            console.error("Erro ao filtrar produtos por categoria:", error);
+            setError("Erro ao filtrar produtos por categoria:", error);
         }
    }
     return (
@@ -183,9 +208,9 @@ export default function Home({ navigation }) {
                     </TouchableOpacity>
                     
                 ))}
-                {error && (
-                    Alert.alert("Erro", Array.isArray(error) ? error.join("\n") : error)
-                )}
+                
+                    
+                
 
             </View>
            <View>
