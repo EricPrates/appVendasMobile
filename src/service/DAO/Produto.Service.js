@@ -177,7 +177,16 @@ export async function getProdutosByPreco(min, max) {
     if(isNaN(min) || isNaN(max) || min < 0 || max < 0 || min > max) {
         return {success: false, errors: ["Intervalo de preço inválido."]};
     }
+    if(min === 0 && max === 0) {
+        return { success: true, data: produtos };
+    }
+    
     const produtosFiltrados = produtos.filter(p => p.preco >= min && p.preco <= max);
+    if(produtosFiltrados.length === 0) {
+        return {success: false, errors: ["Nenhum produto encontrado nesse intervalo de preço."]};
+    }
+
+    
     return { success: true, data: produtosFiltrados };
 }
 export async function getProdutosByEstoque(min, max) {

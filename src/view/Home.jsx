@@ -4,19 +4,21 @@ import { AuthProvider, useAuth } from "../components/Provider";
 import { useEffect, useState } from "react";
 import { Modal } from "react-native";
 import CompCard from "../components/CompCard";
-
+import { Alert } from "react-native";
 import ViewBase from "./ViewBase";
 import { ProdutoController } from "../components/controller/Produto.controller";
 
 
 export default function Home({ navigation }) {
-    const { buscarProdutos, searchQuery, filtroVisible } = useAuth();
+    const { buscarProdutos, searchQuery, filtroVisible, setFiltroVisible } = useAuth();
     const produtoController = ProdutoController();
     const [produtos, setProdutos] = useState([]);
      const [tabAtiva, setTabAtiva] = useState('home');
      const [error, setError] = useState(null);
      const [tipoFiltro, setTipoFiltro] = useState(null);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
+    const [preco, setPreco] = useState({ min: '', max: '' });
+    
 
    useEffect( () => {
     const carregarProdutos = async () => {
@@ -49,11 +51,29 @@ export default function Home({ navigation }) {
                
            }
            catch (error) {
-               console.error("Erro ao filtrar produtos:", error);
+               setError("Erro ao filtrar produtos:", error);
            }
        }
        buscarNomeOuCategoria();
    }, [searchQuery]);
+   const buscarPorPreco = async () => {
+        try {
+            const min = parseFloat(preco.min) || 0;
+            const max = parseFloat(preco.max) || Infinity;
+            const produtosFiltrados = await produtoController.getProdutosByPreco(min, max);
+            if (produtosFiltrados.success) {
+                setProdutos(produtosFiltrados.data);
+            }
+            if (produtosFiltrados.errors) {
+                setFiltroVisible(false);
+                setProdutos([]);
+                setError(produtosFiltrados.errors);
+            }
+        }
+        catch (error) {
+            setError("Erro ao filtrar produtos por preço:", error);
+        }
+    }
    const pesquisarPorCategoria = async (categoria) => {
         setCategoriaSelecionada(categoria);
         try {
@@ -110,19 +130,24 @@ export default function Home({ navigation }) {
             <TextInput 
                 placeholder="Valor mínimo" 
                 placeholderTextColor="#999"
+                value={preco.min}
                 style={styles.input} 
                 keyboardType="numeric"
-                onChange={(text) => console.log(text)}
+                onChangeText={(text) => setPreco({ ...preco, min: text })}
             />
             
             <TextInput 
                 placeholder="Valor máximo" 
                 placeholderTextColor="#999"
+                value={preco.max}
+                onChangeText={(text) => setPreco({ ...preco, max: text })}
                 style={styles.input} 
                 keyboardType="numeric"
             />
             
-            <TouchableOpacity style={styles.botaoAplicar}>
+            <TouchableOpacity style={styles.botaoAplicar} onPress={() => {
+                buscarPorPreco()
+            }}>
                 <Text style={styles.botaoAplicarTexto}>Aplicar Filtro</Text>
             </TouchableOpacity>
         </View>
@@ -159,9 +184,7 @@ export default function Home({ navigation }) {
                     
                 ))}
                 {error && (
-                    <View style={styles.errorContainer}>
-                        <Text style={styles.errorText}> {error}</Text>
-                    </View>
+                    Alert.alert("Erro", Array.isArray(error) ? error.join("\n") : error)
                 )}
 
             </View>
