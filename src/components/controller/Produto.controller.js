@@ -143,6 +143,25 @@ export const ProdutoController = () => {
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
+    async function getProdutoOrdenacaoNomeCrescente() {
+        try{
+            const produtos = await ProdutoService.getProdutoOrdenacaoNomeCrescente();
+            return produtos;
+        }catch(error){
+            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+        }
+    }
+    async function getProdutoOrdenacaoPrecoCrescente(min, max) {
+        try{
+            const produtos = await ProdutoService.getProdutosByPreco(min, max);
+            if(produtos.success){
+                const produtosOrdenados = produtos.data.sort((a, b) => a.preco - b.preco);
+                return produtosOrdenados;
+            }
+        }catch(error){
+            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
+        }
+    }
     async function clearAll() {
         try{
             await ProdutoService.clearAll();
@@ -169,6 +188,8 @@ export const ProdutoController = () => {
         getProdutosByTamanho,
         getProdutosByEstoque,
         getProdutosByDesconto,
-        getProdutosEmEstoque
+        getProdutosEmEstoque,
+        getProdutoOrdenacaoNomeCrescente,
+        getProdutoOrdenacaoPrecoCrescente
     }
 }

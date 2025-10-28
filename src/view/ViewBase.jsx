@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, Text, FlatList } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, Text, FlatList, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import BarraBaixa from "../components/BarraBaixa";
 import Cabecalho from "../components/Cabecalho";
@@ -13,13 +13,13 @@ export default function ViewBase({  children, showSearch= true, tabAtiva,  }) {
         <SafeAreaView style={styles.root}>
 
             <Cabecalho tabAtiva={tabAtiva} />
-
-        <FlatList
-            data={children}
-            renderItem={({ item }) => <View>{item}</View>}
-            
-        />
-       <BarraBaixa tabAtiva = {tabAtiva}style={styles.bottomNav}/>
+           
+            <FlatList
+                data={children}
+                renderItem={({ item }) => <View>{item}</View>}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        <BarraBaixa tabAtiva = {tabAtiva} style={styles.bottomNav}/>
 </SafeAreaView>
     );
 }
@@ -30,15 +30,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         
     },
-    content: {
-    
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-      padding: 16,
-      gap: 3
-      
-    },
+   
      bottomNav: {
         position: 'absolute',
         bottom: 0,
@@ -50,6 +42,16 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
-   
+    filterButton: {
+        backgroundColor: '#c813c8ff',
+        padding: 10,
+        borderRadius: 50,
     
+        
+    },
+    textButton: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+
 });

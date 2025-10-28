@@ -172,6 +172,15 @@ export async function getProdutosByFornecedor(fornecedor) {
     return { success: true, data: produtosFiltrados };
 }
 
+export async function getProdutoOrdenacaoNomeCrescente() {
+    const produtos = await getProdutos();
+    const produtosOrdenados = produtos.sort((a, b) => a.nome.localeCompare(b.nome));
+    if(produtosOrdenados.length === 0) {
+        return {success: false, errors: ["Nenhum produto encontrado."]};
+    }
+    return { success: true, data: produtosOrdenados };
+}
+
 export async function getProdutosByPreco(min, max) {
     const produtos = await getProdutos();
     if(isNaN(min) || isNaN(max) || min < 0 || max < 0 || min > max) {
@@ -186,7 +195,7 @@ export async function getProdutosByPreco(min, max) {
         return {success: false, errors: ["Nenhum produto encontrado nesse intervalo de preço."]};
     }
 
-    
+
     return { success: true, data: produtosFiltrados };
 }
 export async function getProdutosByEstoque(min, max) {

@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text, TextInput } from "react-native";
+import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text, TextInput, Keyboard } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
 import { useEffect, useState } from "react";
 import { Modal } from "react-native";
@@ -115,6 +115,35 @@ export default function Home({ navigation }) {
             setError("Erro ao filtrar produtos por categoria:", error);
         }
    }
+    const ordenarPorNome = async () => {
+        try {
+            const produtos = await produtoController.getProdutoOrdenacaoNomeCrescente();
+            if (produtos.success) {
+                setProdutos(produtos.data);
+            }
+            if (produtos.errors) {
+                setProdutos([]);
+                setError(produtos.errors);
+            }
+        }
+        catch (error) {
+            setError("Erro ao ordenar produtos por nome:", error);
+        }
+    }
+    const ordenarPorPreco = async () =>{
+        try{
+            const produtosOrdenados = await produtoController.getProdutoOrdenacaoPrecoCrescente(0, Infinity);
+            if (produtosOrdenados){
+                setProdutos(produtosOrdenados);
+            }
+            if (produtosOrdenados.errors){
+                setProdutos([]);
+                setError(produtosOrdenados.errors);
+            }
+        } catch (error) {
+            setError("Erro ao ordenar produtos por preço:", error);
+        }
+    }
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
@@ -201,6 +230,14 @@ export default function Home({ navigation }) {
     )}
 </View>
     )}
+     <View style={styles.contentOrdenacao}>
+                <TouchableOpacity style={styles.filterButton} onPress={() => {Keyboard.dismiss(); ordenarPorNome();}}>
+                    <Text style={styles.textButton}>Por nome</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.filterButton} onPress={() => { ordenarPorPreco(); Keyboard.dismiss(); }}>
+                    <Text style={styles.textButton}>Por Preço</Text>
+                </TouchableOpacity>
+    </View>
             <View style={styles.content}>
                 {produtos.length > 0 && produtos.map((produto) => (
                 <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
@@ -375,5 +412,25 @@ const styles = StyleSheet.create({
         color: '#000000ff',
         fontSize: 14,
         fontWeight: '500',
+    },
+     contentOrdenacao: {
+    
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      padding: 10,
+      gap: 3
+      
+    },
+    filterButton: {
+        backgroundColor: '#c813c8ff',
+        padding: 10,
+        borderRadius: 50,
+    
+        
+    },
+    textButton: {
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });
