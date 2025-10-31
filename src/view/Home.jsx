@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text, TextInput, Keyboard } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Modal } from "react-native";
 import CompCard from "../components/CompCard";
 import { Alert } from "react-native";
@@ -43,8 +43,8 @@ export default function Home({ navigation }) {
     }, [error])
 
     
-    useEffect( () => {
-        const carregarProdutos = async () => {
+
+const carregarProdutos = async () => {
         try {
             const todosProdutos = await produtoController.getProdutos();
             setProdutos(todosProdutos);
@@ -53,39 +53,39 @@ export default function Home({ navigation }) {
             setError(error);
         }
     }
-    carregarProdutos();
-    }, []);
-
 
    useEffect( () => {
-       const buscarNomeOuCategoria = async () => {
-        setError(null);
-              try {
-                   const produtosFiltrados =  produtoController.buscarProdutos(searchQuery);
-                    console.log(produtosFiltrados);
-                    
-                   if (produtosFiltrados.success) {
-                       setProdutos(produtosFiltrados.data);
-                   }
-                   if (produtosFiltrados.errors) {
-                       setProdutos([]);
-                       setError(produtosFiltrados.errors);
-                   }
-               }
-           catch (error) {
-               setError("Erro ao filtrar produtos:", error);
-           }
-       }
-       buscarNomeOuCategoria();
+        if (searchQuery.length === 0 || searchQuery === '') {
+            carregarProdutos();
+        }
+        else {
+            const fetchProdutos =  () => {
+                try {
+                    const produtosPesquisados =  produtoController.getProdutosNomeCategoria(searchQuery);
+                    if (produtosPesquisados.success) {
+                        setProdutos(produtosPesquisados.data);
+                    }
+                    if (produtosPesquisados.errors) {
+                        setProdutos([]);
+                        setError(produtosPesquisados.errors);
+                    }
+                }
+                catch (error) {
+                    setError("Erro ao buscar produtos:", error);
+                }
+            };
+            fetchProdutos();
+        }
    }, [searchQuery]);
-   
-   const buscarPorPreco = async () => {
+  
+  
+   const buscarPorPreco = () => {
     setError(null);
     setFiltroVisible(false);
         try {
             const min = parseFloat(preco.min) || 0;
             const max = parseFloat(preco.max) || Infinity;
-            const produtosFiltrados = await produtoController.getProdutosByPreco(min, max);
+            const produtosFiltrados =  produtoController.getProdutosByPreco(min, max);
             if (produtosFiltrados.success) {
                 setProdutos(produtosFiltrados.data);
             }
@@ -99,51 +99,27 @@ export default function Home({ navigation }) {
             setError("Erro ao filtrar produtos por preço:", error);
         }
     }
-   const pesquisarPorCategoria = async (categoria) => {
-        setCategoriaSelecionada(categoria);
-        try {
-            const produtosFiltrados = await produtoController.getProdutosByCategoria(categoria);
-            if (produtosFiltrados.success) {
-                setProdutos(produtosFiltrados.data);
+   const pesquisarPorCategoria = (categoria) => {
+            const produtosFiltrados = produtoController.getProdutosByCategoria(categoria);
+            if (produtosFiltrados) {
+                setProdutos(produtosFiltrados);
             }
-            if (produtosFiltrados.errors) {
-                setProdutos([]);
-                setError(produtosFiltrados.errors);
-            }
-        }
-        catch (error) {
-            setError("Erro ao filtrar produtos por categoria:", error);
-        }
+            setFiltroVisible(false);
    }
-    const ordenarPorNome = async () => {
-        try {
-            const produtos = await produtoController.getProdutoOrdenacaoNomeCrescente();
-            if (produtos.success) {
-                setProdutos(produtos.data);
-            }
-            if (produtos.errors) {
-                setProdutos([]);
-                setError(produtos.errors);
-            }
-        }
-        catch (error) {
-            setError("Erro ao ordenar produtos por nome:", error);
+    const ordenarPorNome = () => {
+        const resultado =  produtoController.getProdutoOrdenacaoNomeCrescente();
+        if (resultado){
+            setProdutos(resultado);
         }
     }
-    const ordenarPorPreco = async () =>{
-        try{
-            const produtosOrdenados = await produtoController.getProdutoOrdenacaoPrecoCrescente(0, Infinity);
-            if (produtosOrdenados){
-                setProdutos(produtosOrdenados);
-            }
-            if (produtosOrdenados.errors){
-                setProdutos([]);
-                setError(produtosOrdenados.errors);
-            }
-        } catch (error) {
-            setError("Erro ao ordenar produtos por preço:", error);
+
+    const ordenarPorPreco = () => {
+        const resultado =  produtoController.getProdutoOrdenacaoPrecoCrescente();
+        if (resultado){
+            setProdutos(resultado);
         }
     }
+
     return (
     
         <ViewBase tabAtiva = {tabAtiva}>
