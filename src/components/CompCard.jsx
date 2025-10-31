@@ -1,4 +1,4 @@
-import { Card, Icon, Text } from "react-native-paper";
+import { Card, Icon, IconButton, Text } from "react-native-paper";
 import { Image, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
@@ -39,7 +39,11 @@ export default function CompCard({ object, source, nome, preco, avaliacao,route 
                     <Text style={styles.reviews}></Text>
                 </View>
                 <View>
-                    
+                    <IconButton
+                       icon={"heart-outline"
+                        
+                       }
+                   />
                 </View>
             </Card.Content>
         </Surface>

@@ -133,7 +133,55 @@ export async function loginUsuario(login, senha) {
     await setUsuarioLogado(usuario);
     return { success: true, data: usuario };
 }
-
+export async function addFavorito(usuarioId, produtoId) {
+    if (!usuarioId || !produtoId) {
+        return { success: false, errors: ["ID do usuário e ID do produto são obrigatórios."] };
+    }
+    const usuarios = await getUsuarios();
+    const usuario = usuarios.find(u => u.id === usuarioId);
+    if (!usuario) {
+        return { success: false, errors: ["Usuário não encontrado."] };
+    }
+    if (!usuario.favoritos) {
+        usuario.favoritos = [];
+    }
+    if (usuario.favoritos.map(produto => produto.id).includes(produtoId)) {
+        return { success: false, errors: ["Produto já está nos favoritos."] };
+    }
+    usuario.favoritos.push({ id: produtoId });
+    await setUsuarios(usuarios);
+    return { success: true, data: usuario };
+}
+export async function getFavoritosUsuario(usuarioId) {
+    if (!usuarioId) {
+        return { success: false, errors: ["ID do usuário é obrigatório."] };
+    }
+    const usuarios = await getUsuarios();
+    const usuario = usuarios.find(u => u.id === usuarioId);
+    if (!usuario) {
+        return { success: false, errors: ["Usuário não encontrado."] };
+    }
+    return { success: true, data: usuario.favoritos || [] };
+}
+export async function removeFavorito(usuarioId, produtoId) {
+    if (!usuarioId || !produtoId) {
+        return { success: false, errors: ["ID do usuário e ID do produto são obrigatórios."] };
+    }
+    const usuarios = await getUsuarios();
+    const usuario = usuarios.find(u => u.id === usuarioId);
+    if (!usuario) {
+        return { success: false, errors: ["Usuário não encontrado."] };
+    }
+    if (!usuario.favoritos) {
+        usuario.favoritos = [];
+    }
+    if (!usuario.favoritos.map(produto => produto.id).includes(produtoId)) {
+        return { success: false, errors: ["Produto não está nos favoritos."] };
+    }
+    usuario.favoritos = usuario.favoritos.filter(produto => produto.id !== produtoId);
+    await setUsuarios(usuarios);
+    return { success: true, data: usuario };
+}
 export async function getUsuarioById(id) {
     if (!id) {
         return { success: false, errors: ["ID do usuário é obrigatório."] };

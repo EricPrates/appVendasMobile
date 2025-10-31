@@ -1,11 +1,18 @@
 import * as UserService from '../../service/DAO/User.Service';
-
+import { useState } from 'react';
 export const UsuarioController = () => {
+    const [usuario, setUsuario] = useState(null);
     
-    async function loginUsuario(login, senha) {        
-        try{
-            return await UserService.loginUsuario(login, senha);
+    async function loginUsuario(login, senha) {
+        try {
+            const response = await UserService.loginUsuario(login, senha);
+            if (response.success) {
+                setUsuario(response.data);
+            }
             
+            else {
+                return { success: false, errors: response.errors };
+            }               
         } catch (error) {
             
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
@@ -30,9 +37,7 @@ export const UsuarioController = () => {
         }
     }
     async function updateUsuario(usuarioAtualizado, id) {
-        console.log(usuarioAtualizado);
-        
-        
+       
         try{
             return await UserService.updateUsuario(usuarioAtualizado, id.toString());
         } catch (error) {
@@ -71,14 +76,20 @@ export const UsuarioController = () => {
         }
     }
 
-    async function getUsuarioLogado() {
+    
+    async function getIdFavoritosUsuario() {
         try{
-            const usuario = await UserService.getUsuarioLogado();
-            return { success: true, data: usuario };
+            const favoritos = await UserService.getFavoritosUsuario(usuario.id);
+            if(favoritos && favoritos.success){
+                return { success: true, data: favoritos.data };
+            } else {
+                return { success: false, errors: ["Usuário não encontrado."] };
+            }
         } catch (error) {
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
-        }
+        }   
     }
+    
 
     return {
         loginUsuario,
@@ -89,6 +100,7 @@ export const UsuarioController = () => {
         getUsuarios,
         getUsuarioById,
         estaLogado,
-        getUsuarioLogado
+        getIdFavoritosUsuario
+
     }
 };

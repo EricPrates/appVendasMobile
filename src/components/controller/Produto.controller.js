@@ -1,6 +1,13 @@
+import { useState } from 'react';
 import * as ProdutoService from '../../service/DAO/Produto.Service';
 
 export const ProdutoController = () => {
+
+    const [favoritos, setFavoritos] = useState([]);
+
+    const addFavorito = (produto) => {
+        setFavoritos((prevFavoritos)=> [...prevFavoritos, produto]);
+    };
 
     async function saveProdutos(produtos) {
         try{

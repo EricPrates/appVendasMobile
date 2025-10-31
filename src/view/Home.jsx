@@ -240,7 +240,7 @@ export default function Home({ navigation }) {
     </View>
             <View style={styles.content}>
                 {produtos.length > 0 && produtos.map((produto) => (
-                <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
+                <TouchableOpacity  key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard  source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     

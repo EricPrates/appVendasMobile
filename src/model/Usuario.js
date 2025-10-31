@@ -2,8 +2,8 @@
 
 export default class Usuario {
     constructor( endereco = '', email = '', telefone = '',
-         nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null) {
-        this.produtosFavoritos  = [];
+         nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null, produtosFavoritos = []) {
+        this.produtosFavoritos  = produtosFavoritos;
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
