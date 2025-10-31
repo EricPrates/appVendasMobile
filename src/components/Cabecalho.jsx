@@ -8,7 +8,7 @@ export default function Cabecalho({ tabAtiva }) {
     const controlProduto = ProdutoController();
     
     const [menuVisible, setMenuVisible] = useState(false);
-    const { nome, signOut, buscarProdutos, setSearchQuery, searchQuery, alterarFiltro } = useAuth();
+    const { nome, signOut, setSearchQuery, searchQuery, alterarFiltro } = useAuth();
     const navigation = useNavigation();
    
 

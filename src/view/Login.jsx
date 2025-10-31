@@ -10,7 +10,7 @@ import Produto from "../model/Produto";
 
 export default function Login({navigation}) {
     const control = UsuarioController()
-    const {login, logado} = useAuth()
+    const {logado, setLogado} = useAuth()
     const [usuario, setUsuario] = useState({usuario: 'Eric', senha: '123'});
     const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
@@ -21,15 +21,13 @@ export default function Login({navigation}) {
 
    
     const handleLogin = async () =>{
-
         setLoading(true)
         setErro(false);
-    
-        const res = await login(usuario.usuario, usuario.senha);
+        const res = await control.loginUsuario(usuario.usuario, usuario.senha);
         if (res.success){
             setLoading(false)
-            
-           navigation.replace("Home")
+            setLogado(res.data);
+            navigation.replace("Home")
 
         }
         else{

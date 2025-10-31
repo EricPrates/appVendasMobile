@@ -10,7 +10,7 @@ import { ProdutoController } from "../components/controller/Produto.controller";
 
 
 export default function Home({ navigation }) {
-    const { buscarProdutos, searchQuery, filtroVisible, setFiltroVisible, setSearchQuery } = useAuth();
+    const { searchQuery, filtroVisible, setFiltroVisible, setSearchQuery } = useAuth();
     const produtoController = ProdutoController();
     const [produtos, setProdutos] = useState([]);
      const [tabAtiva, setTabAtiva] = useState('home');
@@ -42,7 +42,9 @@ export default function Home({ navigation }) {
         );
     }, [error])
 
-    const carregarProdutos = async () => {
+    
+    useEffect( () => {
+        const carregarProdutos = async () => {
         try {
             const todosProdutos = await produtoController.getProdutos();
             setProdutos(todosProdutos);
@@ -51,34 +53,32 @@ export default function Home({ navigation }) {
             setError(error);
         }
     }
+    carregarProdutos();
+    }, []);
 
-   useEffect( () => {
-       carregarProdutos();
-   }, []);
 
    useEffect( () => {
        const buscarNomeOuCategoria = async () => {
         setError(null);
-           try {
-               if(buscarProdutos && searchQuery) {
-                   const produtosFiltrados = await buscarProdutos(searchQuery);
+              try {
+                   const produtosFiltrados =  produtoController.buscarProdutos(searchQuery);
+                    console.log(produtosFiltrados);
+                    
                    if (produtosFiltrados.success) {
                        setProdutos(produtosFiltrados.data);
                    }
-                   if(produtosFiltrados.errors){
-                    setProdutos([]);
+                   if (produtosFiltrados.errors) {
+                       setProdutos([]);
                        setError(produtosFiltrados.errors);
                    }
-
                }
-               
-           }
            catch (error) {
                setError("Erro ao filtrar produtos:", error);
            }
        }
        buscarNomeOuCategoria();
    }, [searchQuery]);
+   
    const buscarPorPreco = async () => {
     setError(null);
     setFiltroVisible(false);
@@ -240,7 +240,7 @@ export default function Home({ navigation }) {
     </View>
             <View style={styles.content}>
                 {produtos.length > 0 && produtos.map((produto) => (
-                <TouchableOpacity  key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
+                <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard  source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
                     </TouchableOpacity>
                     

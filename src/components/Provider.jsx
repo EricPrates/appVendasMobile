@@ -21,38 +21,15 @@ const AuthProvider = ({children}) =>{
     const [searchQuery, setSearchQuery] = useState('');
     const nome = logado ? logado.nome : ""
     const [filtroVisible, setFiltroVisible] = useState(false);
-    const login = async (usuario, senha)=>{
-        try{
-        const res = await control.loginUsuario(usuario, senha)
-        if (res.success){
-            setLogado(res.data)
-            return {
-                success: true,
-                data: res.data
-            }
-        }
-        else{
-            setLogado(false)
-            return {
-                success: false,
-                errors: res.errors
-            }
-        }
-    } catch (error) {
-        console.error("Erro ao fazer login:", error);
-        return false;
-    }
-}
+    
     const addFavorito = async (produto) =>{
 
         favoritos.find((p) => p.id === produto.id) ? console.log(`Produto já está nos favoritos: ${ produto.id }`) : setFavoritos([...favoritos, produto])
     }
-    const buscarProdutos = async (searchQuery) => {
-        const controlProduto = ProdutoController();
-        const res = await controlProduto.getProdutosGeral(searchQuery);
-        
-        return res
-    };
+   
+
+
+
     const signOut = () =>{
         setLogado(false)
         setNome("")
@@ -61,7 +38,7 @@ const AuthProvider = ({children}) =>{
     const alterarFiltro = () => setFiltroVisible(!filtroVisible); console.log(filtroVisible);
 
     return (
-        <AuthContext.Provider value={{logado, nome ,login, signOut, addFavorito, favoritos, setFavoritos, buscarProdutos, setSearchQuery, searchQuery, alterarFiltro, filtroVisible, setFiltroVisible}}>
+        <AuthContext.Provider value={{logado, nome , signOut, addFavorito, favoritos, setFavoritos, setSearchQuery, searchQuery, alterarFiltro, filtroVisible, setFiltroVisible, setLogado}}>
             {children}
         </AuthContext.Provider>
     ) 

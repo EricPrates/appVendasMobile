@@ -4,6 +4,7 @@ import * as ProdutoService from '../../service/DAO/Produto.Service';
 export const ProdutoController = () => {
 
     const [favoritos, setFavoritos] = useState([]);
+    const [produtos, setProdutos] = useState([]);
 
     const addFavorito = (produto) => {
         setFavoritos((prevFavoritos)=> [...prevFavoritos, produto]);
@@ -27,7 +28,7 @@ export const ProdutoController = () => {
                     return { success: false, errors: ["Erro interno no servidor tente novamente."] };
             }
     }
-
+    
     async function updateProduto(id, produtoAtualizado) {
         try{
             const response = await ProdutoService.updateProduto(id, produtoAtualizado);
@@ -46,8 +47,9 @@ export const ProdutoController = () => {
     }
     async function getProdutos() {
         try{
-            const produtos = await ProdutoService.getProdutos();
-            return produtos;
+            const todosProdutos = await ProdutoService.getProdutos();
+            setProdutos(todosProdutos);
+            return todosProdutos;
         }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
@@ -176,6 +178,10 @@ export const ProdutoController = () => {
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
         }
     }
+    function buscarProdutos(searchQuery){
+        const produtosPesquisados = produtos.find((p) => p.nome.toLowerCase().includes(searchQuery.toLowerCase()));
+        return produtosPesquisados ? { success: true, data: [produtosPesquisados] } : { success: false, errors: ["Nenhum produto encontrado com esse nome ou categoria."] };
+    }
 
     return {
         saveProdutos,
@@ -197,6 +203,7 @@ export const ProdutoController = () => {
         getProdutosByDesconto,
         getProdutosEmEstoque,
         getProdutoOrdenacaoNomeCrescente,
-        getProdutoOrdenacaoPrecoCrescente
+        getProdutoOrdenacaoPrecoCrescente,
+         buscarProdutos,
     }
 }

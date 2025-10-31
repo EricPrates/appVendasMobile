@@ -8,7 +8,9 @@ export const UsuarioController = () => {
             const response = await UserService.loginUsuario(login, senha);
             if (response.success) {
                 setUsuario(response.data);
+                return { success: true, data: response.data };
             }
+
             
             else {
                 return { success: false, errors: response.errors };
