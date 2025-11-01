@@ -17,7 +17,12 @@ export const UsuarioController = () => {
             const response = await UserService.loginUsuario(login, senha);
             if (response.success) {
                 setUsuario(response.data);
-                setFavoritos(response.data.produtosFavoritos);                
+                response.data.produtosFavoritos.map(async (produtoId) => {
+                    const produtoResponse = await productController.getProdutoById(produtoId);
+                    if (produtoResponse.success) {
+                        setFavoritos((prevFavoritos) => [...prevFavoritos, produtoResponse.data]);
+                    }
+                });
                 return { success: true, data: response.data };
             }
 
