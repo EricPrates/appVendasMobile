@@ -16,9 +16,7 @@ export default class Usuario {
         this.endereco = endereco;
     }
     
-    addProdutoFavorito(produto) {
-        this.produtosFavoritos.push(produto);
-    }
+    
     getProdutosFavoritos() {
         return this.produtosFavoritos;
     }

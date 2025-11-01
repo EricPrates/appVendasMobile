@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 import { UsuarioController } from "../components/controller/Usuario.controller";
 import { useAuth } from "../components/Provider";
 import { Icon, MD3Colors } from 'react-native-paper';
-import { ProdutoController } from "../components/controller/Produto.controller";
-import Produto from "../model/Produto";
+
 
 export default function Login({navigation}) {
     const control = UsuarioController()
-    const {logado, setLogado} = useAuth()
+    const {login, logado} = useAuth()
     const [usuario, setUsuario] = useState({usuario: 'Eric', senha: '123'});
     const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
@@ -23,18 +22,17 @@ export default function Login({navigation}) {
     const handleLogin = async () =>{
         setLoading(true)
         setErro(false);
-        const res = await control.loginUsuario(usuario.usuario, usuario.senha);
-        if (res.success){
+        const resp = await login(usuario.usuario, usuario.senha)
+        if(resp.success){
             setLoading(false)
-            setLogado(res.data);
-            navigation.replace("Home")
-
+            navigation.replace('Home');
         }
         else{
-            setErro(true);
             setLoading(false)
-            setErrorMessage(res.errors);
+            setErro(true);
+            setErrorMessage("Usuário ou senha inválidos");
         }
+
     }
     return (
         <SafeAreaView style={styles.container}>

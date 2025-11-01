@@ -1,17 +1,17 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Button, Text, TextInput, Keyboard } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, TextInput, Keyboard } from "react-native";
 import { AuthProvider, useAuth } from "../components/Provider";
 import { use, useEffect, useState } from "react";
-import { Modal } from "react-native";
+import Loading from "../components/Loading";
 import CompCard from "../components/CompCard";
 import { Alert } from "react-native";
 import ViewBase from "./ViewBase";
 import { ProdutoController } from "../components/controller/Produto.controller";
+import { UsuarioController } from "../components/controller/Usuario.controller";
 
 
 export default function Home({ navigation }) {
-    const { searchQuery, filtroVisible, setFiltroVisible, setSearchQuery } = useAuth();
-    const produtoController = ProdutoController();
+    const { searchQuery, filtroVisible, setFiltroVisible, setSearchQuery, loading, setLoading, produtoController, userController } = useAuth();
     const [produtos, setProdutos] = useState([]);
      const [tabAtiva, setTabAtiva] = useState('home');
      const [error, setError] = useState(null);
@@ -45,8 +45,11 @@ export default function Home({ navigation }) {
     
 
 const carregarProdutos = async () => {
+        
         try {
             const todosProdutos = await produtoController.getProdutos();
+            console.log();
+            
             setProdutos(todosProdutos);
         }
         catch (error) {
@@ -55,27 +58,15 @@ const carregarProdutos = async () => {
     }
 
    useEffect( () => {
+    setLoading(true);
         if (searchQuery.length === 0 || searchQuery === '') {
             carregarProdutos();
         }
         else {
-            const fetchProdutos =  () => {
-                try {
-                    const produtosPesquisados =  produtoController.getProdutosNomeCategoria(searchQuery);
-                    if (produtosPesquisados.success) {
-                        setProdutos(produtosPesquisados.data);
-                    }
-                    if (produtosPesquisados.errors) {
-                        setProdutos([]);
-                        setError(produtosPesquisados.errors);
-                    }
-                }
-                catch (error) {
-                    setError("Erro ao buscar produtos:", error);
-                }
-            };
-            fetchProdutos();
+            const produtosFiltrados = produtoController.getProdutosNomeCategoria(searchQuery);
+            setProdutos(produtosFiltrados);
         }
+        setLoading(false);
    }, [searchQuery]);
   
   
@@ -120,117 +111,130 @@ const carregarProdutos = async () => {
         }
     }
 
+if(!loading){
     return (
-    
+        
         <ViewBase tabAtiva = {tabAtiva}>
             { filtroVisible && (
-        <View style={styles.filtroContainer}>
-    <Text style={styles.filtroTitulo}>Filtrar por</Text>
-    
-    <View style={styles.filtrosGrid}>
-        <TouchableOpacity 
-            style={[
-                styles.filterElement,
-                tipoFiltro === 'preco' && styles.filterElementAtivo
-            ]} 
-            onPress={() => setTipoFiltro('preco')}
-        >
-            <Text style={styles.filterIcon}>💰</Text>
-            <Text style={styles.filterText}>Preço</Text>
-        </TouchableOpacity>
+            <View style={styles.filtroContainer}>
+                    <Text style={styles.filtroTitulo}>Filtrar por</Text>
         
-        <TouchableOpacity 
-            style={[
-                styles.filterElement,
-                tipoFiltro === 'categoria' && styles.filterElementAtivo
-            ]} 
-            onPress={() => setTipoFiltro('categoria')}
-        >
-            <Text style={styles.filterIcon}>📁</Text>
-            <Text style={styles.filterText}>Categoria</Text>
-        </TouchableOpacity>
-        
-        
-    </View>
-
-    {tipoFiltro === 'preco' && (
-        <View style={styles.filtroDetalhes}>
-            <Text style={styles.filtroSubtitulo}>Faixa de Preço</Text>
-            
-            <TextInput 
-                placeholder="Valor mínimo" 
-                placeholderTextColor="#999"
-                value={preco.min}
-                style={styles.input} 
-                keyboardType="numeric"
-                onChangeText={(text) => setPreco({ ...preco, min: text })}
-            />
-            
-            <TextInput 
-                placeholder="Valor máximo" 
-                placeholderTextColor="#999"
-                value={preco.max}
-                onChangeText={(text) => setPreco({ ...preco, max: text })}
-                style={styles.input} 
-                keyboardType="numeric"
-            />
-            
-            <TouchableOpacity style={styles.botaoAplicar} onPress={() => {
-                buscarPorPreco()
-            }}>
-                <Text style={styles.botaoAplicarTexto}>Aplicar Filtro</Text>
-            </TouchableOpacity>
-        </View>
-    )}
-
-    {tipoFiltro === 'categoria' && (
-        <View style={styles.filtroDetalhes}>
-            <Text style={styles.filtroSubtitulo}>Categorias</Text>
-
-            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'casual' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('casual')}>
-                <Text style={styles.opcaoTexto}>👟 Casual</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'corrida' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('corrida')}>
-                <Text style={styles.opcaoTexto}>🏃 Corrida</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'basquete' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('basquete')}>
-                <Text style={styles.opcaoTexto}>🏀 Basquete</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'futebol' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('futebol')}>
-                <Text style={styles.opcaoTexto}>⚽ Futebol</Text>
-            </TouchableOpacity>
-        </View>
-    )}
-</View>
-    )}
-     <View style={styles.contentOrdenacao}>
-                <TouchableOpacity style={styles.filterButton} onPress={() => {Keyboard.dismiss(); ordenarPorNome();}}>
-                    <Text style={styles.textButton}>Por nome</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.filterButton} onPress={() => { ordenarPorPreco(); Keyboard.dismiss(); }}>
-                    <Text style={styles.textButton}>Por Preço</Text>
-                </TouchableOpacity>
-    </View>
-            <View style={styles.content}>
-                {produtos.length > 0 && produtos.map((produto) => (
-                <TouchableOpacity key={produto.id} onPress={async () => navigation.navigate('DetalhesProduto', { produto })} >
-                        <CompCard  source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
-                    </TouchableOpacity>
-                    
-                ))}
+                    <View style={styles.filtrosGrid}>
+                        <TouchableOpacity 
+                            style={[
+                            styles.filterElement,
+                            tipoFiltro === 'preco' && styles.filterElementAtivo
+                            ]} 
+                            onPress={() => setTipoFiltro('preco')}
+                        >
+                            <Text style={styles.filterIcon}>💰</Text>
+                            <Text style={styles.filterText}>Preço</Text>
+                        </TouchableOpacity>
                 
+                        <TouchableOpacity 
+                            style={[
+                                styles.filterElement,
+                                tipoFiltro === 'categoria' && styles.filterElementAtivo
+                            ]} 
+                            onPress={() => setTipoFiltro('categoria')}
+                        >
+                            <Text style={styles.filterIcon}>📁</Text>
+                            <Text style={styles.filterText}>Categoria</Text>
+                        </TouchableOpacity>
+            
+            
+                    </View>
+
+                    {tipoFiltro === 'preco' && (
+                    <View style={styles.filtroDetalhes}>
+                        <Text style={styles.filtroSubtitulo}>Faixa de Preço</Text>
                     
+                        <TextInput 
+                            placeholder="Valor mínimo" 
+                            placeholderTextColor="#999"
+                            value={preco.min}
+                            style={styles.input} 
+                            keyboardType="numeric"
+                            onChangeText={(text) => setPreco({ ...preco, min: text })}
+                        />
+                        
+                        <TextInput 
+                            placeholder="Valor máximo" 
+                            placeholderTextColor="#999"
+                            value={preco.max}
+                            onChangeText={(text) => setPreco({ ...preco, max: text })}
+                            style={styles.input} 
+                            keyboardType="numeric"
+                        />
+                    
+                        <TouchableOpacity style={styles.botaoAplicar} onPress={() => {
+                            buscarPorPreco()
+                        }}>
+                            <Text style={styles.botaoAplicarTexto}>Aplicar Filtro</Text>
+                        </TouchableOpacity>
+                </View>
+            )}
+
+                {tipoFiltro === 'categoria' && (
+                <View style={styles.filtroDetalhes}>
+                    <Text style={styles.filtroSubtitulo}>Categorias</Text>
+
+                    <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'casual' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('casual')}>
+                        <Text style={styles.opcaoTexto}>👟 Casual</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'corrida' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('corrida')}>
+                        <Text style={styles.opcaoTexto}>🏃 Corrida</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'basquete' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('basquete')}>
+                        <Text style={styles.opcaoTexto}>🏀 Basquete</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.opcaoCategoria, categoriaSelecionada === 'futebol' && styles.opcaoCategoriaAtiva]} onPress={() => pesquisarPorCategoria('futebol')}>
+                        <Text style={styles.opcaoTexto}>⚽ Futebol</Text>
+                    </TouchableOpacity>
+                </View>
+                    )}
+            </View>
+    )}
+            <View style={styles.contentOrdenacao}>
+                        <TouchableOpacity style={styles.filterButton} onPress={() => {Keyboard.dismiss(); ordenarPorNome();}}>
+                            <Text style={styles.textButton}>Por nome</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.filterButton} onPress={() => { ordenarPorPreco(); Keyboard.dismiss(); }}>
+                            <Text style={styles.textButton}>Por Preço</Text>
+                        </TouchableOpacity>
+            </View>
+            <View style={styles.content}>
+                {produtos.length > 0 ? produtos.map((produto) => (
+                <TouchableOpacity key={produto.id} onPress={() => navigation.navigate('DetalhesProduto', { produto })} >
+                        <CompCard id={produto.id} source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} />
+                    </TouchableOpacity>
+                )) : (
+                    <View style={styles.errorContainer}>
+                        <Text style={styles.errorText}>Nenhum produto encontrado.</Text>
+                    </View>
+                )}
                 
 
             </View>
            <View>
             </View>
+            {
+                loading && <Loading />
+            }
         </ViewBase>
     
     );
+}
+ else{
+    return (
+        <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Carregando produtos...</Text>
+        </View>
+    );
+ }
 }
 const styles = StyleSheet.create({
     root: {
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
         
     },
     content: {
-    
+        flex: 1,
       flexDirection: 'row',
       flexWrap: 'wrap',
       alignItems: 'center',
@@ -261,9 +265,14 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     errorContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        height: 200,
+        
+        
+        
     },
     errorText: {
         color: 'red',

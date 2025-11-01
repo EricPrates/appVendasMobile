@@ -26,9 +26,10 @@ export default function App() {
 
 
   return (
+    <AuthProvider>
   
     <SafeAreaView style={styles.container}>
-      <AuthProvider>
+      
       <NavigationContainer>
           <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Splash" component={SplashRoute} />
@@ -49,8 +50,9 @@ export default function App() {
         
           </Stack.Navigator>
         </NavigationContainer>
-      </AuthProvider>
+      
     </SafeAreaView>
+    </AuthProvider>
   );
 }
 function SplashRoute({ navigation }) {

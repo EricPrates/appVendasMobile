@@ -5,10 +5,9 @@ import { useAuth } from './Provider';
 import { useNavigation } from '@react-navigation/native';
 import { ProdutoController } from './controller/Produto.controller';
 export default function Cabecalho({ tabAtiva }) {
-    const controlProduto = ProdutoController();
-    
+        
     const [menuVisible, setMenuVisible] = useState(false);
-    const { nome, signOut, setSearchQuery, searchQuery, alterarFiltro } = useAuth();
+    const { userController, produtoController, signOut, setSearchQuery, searchQuery, alterarFiltro } = useAuth();
     const navigation = useNavigation();
    
 

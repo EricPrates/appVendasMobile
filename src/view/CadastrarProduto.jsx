@@ -10,8 +10,8 @@ import Produto from "../model/Produto";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CadastrarProduto({  }) {
-    const {logado} = useAuth();
-    const control = ProdutoController();
+
+    const{produtoController} = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
     const [produto, setProduto] = useState(new Produto());
     const [mensagem, setMensagem] = useState();
@@ -57,7 +57,7 @@ export default function CadastrarProduto({  }) {
         
         setLoading(true);
         try {
-        const response = await control.addProduto({ ...produto, idUsuario: logado.id });
+        const response = await produtoController.addProduto({ ...produto, idUsuario: logado.id });
         return response;
         
     } catch (error) {

@@ -3,12 +3,28 @@ import { Image, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import { AuthProvider, useAuth } from "./Provider";
+import { UsuarioController } from "./controller/Usuario.controller";
+import Searchbar from "react-native-paper";
+import { useState } from "react";
+export default function CompCard({id, source, nome, preco, avaliacao }) {
 
-export default function CompCard({ object, source, nome, preco, avaliacao,route }) {
-
-    const { addFavorito } = useAuth();
-
+    const { addFavorito, logado } = useAuth();
+    const { userController } = useAuth();
+    const [snack, setSnack] = useState(false);
+    
+const adicionarFavoritos = async (produtoId) => {
+    
+   const response = await userController.adicionarFavoritosUsuario(produtoId);
+   console.log(response);
+   
+    if (response.success) {
+        setSnack('Produto adicionado aos favoritos!');
+    } else {
+        setSnack('Erro ao adicionar produto aos favoritos.');
+    }
+}
     return (
+
         <Surface style={styles.card} elevation={8}>
 
            
@@ -22,10 +38,7 @@ export default function CompCard({ object, source, nome, preco, avaliacao,route 
                 <Text style={styles.productName} variant="titleLarge">
                     {nome}
                 </Text>
-                <Text style={styles.productCategory} variant="bodyMedium">
-                    
-                </Text>
-                
+              
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>R$ {preco}</Text>
                     <Text style={styles.discountText}>R$ {}</Text>
@@ -39,11 +52,26 @@ export default function CompCard({ object, source, nome, preco, avaliacao,route 
                     <Text style={styles.reviews}></Text>
                 </View>
                 <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between',}}>
                     <IconButton
-                       icon={"heart-outline"
+                        style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
+                       icon={"cart-outline"}
+                       iconColor="#fff"
+                       size={24}
+                       onPress={() => {
                         
-                       }
+                       }}
                    />
+                   <IconButton
+                       icon={"heart-outline"}
+                       size={24}
+                       iconColor="#fff"
+                       style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
+                       onPress={() => {
+                        adicionarFavoritos(id);
+                       }}
+                   />
+                   </View>
                 </View>
             </Card.Content>
         </Surface>
@@ -126,7 +154,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 2,
-        gap: 6,
+
     },
     price: {
         fontSize: 18,

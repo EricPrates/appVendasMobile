@@ -49,9 +49,6 @@ export async function updateProduto(id, produtoAtualizado) {
 export async function deleteProdutoId(id) {
     const produtos = await getProdutos();
     const produtoParaDeletar = produtos.find(p => p.id === id);
-    if (!produtoParaDeletar) {
-        return { success: false, errors: ["Produto não encontrado."] };
-    }
     produtos.remove(produtoParaDeletar);
     await saveProdutos(produtos);
     return { success: true, message: "Produto deletado com sucesso." };

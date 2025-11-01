@@ -1,34 +1,47 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollViewComponent, StyleSheet, View, ScrollView, TouchableOpacity, Text } from "react-native";
-import { AuthProvider, useAuth } from "../components/Provider";
-import { useState } from "react";
+import { useAuth } from "../components/Provider";
+import { useEffect, useState } from "react";
 import BarraBaixa from "../components/BarraBaixa";
 import CompCard from "../components/CompCard";
 import Cabecalho from "../components/Cabecalho";
 import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+
 export default function Favoritos({  }) {
-    const { favoritos, setFavoritos } = useAuth();
+
+    const { logado, userController, usuario } = useAuth();
     const [tabAtiva, setTabAtiva] = useState('favoritos');
+    const [favoritos, setFavoritos] = useState();   
     const navigation = useNavigation();
+
+useEffect(() => {
+
+    console.log(userController.getFavoritos());
+
+   
     
+}, []);
+
     return (
         <PaperProvider>
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
-                {
+                {favoritos ?(
                     favoritos.map((produto) => (
                         <TouchableOpacity  onPress={() => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} key={produto.id} />
                     </TouchableOpacity>
                     ))
-                }                
+                ) : (
+                    <Text style={{ textAlign: 'center', width: '100%' }}>Nenhum favorito encontrado</Text>
+                )}
             </View>
             {
-                favoritos.length > 0 &&  <TouchableOpacity style={styles.removeFavoritos} onPress={() => setFavoritos([])}>
+                favoritos? <TouchableOpacity style={styles.removeFavoritos} onPress={() => setFavoritos([])}>
                     <Text style= {{ color: '#fff', fontWeight: 'bold' }}>Remover todos os favoritos</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> : null
             }
                
         </ViewBase>

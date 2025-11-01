@@ -3,14 +3,14 @@ import EntradadeTexto from "./EntradadeTexto";
 import ViewBase from "./ViewBase";
 import { StyleSheet, Text } from "react-native";    
 import { Button, Icon, Modal, Snackbar } from "react-native-paper";
-import  {UsuarioController}  from "../components/controller/Usuario.controller";
+import { useAuth } from "../components/Provider";
 import { useEffect, useState } from "react";
 import Usuario from "../model/Usuario";
 export default function CadastrarUsuario({ route}) {
    
     
     const { usuarioEditar } = route.params;
-    const control = UsuarioController();
+    const { userController } = useAuth();
     const [usuario, setUsuario] = useState(usuarioEditar ?{
         id: usuarioEditar.id,
         endereco: usuarioEditar.endereco,
@@ -58,7 +58,7 @@ const verificaCampos = (usuario) => {
     const cadastrarUsuario = async (usuario) => {
         setLoading(true);
         try {
-            const response = await control.createUsuario(usuario);
+            const response = await userController.createUsuario(usuario);
             return response;
             
         } catch (error) {
@@ -77,7 +77,7 @@ const verificaCampos = (usuario) => {
         
         
         try {
-            const response = await control.updateUsuario(usuario, id);
+            const response = await userController.updateUsuario(usuario, id);
            
             return response;
 

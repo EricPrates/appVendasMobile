@@ -134,7 +134,7 @@ export const ProdutoController = () => {
         if(!filtro || filtro.trim() === '') {
             return { success: false, data: produtos  };
         }
-        const produtosFiltrados = produtos.filter(p => 
+        const produtosFiltrados = [...produtos].filter(p => 
             p.nome.toLowerCase().includes(filtro.toLowerCase()) ||
             p.categoria.toLowerCase().includes(filtro.toLowerCase())
         );
