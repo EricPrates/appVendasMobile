@@ -2,12 +2,14 @@ import * as UserService from '../../service/DAO/User.Service';
 import { useState } from 'react';
 import { useAuth } from '../Provider';
 import { ProdutoController } from './Produto.controller';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export const UsuarioController = () => {
     
     const productController = ProdutoController();
     const [usuario, setUsuarioAtual] = useState(null);
     const [favoritos, setFavoritos] = useState([]);
+    const [carrinho, setCarrinho] = useState([]);
     
     const setUsuario = (usuario) => {
         setUsuarioAtual(usuario);
@@ -21,6 +23,12 @@ export const UsuarioController = () => {
                     const produtoResponse = await productController.getProdutoById(produtoId);
                     if (produtoResponse.success) {
                         setFavoritos((prevFavoritos) => [...prevFavoritos, produtoResponse.data]);
+                    }
+                });
+                response.data.produtosCarrinho.map(async (produtoId) => {
+                    const produtoResponse = await productController.getProdutoById(produtoId);
+                    if (produtoResponse.success) {
+                        setCarrinho((prevCarrinho) => [...prevCarrinho, produtoResponse.data]);
                     }
                 });
                 return { success: true, data: response.data };
@@ -153,10 +161,32 @@ async function removerUmFavorito(produtoId) {
         return { success: false, errors: ["Erro ao remover favorito: " + error] };
     }
 }
+async function removerItemCarrinho(produtoId) {
+    try {
+        if(produtoId == null || produtoId.trim() === '') {
+            return { success: false, errors: ["ID do produto é obrigatório para remover do carrinho."] };
+        }
+        usuario.carrinho = usuario.carrinho.filter(id => id !== produtoId);
 
+        const response = await UserService.updateUsuario(usuario, usuario.id);
+
+        if (response.success) {
+            setUsuario(usuario);
+            setCarrinho((prevCarrinho) => prevCarrinho.filter(id => id !== produtoId));
+            return { success: true };
+        } else {
+            return { success: false, errors: response.errors };
+        }
+    } catch (error) {
+        return { success: false, errors: ["Erro ao remover item do carrinho: " + error] };
+    }
+}
 function getFavoritos() {
     
         return favoritos || [];
+}
+function getCarrinho() { 
+    return carrinho || [];
 }
 
     return {
@@ -171,7 +201,8 @@ function getFavoritos() {
         estaLogado,
         getFavoritos,
         adicionarFavoritosUsuario,
-        removeFavoritos
+        removeFavoritos,
+        getCarrinho,
 
     }
 };

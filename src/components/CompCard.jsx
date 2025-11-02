@@ -35,6 +35,35 @@ const removerUmFavorito = async (produtoId) => {
         setLoading(false);
     }   
 }
+const adicionarCarrinho = async (produtoId) => {
+    
+   const response = await userController.adicionarItemCarrinho(produtoId);
+   if (response.success) {
+       setSnack('Produto adicionado ao carrinho!');
+       setEhCarrinho(true);
+   } else {
+       setSnack('Erro ao adicionar produto ao carrinho.');
+       setEhCarrinho(false);
+   }
+}
+
+const removerItemCarrinho = async (produtoId) => {
+    try {
+        setLoading(true);
+        const response = await userController.removerCarrinho(produtoId);
+
+        if (response.success) {
+            setLoading(false);
+            setSnack('Produto removido do carrinho!');
+        } else {
+            setSnack('Erro ao remover produto do carrinho.');
+        }
+    } catch (error) {
+        setSnack('Erro ao remover produto do carrinho.');
+    } finally {
+        setLoading(false);
+    }
+}
 const adicionarFavoritos = async (produtoId) => {
     
    const response = await userController.adicionarFavoritosUsuario(produtoId);
@@ -82,7 +111,7 @@ const adicionarFavoritos = async (produtoId) => {
                        icon={ ehCarrinho ? "cart" : "cart-outline"}
                        iconColor="#fff"
                        size={24}
-                       onPress={() => { !ehCarrinho ? adicionarCarrinho(id) : removerCarrinho(id);
+                       onPress={() => { !ehCarrinho ? adicionarCarrinho(id) : removerItemCarrinho(id);
                         
                        }}
                    />

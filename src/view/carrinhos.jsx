@@ -1,23 +1,20 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import BarraBaixa from "../components/BarraBaixa";
-import Cabecalho from "../components/Cabecalho";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../components/Provider";
 import { useState } from "react";
-import { Icon, PaperProvider, Card, Button } from "react-native-paper";
+import { Icon,  Card, Button } from "react-native-paper";
 import ViewBase from "./ViewBase";
 
 export default function Carrinhos({ navigation }) {
     const [tabAtiva, setTabAtiva] = useState('carrinho');
     const { nome, signOut } = useAuth();
+    const { userController } = useAuth();
+    const [carrinho, setCarrinho] = useState([]);
 
-    const cartItems = [
-        { id: 1, name: "Tênis Nike Air Max", price: 299.99, size: "42", color: "Preto/Branco", quantity: 1, image: "https://picsum.photos/200/300?random=1" },
-        { id: 2, name: "Tênis Adidas Ultraboost", price: 349.99, size: "41", color: "Azul/Cinza", quantity: 2, image: "https://picsum.photos/200/300?random=2" },
-        { id: 3, name: "Tênis Puma RS-X", price: 199.99, size: "43", color: "Vermelho", quantity: 1, image: "https://picsum.photos/200/300?random=3" }
-    ];
+    useEffect(() => {
+        setCarrinho(userController.getCarrinho());
+    }, []);
 
-    const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = carrinho.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     return (
         <ViewBase tabAtiva={tabAtiva}>
