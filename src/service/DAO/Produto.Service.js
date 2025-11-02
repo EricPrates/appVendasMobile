@@ -4,48 +4,7 @@ import { STORAGE_KEYS } from "../storegeKeys";
 
 const PRODUTOS_KEY = STORAGE_KEYS.PRODUTOS;
 
-const validarProduto  = (produto) => {
-    const { nome, descricao, preco, quantidade, urlImagem, cores, tamanho, categoria, fornecedor } = produto;
-    const errors = [];
-    if(!nome || nome.trim() === '') {
-        errors.push("Nome é obrigatório.");
-    }
-    else if(nome.length < 3) {
-        errors.push("Nome deve ter pelo menos 3 caracteres.");
-    }
-     if(descricao.length < 10 || descricao.trim() === '' || !descricao || descricao === null || descricao === undefined) {
-        errors.push("Descrição deve ter pelo menos 10 caracteres.");
-    }
-     if(isNaN(preco) || preco <= 0) {
-        errors.push("Preço deve ser um número positivo.");
-    }
-    if(isNaN(quantidade) || quantidade < 0 || !Number.isInteger(quantidade)|| quantidade === null || quantidade === undefined) {
-        errors.push("Não é possível cadastrar um produto com quantidade negativa, não inteira ou vazia.");
-    }
-    if(!urlImagem || urlImagem.trim() === '') {
-        errors.push("urlImagem é obrigatória.");
-    }
-    else if(!urlImagem.startsWith('http')) {
-        errors.push("URL da imagem deve começar com http ou https.");
-    }
-    if (!Array.isArray(cores) || cores.length === 0) {
-        errors.push("Pelo menos uma cor é obrigatória.");
-    }
-    if (!tamanho || tamanho.trim() === '') {
-        errors.push("Tamanho é obrigatório.");
-    }
-    else if(tamanho.length < 1) {
-        errors.push("Tamanho deve ter pelo menos 1 caractere.");
-    }
-     if (!categoria || categoria.trim() === '') {
-        errors.push("Categoria é obrigatória.");
-    }
-    else if(fornecedor === null || fornecedor === undefined || fornecedor.trim() === '') {
-        errors.push("Fornecedor é obrigatório.");
-    }
-    return errors;
 
-}
 export async function getProdutos() {
     const produtos = await getJSON(PRODUTOS_KEY, []);
     return produtos;
@@ -56,11 +15,7 @@ export async function saveProdutos(produtos) {
 }
 
 export async function addProduto(produto) {
-    const errors = validarProduto(produto);
     
-    if(errors.length > 0) {
-        return {success: false, errors};
-    }
     const produtos = await getProdutos();
 
     produtos.push(produto);
@@ -78,10 +33,7 @@ export async function updateProduto(id, produtoAtualizado) {
     if (index === -1) {
         return { success: false, errors: ["Produto não encontrado."] };
     }
-    const errors = validarProduto(produtoAtualizado);
-    if(errors.length > 0) {
-        return {success: false, errors};
-    }
+    
     produtos[index] = {...produtos[index], ...produtoAtualizado};
     await saveProdutos(produtos);
     return { success: true, data: produtos[index], message: "Produto atualizado com sucesso." };

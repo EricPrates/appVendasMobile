@@ -35,6 +35,8 @@ export default function EditarProduto({ navigation }) {
         if (produtoSelecionado) {
             try {
                 const response = await control.updateProduto(produtoSelecionado.id, produtoSelecionado);
+            
+                
                 if (response.success) {
                     
                     setSnackbarVisible(true);

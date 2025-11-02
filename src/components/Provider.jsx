@@ -24,8 +24,8 @@ const AuthProvider = ({children}) =>{
     const [filtroVisible, setFiltroVisible] = useState(false);
     const [nome, setNome] = useState('');
     const [favoritos, setFavoritos] = useState([]);
-    
-
+    const [tipo, setTipo] = useState('');
+    const [idUsuario, setIdUsuario] = useState(null);
     
 
    
@@ -38,8 +38,9 @@ const AuthProvider = ({children}) =>{
             setLogado(true)
             setNome(res.data.nome)
             setLoading(false)
-            
-            
+            setTipo(res.data.tipo);
+            setIdUsuario(res.data.id);
+            setUsuario(res.data)
             
         }
         return res;
@@ -58,8 +59,8 @@ const AuthProvider = ({children}) =>{
     
     return (
         <AuthContext.Provider value={{logado ,login, usuario, signOut,  setSearchQuery, searchQuery, alterarFiltro,
-         filtroVisible, setFiltroVisible, setLogado, setLoading, userController, produtoController, loading, nome,
-            }} >
+         filtroVisible, setFiltroVisible, setLogado, setLoading, userController, produtoController, loading, nome, usuario, favoritos, setFavoritos,
+          tipo  }} >
                 {children}
             
         </AuthContext.Provider>

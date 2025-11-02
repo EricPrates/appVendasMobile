@@ -16,7 +16,7 @@ export default function CadastrarProduto({  }) {
     const [produto, setProduto] = useState(new Produto());
     const [mensagem, setMensagem] = useState();
     const [loading, setLoading] = useState(false);
-   
+    const {userController, idUsuario} = useAuth(); 
     const navigation = useNavigation();
     const fecharModal = () => setModalVisible(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false)
@@ -34,7 +34,7 @@ export default function CadastrarProduto({  }) {
         avaliacao: 0,
         desconto: 0,
         fornecedor: 'Fornecedor Teste',
-        idUsuario: logado.id,
+        idUsuario: idUsuario,
         categoria: 'Corrida',
         });
     }, []);
@@ -57,7 +57,7 @@ export default function CadastrarProduto({  }) {
         
         setLoading(true);
         try {
-        const response = await produtoController.addProduto({ ...produto, idUsuario: logado.id });
+        const response = await produtoController.addProduto({ ...produto, idUsuario: idUsuario });
         return response;
         
     } catch (error) {
@@ -125,7 +125,7 @@ export default function CadastrarProduto({  }) {
                                     value={produto.quantidade}
                                     placeholder="50"
                                     keyboardType="numeric"
-                                    onChangeText={text => setProduto({ ...produto, quantidade: text })}
+                                    onChangeText={text => setProduto({ ...produto, quantidade: Number(text) })}
                                 />
                             </View>
                         </View>

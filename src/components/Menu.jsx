@@ -11,7 +11,7 @@ import { ProdutoController } from './controller/Produto.controller';
 
 export default function MenuComponent({ }) {
     const control = ProdutoController();
-    const { nome, signOut, logado } = useAuth();
+    const { nome, signOut, tipo } = useAuth();
     const [tabAtiva, setTabAtiva] = useState('menu');
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +46,7 @@ export default function MenuComponent({ }) {
                     description="Acompanhe seus pedidos" 
                 />
                 <Lista 
-                    onPress={() => {}} 
+                    onPress={() => {navigation.navigate('favoritos'); setTabAtiva('favoritos')}} 
                     style={styles.item} 
                     icon='heart' 
                     title="Favoritos" 
@@ -61,7 +61,7 @@ export default function MenuComponent({ }) {
                 />
                 
                 </View>
-                {logado.tipo === 'admin' && (
+                {tipo === 'admin' && (
                     <View style={styles.adminSection}>
                         <Text style={styles.adminTitle}>Administração</Text>
                         <Lista 

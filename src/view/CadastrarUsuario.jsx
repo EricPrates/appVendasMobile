@@ -6,23 +6,14 @@ import { Button, Icon, Modal, Snackbar } from "react-native-paper";
 import { useAuth } from "../components/Provider";
 import { useEffect, useState } from "react";
 import Usuario from "../model/Usuario";
+import { useNavigation } from "@react-navigation/native";
 export default function CadastrarUsuario({ route}) {
-   
-    
-    const { usuarioEditar } = route.params;
+
+    const navigation = useNavigation();
+
+    const { usuarioEditar, onGoBack } = route.params || {};
     const { userController } = useAuth();
-    const [usuario, setUsuario] = useState(usuarioEditar ?{
-        id: usuarioEditar.id,
-        endereco: usuarioEditar.endereco,
-        email: usuarioEditar.email,
-        telefone: usuarioEditar.telefone,
-        nome: usuarioEditar.nome,
-        login: usuarioEditar.login,
-        senha: usuarioEditar.senha,
-        tipo: usuarioEditar.tipo,
-        
-        
-    } : new Usuario());
+    const [usuario, setUsuario] = useState( new Usuario());
    
     
     const [mensagem, setMensagem] = useState("");
@@ -33,11 +24,22 @@ export default function CadastrarUsuario({ route}) {
     const [snackbarVisible, setSnackbarVisible] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
-    
-
-
-
-
+    useEffect(() => { 
+        if (usuarioEditar) {
+            setUsuario({
+                id: usuarioEditar.id,
+                endereco: usuarioEditar.endereco,
+                email: usuarioEditar.email,
+                telefone: usuarioEditar.telefone,
+                nome: usuarioEditar.nome,
+                login: usuarioEditar.login,
+                senha: usuarioEditar.senha,
+                tipo: usuarioEditar.tipo,
+            });
+        }else{
+        setUsuario(new Usuario());
+        }
+    }, []);
 
 const verificaCampos = (usuario) => {
         if(usuario.nome == '' || usuario.email == '' || usuario.login == '' || 
@@ -91,6 +93,48 @@ const verificaCampos = (usuario) => {
             setLoading(false);
         }
     };
+    const handleConfirmar = async () => {
+        let resultado;
+        
+        if (usuarioEditar) {
+            
+            resultado = await editarUsuario(usuario, usuario.id);
+        } else {
+          
+            resultado = await cadastrarUsuario(usuario);
+        }
+
+        if (resultado && resultado.success) {
+            setSnackbarMessage(
+                usuarioEditar 
+                    ? "Usuário editado com sucesso!" 
+                    : "Usuário cadastrado com sucesso!"
+            );
+            
+            if (!usuarioEditar) {
+                setUsuario(new Usuario());
+            }
+            
+            fecharModal();
+            onGoBack && onGoBack();
+         
+            setTimeout(() => {
+                navigation.goBack();
+            }, 1500);
+            
+        } else {
+            
+            const erros = resultado?.errors ? resultado.errors.join('\n') : "Erro desconhecido";
+            setSnackbarMessage(
+                usuarioEditar 
+                    ? `Erro ao editar usuário:\n${erros}`
+                    : `Erro ao cadastrar usuário:\n${erros}`
+            );
+        }
+        
+        setSnackbarVisible(true);
+    };
+
     return (
         <ViewBase tabAtiva="cadastrarUsuario">
            
@@ -240,19 +284,8 @@ const verificaCampos = (usuario) => {
                                   <View style={styles.modalButtons}>
                                       <Button
                                           mode="contained"
-                                          onPress={async () => { const novoUsuario =  usuarioEditar?  await editarUsuario(usuario, usuario.id): await cadastrarUsuario(usuario);
+                                          onPress={() => { handleConfirmar();
                                             
-                                            setSnackbarVisible(true);
-                                                 if (novoUsuario && novoUsuario.success) {
-                                                    setSnackbarMessage("Usuário cadastrado com sucesso!");
-                                                    fecharModal();
-                                                    setUsuario(new Usuario());
-                                                    
-                                                } 
-                                                else {
-                                                    const erros = usuarioCadastrado.errors.join('\n');
-                                                    setSnackbarMessage(`Erro ao cadastrar usuário:\n${erros}`);
-                                                }
                                             }}
                                                 
                                           style={styles.buttonSim}

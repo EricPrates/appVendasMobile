@@ -2,12 +2,13 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ViewBase from "./ViewBase";
 import { Button, Icon } from "react-native-paper";
 import { useAuth } from "../components/Provider";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Perfil() {
-    const { signOut, logado } = useAuth();
-    const { usuario, nome, email, tipo } = logado;
-   
+    const { usuario } = useAuth();
+    
+   const navigation = useNavigation();
    
     return (
         <ViewBase tabAtiva="perfil">
@@ -27,19 +28,19 @@ export default function Perfil() {
                          </View>
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>Nome:</Text>
-                            <Text style={styles.formValue}>{nome}</Text>
+                            <Text style={styles.formValue}>{usuario.nome}</Text>
                         </View>
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>E-mail:</Text>
-                            <Text style={styles.formValue}>{email}</Text>
+                            <Text style={styles.formValue}>{usuario.email}</Text>
                         </View>
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>Tipo:</Text>
-                            <Text style={styles.formValue}>{tipo}</Text>
+                            <Text style={styles.formValue}>{usuario.tipo}</Text>
                         </View>
                         <View style={{marginBottom: 12}}>
                             <Text style={styles.formLabel}>Usuário:</Text>
-                            <Text style={styles.formValue}>{usuario}</Text>
+                            <Text style={styles.formValue}>{usuario.login}</Text>
                         </View>
                         <View style={styles.buttonContainer}>
                            
@@ -57,7 +58,7 @@ export default function Perfil() {
                                 mode="contained" 
                                 style={styles.submitButton}
                                 labelStyle={styles.submitButtonText}
-                                onPress={() => console.log('Cadastrar Usuário')}
+                                onPress={() => navigation.navigate('CadastrarUsuario', { usuarioEditar: usuario })}
                                 icon="account-check"
                             >
                                 Alterar Dados

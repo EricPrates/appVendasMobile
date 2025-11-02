@@ -6,9 +6,7 @@ export const ProdutoController = () => {
     const [favoritos, setFavoritos] = useState([]);
     const [produtos, setProdutos] = useState([]);
 
-    const addFavorito = (produto) => {
-        setFavoritos((prevFavoritos)=> [...prevFavoritos, produto]);
-    };
+
     const validarProduto  = (produto) => {
         const { nome, descricao, preco, quantidade, urlImagem, cores, tamanho, categoria, fornecedor } = produto;
         const errors = [];
@@ -33,9 +31,7 @@ export const ProdutoController = () => {
         else if(!urlImagem.startsWith('http')) {
             errors.push("URL da imagem deve começar com http ou https.");
         }
-        if (!Array.isArray(cores) || cores.length === 0) {
-            errors.push("Pelo menos uma cor é obrigatória.");
-        }
+
         if (!tamanho || tamanho.trim() === '') {
             errors.push("Tamanho é obrigatório.");
         }
@@ -75,6 +71,7 @@ export const ProdutoController = () => {
             const id = Date.now().toString();
             const produtoComId = { id, ...novoProduto };
             const response = await ProdutoService.addProduto(produtoComId);
+            console.log('Produto adicionado:', response);
             return response;
             }catch(error){
                     return { success: false, errors: ["Erro interno no servidor tente novamente."] };
@@ -85,13 +82,17 @@ export const ProdutoController = () => {
         if(!id || id.trim() === '') {
             return { success: false, errors: ["ID do produto é obrigatório para atualização."] };
         }
-        const errors = validarProduto(produtoAtualizado);
 
+        const errors = validarProduto(produtoAtualizado);
         if(errors.length > 0) {
             return { success: false, errors };
         }
+
         try{
+            
             const response = await ProdutoService.updateProduto(id, produtoAtualizado);
+            console.log(response);
+            
             return response;
         }catch(error){
             return { success: false, errors: ["Erro interno no servidor tente novamente."] };
@@ -141,19 +142,16 @@ export const ProdutoController = () => {
         return produtosFiltrados;
     }
     
-    async function getProdutosByPreco(min, max) {
+    function getProdutosByPreco(min, max) {
         if (min === undefined || max === undefined) {
             return { success: false, errors: ["Valores de preço inválidos."] };
         }
         if (isNaN(min) || isNaN(max) || min < 0 || max < 0 || min > max) {
             return { success: false, errors: ["Valores de preço inválidos."] };
         }
-        try{
-            const produtos = await ProdutoService.getProdutosByPreco(min, max);
-            return produtos;
-        }catch(error){
-            return { success: false, errors: ["Erro interno no servidor tente novamente."] };
-        }
+        const produtosFiltrados = [...produtos].filter(p => p.preco >= min && p.preco <= max);
+        
+        return produtosFiltrados;
     }
    
        
@@ -189,7 +187,6 @@ export const ProdutoController = () => {
         deleteProduto,
         getProdutos,
         getProdutoById,
-        addFavorito,
         getProdutosByPreco,
        getProdutosNomeCategoria,
         getProdutoOrdenacaoNomeCrescente,

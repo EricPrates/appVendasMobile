@@ -15,6 +15,10 @@ export default function EditarUsuarios() {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+    useEffect(() => {
+        fetchUsuarios();
+    }, []);
+    
     const fetchUsuarios = async () => {
         try {
             setLoading(true);
@@ -35,16 +39,23 @@ export default function EditarUsuarios() {
             setRefreshing(false);
         }
     };
-
-    const handleRefresh = async () => {
-        setRefreshing(true);
-        await fetchUsuarios();
-    };
+    const handleAddUser = () => {
+    navigation.navigate('CadastrarUsuario', {
+        onGoBack: () => {
+            console.log('✅ Callback de cadastro chamado');
+            fetchUsuarios(); // Força a atualização
+        }
+    });
+};
+   
 
     const handleEditUser = (usuario) => {
      
 
-        navigation.navigate('CadastrarUsuario', { usuarioEditar: usuario });
+        navigation.navigate('CadastrarUsuario', { usuarioEditar: usuario, onGoBack: () => {
+            
+            fetchUsuarios(); 
+        } });
     };
     const handleExcluirUsuario = (id) => {
         Alert.alert(
@@ -79,18 +90,9 @@ export default function EditarUsuarios() {
             ]
         );
     };
-    useEffect(() => {
-        fetchUsuarios();
-    }, []);
+    
 
-    if (loading && !refreshing) {
-        return (
-            <View style={[UsuarioStyles.loadingContainer, UsuarioStyles.container]}>
-                <ActivityIndicator size="large" color={Colors.primary} />
-                <Text style={UsuarioStyles.loadingText}>Carregando usuários...</Text>
-            </View>
-        );
-    }
+    
 
     return (
         <ViewBase enableScroll={false} style={UsuarioStyles.container}>
@@ -146,7 +148,7 @@ export default function EditarUsuarios() {
                     </View>
                 }
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                
                 contentContainerStyle={usuarios.length === 0 ? { flex: 1 } : UsuarioStyles.listContainer}
                 showsVerticalScrollIndicator={false}
                 
@@ -155,7 +157,7 @@ export default function EditarUsuarios() {
            <View style={{ height: 80 }} >
             <TouchableOpacity 
                 style={UsuarioStyles.fab}
-                onPress={() => navigation.navigate('CadastrarUsuario')}
+                onPress={() => handleAddUser()}
             >
                 <Text style={UsuarioStyles.fabText}>+</Text>
             </TouchableOpacity>

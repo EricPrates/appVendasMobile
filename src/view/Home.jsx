@@ -1,7 +1,7 @@
 
 import { StyleSheet, View, TouchableOpacity, Text, TextInput, Keyboard } from "react-native";
 import {  useAuth } from "../components/Provider";
-import {  useEffect, useState } from "react";
+import {  use, useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import CompCard from "../components/CompCard";
 import { Alert } from "react-native";
@@ -40,7 +40,9 @@ export default function Home({ navigation }) {
     }, [error])
 
     
-
+useEffect(() => {
+     carregarProdutos();
+}, []);
 const carregarProdutos = async () => {
         
         try {
@@ -64,23 +66,22 @@ const carregarProdutos = async () => {
         }
         setLoading(false);
    }, [searchQuery]);
-  
-  
+
+
    const buscarPorPreco = () => {
     setError(null);
     setFiltroVisible(false);
         try {
-            const min = parseFloat(preco.min) || 0;
-            const max = parseFloat(preco.max) || Infinity;
+           const  min = parseFloat(preco.min);
+           const  max = parseFloat(preco.max);
             const produtosFiltrados =  produtoController.getProdutosByPreco(min, max);
-            if (produtosFiltrados.success) {
-                setProdutos(produtosFiltrados.data);
+            
+            if (produtosFiltrados) {                
+                setProdutos(produtosFiltrados);
+                console.log(produtosFiltrados);
+                
             }
-            if (produtosFiltrados.errors) {
-                setFiltroVisible(false);
-                setProdutos([]);
-                setError(produtosFiltrados.errors);
-            }
+            setFiltroVisible(false);
         }
         catch (error) {
             setError("Erro ao filtrar produtos por preço:", error);
@@ -107,7 +108,7 @@ const carregarProdutos = async () => {
         }
     }
 
-if(!loading){
+
     return (
         
         <ViewBase tabAtiva = {tabAtiva}>
@@ -164,7 +165,7 @@ if(!loading){
                         />
                     
                         <TouchableOpacity style={styles.botaoAplicar} onPress={() => {
-                            buscarPorPreco()
+                            buscarPorPreco();
                         }}>
                             <Text style={styles.botaoAplicarTexto}>Aplicar Filtro</Text>
                         </TouchableOpacity>
@@ -225,14 +226,8 @@ if(!loading){
     
     );
 }
- else{
-    return (
-        <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>Carregando produtos...</Text>
-        </View>
-    );
- }
-}
+ 
+
 const styles = StyleSheet.create({
     root: {
       flex: 1,
