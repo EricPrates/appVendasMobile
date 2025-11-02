@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView} from "react-native";
+import { useEffect, useState } from "react";
 import { useAuth } from "../components/Provider";
-import { useState } from "react";
 import { Icon,  Card, Button } from "react-native-paper";
 import ViewBase from "./ViewBase";
 
@@ -29,9 +29,9 @@ export default function Carrinhos({ navigation }) {
 
          
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                {cartItems.length > 0 ? (
+                {carrinho.length > 0 ? (
                     <View style={styles.itemsContainer}>
-                        {cartItems.map((item, index) => (
+                        {carrinho.map((item, index) => (
                             <Card key={item.id} style={[styles.cartItem, index === 0 && styles.firstItem]}>
                                 <Card.Content style={styles.itemContent}>
                                     <View style={styles.itemImageContainer}>
@@ -105,7 +105,7 @@ export default function Carrinhos({ navigation }) {
             </ScrollView>
 
             
-            {cartItems.length > 0 && (
+            {carrinho.length > 0 && (
                 <View style={styles.summaryContainer}>
                     <Card style={styles.summaryCard}>
                         <Card.Content>

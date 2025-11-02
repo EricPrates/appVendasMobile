@@ -128,10 +128,13 @@ export async function loginUsuario(login, senha) {
     }
     const usuarios = await getUsuarios();
     const usuario = usuarios.find(u => u.login === login && u.senha === senha);
+
+    
     if (!usuario) {
         return { success: false, errors: ["Login ou senha inválidos."] };
     }
-    await setUsuarioLogado(usuario);
+    
+    
     return { success: true, data: usuario };
 }
 

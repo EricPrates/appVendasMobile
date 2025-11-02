@@ -1,88 +1,35 @@
-import { Card, Icon, IconButton, Text } from "react-native-paper";
+import { Card, IconButton, Text } from "react-native-paper";
 import { Image, StyleSheet, View } from "react-native";
 import { Surface } from "react-native-paper";
-import { TouchableOpacity } from "react-native";
-import { AuthProvider, useAuth } from "./Provider";
-import { UsuarioController } from "./controller/Usuario.controller";
-import Searchbar from "react-native-paper";
+import { useAuth } from "./Provider";
 import { useState } from "react";
-export default function CompCard({id, source, nome, preco, avaliacao }) {
+
+export default function CompCard({id, source, nome, preco, avaliacao}) {
+    const { setLoading, userController } = useAuth();
+    const [refresh, setRefresh] = useState(0);
     
-    
-    const { userController, setLoading } = useAuth();
-    const [snack, setSnack] = useState(false);
-    const[favoritado, setFavoritado] = useState(false);
-    const [favoritos, setFavoritos] = useState([]);
-    const [carrinho, setCarrinho] = useState([]);
-    const [ehCarrinho, setEhCarrinho] = useState(false);
+    const toggleFavorito = async (id) => {
+        try {
+            setLoading(true);
 
-const removerUmFavorito = async (produtoId) => {
-    try {
-    setLoading(true);
-    const response = await userController.removerUmFavorito(produtoId);
-
-    if (response.success) {
-        setLoading(false);
-        setSnack('Produto removido dos favoritos!');
-        
-    } else {
-        setSnack('Erro ao remover produto dos favoritos.');
-        setFavoritado(true);
-    }
-} catch (error) {
-    setSnack('Erro ao remover produto dos favoritos.');
-    }finally {
-        setLoading(false);
-    }   
-}
-const adicionarCarrinho = async (produtoId) => {
-    
-   const response = await userController.adicionarItemCarrinho(produtoId);
-   if (response.success) {
-       setSnack('Produto adicionado ao carrinho!');
-       setEhCarrinho(true);
-   } else {
-       setSnack('Erro ao adicionar produto ao carrinho.');
-       setEhCarrinho(false);
-   }
-}
-
-const removerItemCarrinho = async (produtoId) => {
-    try {
-        setLoading(true);
-        const response = await userController.removerCarrinho(produtoId);
-
-        if (response.success) {
+            if (userController.produtoEhFavorito(id)) {
+                await userController.removerFavorito(id);
+                
+            } else {
+                await userController.adicionarFavoritosUsuario(id);
+                
+                
+            }
+        } catch (error) {
+            console.error('Erro ao favoritar:', error);
+        } finally {
             setLoading(false);
-            setSnack('Produto removido do carrinho!');
-        } else {
-            setSnack('Erro ao remover produto do carrinho.');
         }
-    } catch (error) {
-        setSnack('Erro ao remover produto do carrinho.');
-    } finally {
-        setLoading(false);
-    }
-}
-const adicionarFavoritos = async (produtoId) => {
-    
-   const response = await userController.adicionarFavoritosUsuario(produtoId);
-   
-    if (response.success) {
-        setSnack('Produto adicionado aos favoritos!');
-        setFavoritado(true);
-    } else {
-        setSnack('Erro ao adicionar produto aos favoritos.');
-        setFavoritado(false);
-    }
-}
+    };
+
     return (
-
         <Surface style={styles.card} elevation={8}>
-
-           
             <Image
-
                 style={styles.cardImage}
                 source={{ uri: source }}
             />
@@ -94,38 +41,29 @@ const adicionarFavoritos = async (produtoId) => {
               
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>R$ {preco}</Text>
-                    <Text style={styles.discountText}>R$ {}</Text>
                 </View>
                 
-                
-                
-               
                 <View style={styles.ratingContainer}>
                     <Text style={styles.rating}>⭐ {avaliacao}</Text>
-                    <Text style={styles.reviews}></Text>
                 </View>
+                
                 <View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between',}}>
-                    <IconButton
-                        style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
-                       icon={ ehCarrinho ? "cart" : "cart-outline"}
-                       iconColor="#fff"
-                       size={24}
-                       onPress={() => { !ehCarrinho ? adicionarCarrinho(id) : removerItemCarrinho(id);
-                        
-                       }}
-                   />
-                   <IconButton
-                       icon={favoritado ? "heart" : "heart-outline"}
-                       size={24}
-                       iconColor="#fff"
-                       style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
-                       onPress={() => {
-                        !favoritado ?
-                        adicionarFavoritos(id) : removerUmFavorito(id);
-                       }}
-                   />
-                   </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <IconButton
+                            style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
+                            icon={"cart"}
+                            iconColor="#fff"
+                            size={24}
+                            onPress={() => {}}
+                        />
+                        <IconButton
+                            icon={userController.produtoEhFavorito(id) ? "heart" : "heart-outline"} 
+                            size={24}
+                            iconColor="#fff"
+                            style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
+                            onPress={() => toggleFavorito(id)}
+                        />
+                    </View>
                 </View>
             </Card.Content>
         </Surface>
@@ -145,36 +83,14 @@ const styles = StyleSheet.create({
         zIndex: 1,
         position: 'relative',
     },
-   
-    badge: {
-        position: 'absolute',
-        top: 8,
-        left: 8,
-        backgroundColor: '#ff4757',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-        zIndex: 10,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
-    badgeText: {
-        color: '#fff',
-        fontSize: 10,
-        fontWeight: '900',
-        textAlign: 'center',
-    },
     cardImage: {
-        height: '150',
+        height: 150, 
         width: '100%',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderWidth: 0,
         backgroundColor: '#f8f9fa',
-        resizeMode: 'extend',
+        resizeMode: 'cover', 
     },
     cardContent: {
         flex: 1,
@@ -194,34 +110,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2c2c2c',
         textAlign: 'center',
-    
-    },
-    productCategory: {
-        fontSize: 12,
-        color: '#666',
-        textAlign: 'center',
-        marginBottom: 8,
-        fontWeight: '500',
     },
     priceContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 2,
-
     },
     price: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#ff6b35',
         textAlign: 'center',
-    },
-   
-    
-    discountText: {
-        color: '#fff',
-        fontSize: 10,
-        fontWeight: '900',
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -234,10 +134,5 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#ff9f43',
         fontWeight: 'bold',
-    },
-    reviews: {
-        fontSize: 10,
-        color: '#888',
-        fontWeight: '500',
     },
 });

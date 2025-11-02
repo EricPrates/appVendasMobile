@@ -8,21 +8,20 @@ import { Icon, MD3Colors } from 'react-native-paper';
 
 
 export default function Login({navigation}) {
-    const control = UsuarioController()
-    const {login, logado} = useAuth()
+
+    const {login, logado, userController} = useAuth()
     const [usuario, setUsuario] = useState({usuario: 'Eric', senha: '123'});
     const [loading, setLoading] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [erro, setErro] = useState(false);
     const [vizualizarSenha, setVisualizarSenha] = useState(false);
 
-
-
    
     const handleLogin = async () =>{
         setLoading(true)
         setErro(false);
         const resp = await login(usuario.usuario, usuario.senha)
+              
         if(resp.success){
             setLoading(false)
             navigation.replace('Home');

@@ -14,11 +14,9 @@ export default function ViewBase({  children, showSearch= true, tabAtiva,  }) {
 
             <Cabecalho tabAtiva={tabAtiva} />
            
-            <FlatList
-                data={children}
-                renderItem={({ item }) => <View>{item}</View>}
-                keyExtractor={(item, index) => index.toString()}
-            />
+            <ScrollView style={{ flex: 1 }}>
+                {children}
+            </ScrollView>
         <BarraBaixa tabAtiva = {tabAtiva} style={styles.bottomNav}/>
 </SafeAreaView>
     );

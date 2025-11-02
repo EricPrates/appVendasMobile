@@ -1,14 +1,11 @@
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { StyleSheet, View, TouchableOpacity, Text, TextInput, Keyboard } from "react-native";
-import { AuthProvider, useAuth } from "../components/Provider";
-import { use, useEffect, useState } from "react";
+import {  useAuth } from "../components/Provider";
+import {  useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import CompCard from "../components/CompCard";
 import { Alert } from "react-native";
 import ViewBase from "./ViewBase";
-import { ProdutoController } from "../components/controller/Produto.controller";
-import { UsuarioController } from "../components/controller/Usuario.controller";
-
 
 export default function Home({ navigation }) {
     const { searchQuery, filtroVisible, setFiltroVisible, setSearchQuery, loading, setLoading, produtoController, userController } = useAuth();
@@ -48,7 +45,6 @@ const carregarProdutos = async () => {
         
         try {
             const todosProdutos = await produtoController.getProdutos();
-            console.log();
             
             setProdutos(todosProdutos);
         }
@@ -222,6 +218,7 @@ if(!loading){
            <View>
             </View>
             {
+            
                 loading && <Loading />
             }
         </ViewBase>
