@@ -2,12 +2,13 @@
 
 export default class Usuario {
     constructor( endereco = '', email = '', telefone = '',
-         nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null, produtosFavoritos = []) {
+         nome = '', login = '', senha = '', tipo = 'admin' | 'comum' | null, produtosFavoritos = [], carrinho = []) {
         this.produtosFavoritos  = produtosFavoritos;
         this.endereco = endereco;
         this.email = email;
         this.telefone = telefone;
         this.nome = nome;
+        this.carrinho = carrinho;
         this.login = login;
         this.senha = senha;
         this.tipo = tipo;

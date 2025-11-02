@@ -16,14 +16,10 @@ export default function Favoritos({  }) {
     const {  userController, nome} = useAuth();
     const [tabAtiva, setTabAtiva] = useState('favoritos');  
     const navigation = useNavigation();
-    const [error, setError] = useState(null);
     const [favoritos, setFavoritos] = useState([]);
 
     useEffect(() => {
         const favs = userController.getFavoritos();
-    console.log('Tipo de favoritos:', typeof favs);
-    console.log('É array?', Array.isArray(favs));
-    console.log('Conteúdo:', favs);
     setFavoritos(favs);
 
     }, [, userController]);

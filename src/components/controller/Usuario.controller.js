@@ -16,12 +16,13 @@ export const UsuarioController = () => {
         const response = await UserService.loginUsuario(login, senha);
         
         if (response.success) {
+                    
             setUsuario(response.data);
             
         
             const [favoritosDetalhados, carrinhoDetalhado] = await Promise.all([
                  carregarProdutosDetalhados(response.data.produtosFavoritos || []),
-                 carregarProdutosDetalhados(response.data.produtosCarrinho || [])
+                 carregarProdutosDetalhados(response.data.carrinho || [])
             ]);
             
            
@@ -115,8 +116,7 @@ async function carregarProdutosDetalhados(produtosIds) {
         }
     }
   async function adicionarFavoritosUsuario(produtoId) {
-    console.log(usuario);
-    
+        
     try {
         if(produtoId == null || produtoId.trim() === '') {
             return { success: false, errors: ["ID do produto é obrigatório para adicionar aos favoritos."] };
@@ -125,7 +125,7 @@ async function carregarProdutosDetalhados(produtosIds) {
         
         if (!usuario.produtosFavoritos.includes(produtoId)) {
             usuario.produtosFavoritos.push(produtoId);
-            console.log(usuario.produtosFavoritos);
+           
             
         } else {
             return { success: false, errors: ["Produto já está nos favoritos"] };
@@ -220,27 +220,48 @@ async function removerItemCarrinho(produtoId) {
     }
 }
 async function adicionarItemCarrinho(produtoId) {
-    try {
+     try {
         if(produtoId == null || produtoId.trim() === '') {
             return { success: false, errors: ["ID do produto é obrigatório para adicionar ao carrinho."] };
         }
+
+
         if (!usuario.carrinho.includes(produtoId)) {
             usuario.carrinho.push(produtoId);
+           
+            
         } else {
-            return { success: false, errors: ["Produto já está no carrinho"] };
+            return { success: false, errors: ["Produto já está nos favoritos"] };
         }
-
+        
         const response = await UserService.updateUsuario(usuario, usuario.id);
-
+        
         if (response.success) {
             setUsuario(usuario);
-            setCarrinho((prevCarrinho) => [...prevCarrinho, produtoId]);
-            return { success: true };
+            
+           
+            const produtoResponse = await productController.getProdutoById(produtoId);
+            
+            
+            if (produtoResponse.success) {
+                setCarrinho((prevCarrinho) => {
+                    if (!prevCarrinho.some(item => item.id === produtoId)) {
+                        return [...prevCarrinho, produtoResponse.data];
+                    }
+                    return prevCarrinho;
+                });
+            }
+            
+            return { 
+                success: true, 
+                data: usuario.carrinho,
+            };
         } else {
             return { success: false, errors: response.errors };
         }
     } catch (error) {
-        return { success: false, errors: ["Erro ao adicionar item ao carrinho: " + error] };
+        console.error('Erro ao adicionar favorito:', error);
+        return { success: false, errors: ["Erro ao adicionar favorito: " + error.message] };
     }
 }
 function getFavoritos() {
@@ -256,8 +277,17 @@ function produtoEhFavorito(produtoId) {
     }
     return favoritos.some(fav => fav.id === produtoId);
 }
+function produtoEstaNoCarrinho(produtoId) {
+    if (!carrinho || carrinho.length === 0) {
+        return false;
+    }
+    return carrinho.some(item => item.id === produtoId);
+}
 
     return {
+        produtoEstaNoCarrinho,
+        adicionarItemCarrinho,
+        removerItemCarrinho,
         produtoEhFavorito,
         setUsuario,
         loginUsuario,

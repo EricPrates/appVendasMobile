@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { UsuarioController } from "../components/controller/Usuario.controller";
 import { useAuth } from "../components/Provider";
 import { Icon, MD3Colors } from 'react-native-paper';
-
+import userService from "../service/DAO/User.Service";
 
 export default function Login({navigation}) {
 
@@ -23,6 +23,8 @@ export default function Login({navigation}) {
         const resp = await login(usuario.usuario, usuario.senha)
               
         if(resp.success){
+            
+            
             setLoading(false)
             navigation.replace('Home');
         }

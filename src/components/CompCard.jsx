@@ -6,15 +6,15 @@ import { useState } from "react";
 
 export default function CompCard({id, source, nome, preco, avaliacao}) {
     const { setLoading, userController } = useAuth();
-    const [refresh, setRefresh] = useState(0);
+    const [refresh, setRefresh] = useState(false);
     
     const toggleFavorito = async (id) => {
         try {
             setLoading(true);
 
             if (userController.produtoEhFavorito(id)) {
-                await userController.removerFavorito(id);
-                
+                const resp = await userController.removerFavorito(id);
+                console.log(resp);
             } else {
                 await userController.adicionarFavoritosUsuario(id);
                 
@@ -24,6 +24,24 @@ export default function CompCard({id, source, nome, preco, avaliacao}) {
             console.error('Erro ao favoritar:', error);
         } finally {
             setLoading(false);
+        }
+    };
+    const toggleCarrinho = async (id) => {
+        try {
+            setLoading(true);
+
+            if (userController.produtoEstaNoCarrinho(id)) {
+                await userController.removerItemCarrinho(id);
+            } else {
+                const resp = await userController.adicionarItemCarrinho(id);
+                
+                
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar carrinho:', error);
+        } finally {
+            setLoading(false);
+            setRefresh(!refresh);
         }
     };
 
@@ -51,10 +69,10 @@ export default function CompCard({id, source, nome, preco, avaliacao}) {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
                         <IconButton
                             style={{ backgroundColor: '#ff6b35', borderWidth: 1, borderColor: '#ff6b35' }}
-                            icon={"cart"}
+                            icon={userController.produtoEstaNoCarrinho(id) ? "cart-remove" : "cart-plus"}
                             iconColor="#fff"
                             size={24}
-                            onPress={() => {}}
+                            onPress={() => {toggleCarrinho(id)}}
                         />
                         <IconButton
                             icon={userController.produtoEhFavorito(id) ? "heart" : "heart-outline"} 
