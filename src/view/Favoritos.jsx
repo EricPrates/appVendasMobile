@@ -9,26 +9,36 @@ import ViewBase from "./ViewBase";
 import { PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
+
 export default function Favoritos({  }) {
 
-    const { logado, userController, usuario } = useAuth();
-    const [tabAtiva, setTabAtiva] = useState('favoritos');
-    const [favoritos, setFavoritos] = useState();   
+    const {  userController, usuario, setLoading } = useAuth();
+    const [tabAtiva, setTabAtiva] = useState('favoritos');  
     const navigation = useNavigation();
-
+    const [error, setError] = useState(null);
+    const [favoritos, setFavoritos] = useState([]);
 useEffect(() => {
 
-    console.log(userController.getFavoritos());
+    setFavoritos(userController.getFavoritos());
 
-   
-    
 }, []);
 
+const removeFavoritos = async () => {
+    setLoading(true);
+    const response = await userController.removeFavoritos();
+    if (response.success) {
+        setFavoritos([]);
+    } else {
+        setError(response.errors.join('\n'));
+        
+    }
+    setLoading(false);
+}
     return (
         <PaperProvider>
         <ViewBase tabAtiva = {tabAtiva}>
             <View style={styles.content}>
-                {favoritos ?(
+                {favoritos > 0 ? (
                     favoritos.map((produto) => (
                         <TouchableOpacity  onPress={() => navigation.navigate('DetalhesProduto', { produto })} >
                         <CompCard source={produto.urlImagem} object={produto} nome={produto.nome} preco={produto.preco} key={produto.id} />
@@ -39,7 +49,7 @@ useEffect(() => {
                 )}
             </View>
             {
-                favoritos? <TouchableOpacity style={styles.removeFavoritos} onPress={() => setFavoritos([])}>
+                favoritos > 0 ? <TouchableOpacity style={styles.removeFavoritos} onPress={() => {removeFavoritos();}}>
                     <Text style= {{ color: '#fff', fontWeight: 'bold' }}>Remover todos os favoritos</Text>
                 </TouchableOpacity> : null
             }

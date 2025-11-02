@@ -122,10 +122,7 @@ export async function deleteUsuario(id) {
 }
 
 export async function loginUsuario(login, senha) {
-    console.log("=== DEBUG LOGIN USUÁRIO ===");
-    console.log("1. Login recebido:", login);
-    console.log("2. Senha recebida:", senha ? "******" : "não fornecida");
-
+    
     if (!login || login.trim() === '' || !senha || senha.trim() === '') {
         return { success: false, errors: ["Login ou senha são obrigatórios."] };
     }
@@ -152,25 +149,7 @@ export async function getFavoritosUsuario(usuarioId) {
     return { success: true, data: usuario.favoritos || [] };
 }
 
-export async function removeFavorito(usuarioId, produtoId) {
-    if (!usuarioId || !produtoId) {
-        return { success: false, errors: ["ID do usuário e ID do produto são obrigatórios."] };
-    }
-    const usuarios = await getUsuarios();
-    const usuario = usuarios.find(u => u.id === usuarioId);
-    if (!usuario) {
-        return { success: false, errors: ["Usuário não encontrado."] };
-    }
-    if (!usuario.favoritos) {
-        usuario.favoritos = [];
-    }
-    if (!usuario.favoritos.map(produto => produto.id).includes(produtoId)) {
-        return { success: false, errors: ["Produto não está nos favoritos."] };
-    }
-    usuario.favoritos = usuario.favoritos.filter(produto => produto.id !== produtoId);
-    await setUsuarios(usuarios);
-    return { success: true, data: usuario };
-}
+
 export async function getUsuarioById(id) {
     if (!id) {
         return { success: false, errors: ["ID do usuário é obrigatório."] };

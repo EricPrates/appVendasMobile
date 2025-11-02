@@ -5,6 +5,7 @@ import { ProdutoController } from "./controller/Produto.controller";
 import { View } from "react-native-web";
 import { StyleSheet, Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { removeFavorito } from "../service/DAO/User.Service";
 
 
 
@@ -24,6 +25,7 @@ const AuthProvider = ({children}) =>{
     const [searchQuery, setSearchQuery] = useState('');
     const [filtroVisible, setFiltroVisible] = useState(false);
     
+
     useEffect(() => {
         if(usuario){
             userController.setUsuario(usuario);
@@ -49,7 +51,8 @@ const AuthProvider = ({children}) =>{
     const alterarFiltro = () => setFiltroVisible(!filtroVisible); console.log(filtroVisible);
 
     return (
-        <AuthContext.Provider value={{logado ,login, usuario, signOut,  setSearchQuery, searchQuery, alterarFiltro, filtroVisible, setFiltroVisible, setLogado, setLoading, userController, produtoController}}>
+        <AuthContext.Provider value={{logado ,login, usuario, signOut,  setSearchQuery, searchQuery, alterarFiltro,
+         filtroVisible, setFiltroVisible, setLogado, setLoading, userController, produtoController}}>
             {children}
             
         </AuthContext.Provider>

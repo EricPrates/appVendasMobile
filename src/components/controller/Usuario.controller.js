@@ -107,6 +107,7 @@ export const UsuarioController = () => {
         
         if (response.success) {
             setUsuario(usuario);
+            setFavoritos((prevFavoritos) => [...prevFavoritos, produtoId]);
             return { 
                 success: true, 
                 data: usuario.produtosFavoritos,
@@ -116,6 +117,40 @@ export const UsuarioController = () => {
         }
     } catch (error) {
         return { success: false, errors: ["Erro ao adicionar favorito: " + error] };
+    }
+}
+async function removeFavoritos() {
+    try{
+        const response = await UserService.updateUsuario(usuario, usuario.id);
+        if (response.success) {
+            setUsuario(usuario);
+            setFavoritos([]);
+            return { success: true };
+        } else {
+            return { success: false, errors: response.errors };
+        }
+    } catch (error) {
+        return { success: false, errors: ["Erro ao remover favoritos: " + error] };
+    }
+}
+async function removerUmFavorito(produtoId) {
+    try {
+        if(produtoId == null || produtoId.trim() === '') {
+            return { success: false, errors: ["ID do produto é obrigatório para remover dos favoritos."] };
+        }
+        usuario.produtosFavoritos = usuario.produtosFavoritos.filter(id => id !== produtoId);
+        
+        const response = await UserService.updateUsuario(usuario, usuario.id);
+
+        if (response.success) {
+            setUsuario(usuario);
+            setFavoritos((prevFavoritos) => prevFavoritos.filter(id => id !== produtoId));
+            return { success: true };
+        } else {
+            return { success: false, errors: response.errors };
+        }
+    } catch (error) {
+        return { success: false, errors: ["Erro ao remover favorito: " + error] };
     }
 }
 
@@ -136,6 +171,7 @@ function getFavoritos() {
         estaLogado,
         getFavoritos,
         adicionarFavoritosUsuario,
+        removeFavoritos
 
     }
 };
