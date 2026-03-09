@@ -1,28 +1,71 @@
-Para entrar
-App contém dois usuários: 
-login: Eric, senha: 123 que é do tipo admin
-login: Maria, senha: 123 que é do tipo comum
-Ambos pussem diferença qanto a cadastro de usuários e produtos
+# App de Venda de Tênis
 
-ERIC 123 JA ESTÁ SETADO AUTOMATICAMENTE !!!!
+Aplicação mobile desenvolvida com React Native para simular um sistema de venda de tênis.  
+O aplicativo possui diferenciação de acesso entre usuários comuns e administradores, permitindo testes de funcionalidades como cadastro, navegação e simulação de compras.
 
-Na Home simulado imagens e preços de produtos em card
+## Tecnologias Utilizadas
 
-Nos favoritos simulei apenas card ainda sem busca
+- React Native
+- JavaScript
+- LocalStorage
 
-No carrinho foi simulado a inclusão de três produtos através de array e iteração
+## Usuários de Teste
 
-Na parte do menu, há diferenças entre usuários: admin pode cadastrar e editar, comun não
+O aplicativo possui dois usuários configurados para testes:
 
-criei formulários para cadastro e edição, realizei testes e logs para testes
+### Administrador
+Login: Eric  
+Senha: 123  
 
-função sair para sair do app com confirmação
+Permissões:
+- Cadastrar produtos
+- Editar produtos
+- Acessar funcionalidades administrativas
 
-meus pedidos ainda consta com simulação simples na tela, agurdando contrução de controller
+### Usuário Comum
+Login: Maria  
+Senha: 123  
 
-No componente BarraBaixa (vou renomear para barra inferior) criei um componente de navegação 
-e depois descobri que havia o tab navigator, mas continuei com ela
+Permissões:
+- Navegar pelos produtos
+- Adicionar produtos ao carrinho
+- Visualizar pedidos
 
-a navegação é feita atraves do Stack entre telas, algumas variáveis não estão sendo 
-utilizadas para verificação utilizada anteriormente, mas vou retirar do código
-a renderização de imagens foi aleatória para teste de css
+> O usuário **Eric (admin)** já está configurado automaticamente no sistema.
+
+## Funcionalidades
+
+### Home
+- Exibição simulada de produtos em formato de **cards**
+- Imagens e preços gerados para testes de layout
+
+
+### Menu
+O menu apresenta funcionalidades diferentes dependendo do tipo de usuário:
+
+**Admin**
+- Cadastrar produtos
+- Editar produtos
+
+**Usuário comum**
+- Apenas visualização
+
+## Navegação
+
+A navegação foi implementada utilizando **Stack Navigator** entre telas.
+
+
+## Armazenamento de Dados
+
+Os dados do aplicativo são armazenados utilizando **LocalStorage** para simulação de persistência.
+
+
+## Objetivo do Projeto
+
+Este projeto foi desenvolvido com o objetivo de praticar:
+
+- desenvolvimento mobile com React Native
+- navegação entre telas
+- manipulação de estados
+- simulação de funcionalidades de e-commerce
+- uso de armazenamento local
